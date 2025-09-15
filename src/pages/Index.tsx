@@ -16,13 +16,10 @@ const Index = () => {
             </div>
             <h1 className="text-2xl font-bold text-gray-900">AliPay 金服</h1>
           </div>
-          <div className="flex items-center gap-4">
-            <Badge variant="secondary" className="bg-green-100 text-green-800">
-              <Icon name="Shield" size={16} className="mr-1" />
-              Безопасно
-            </Badge>
-            <Button variant="outline">Поддержка</Button>
-          </div>
+          <Badge variant="secondary" className="bg-green-100 text-green-800">
+            <Icon name="Shield" size={16} className="mr-1" />
+            Безопасно
+          </Badge>
         </div>
       </header>
 
