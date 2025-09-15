@@ -9,48 +9,49 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50">
       {/* Header */}
       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
               <Icon name="CreditCard" size={24} className="text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">AliPay 金服</h1>
+            <h1 className="text-lg sm:text-2xl font-bold text-gray-900">AliPay 金服</h1>
           </div>
-          <Badge variant="secondary" className="bg-green-100 text-green-800">
-            <Icon name="Shield" size={16} className="mr-1" />
-            Безопасно
+          <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs sm:text-sm">
+            <Icon name="Shield" size={14} className="mr-1" />
+            <span className="hidden sm:inline">Безопасно</span>
+            <Icon name="Shield" size={14} className="sm:hidden" />
           </Badge>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 px-4">
+      <section className="py-8 sm:py-16 lg:py-20 px-4">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div>
-              <Badge className="mb-6 bg-blue-100 text-blue-800">
-                <Icon name="Zap" size={16} className="mr-1" />
+              <Badge className="mb-4 sm:mb-6 bg-blue-100 text-blue-800 text-xs sm:text-sm">
+                <Icon name="Zap" size={14} className="mr-1" />
                 Мгновенное пополнение
               </Badge>
-              <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
                 Пополните <span className="text-primary">AliPay</span> быстро и безопасно
               </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed">
                 Надёжный сервис пополнения китайских кошельков с гарантией возврата средств и круглосуточной поддержкой.
               </p>
               
-              <div className="flex flex-wrap gap-6 mb-8">
+              <div className="flex flex-wrap gap-4 sm:gap-6 mb-6 sm:mb-8">
                 <div className="flex items-center gap-2">
                   <Icon name="Clock" size={20} className="text-green-600" />
-                  <span className="text-gray-700">5 минут</span>
+                  <span className="text-sm sm:text-base text-gray-700">5 минут</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icon name="Shield" size={20} className="text-green-600" />
-                  <span className="text-gray-700">100% гарантия</span>
+                  <span className="text-sm sm:text-base text-gray-700">100% гарантия</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icon name="Headphones" size={20} className="text-green-600" />
-                  <span className="text-gray-700">24/7 поддержка</span>
+                  <span className="text-sm sm:text-base text-gray-700">24/7 поддержка</span>
                 </div>
               </div>
             </div>
@@ -110,38 +111,38 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Icon name="Shield" size={32} className="text-primary" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Icon name="Shield" size={24} className="text-primary sm:w-8 sm:h-8" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Безопасность</h3>
-              <p className="text-gray-600">Все транзакции защищены банковским уровнем шифрования</p>
+              <h3 className="text-lg sm:text-xl font-semibold mb-2">Безопасность</h3>
+              <p className="text-sm sm:text-base text-gray-600">Все транзакции защищены банковским уровнем шифрования</p>
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Icon name="Zap" size={32} className="text-secondary" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Icon name="Zap" size={24} className="text-secondary sm:w-8 sm:h-8" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Скорость</h3>
-              <p className="text-gray-600">Средства поступают на счёт в течение 5 минут</p>
+              <h3 className="text-lg sm:text-xl font-semibold mb-2">Скорость</h3>
+              <p className="text-sm sm:text-base text-gray-600">Средства поступают на счёт в течение 5 минут</p>
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Icon name="Headphones" size={32} className="text-purple-600" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Icon name="Headphones" size={24} className="text-purple-600 sm:w-8 sm:h-8" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Поддержка</h3>
-              <p className="text-gray-600">Работаем круглосуточно без выходных и праздников</p>
+              <h3 className="text-lg sm:text-xl font-semibold mb-2">Поддержка</h3>
+              <p className="text-sm sm:text-base text-gray-600">Работаем круглосуточно без выходных и праздников</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Reviews */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-8 sm:py-12 lg:py-16 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Отзывы клиентов</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12">Отзывы клиентов</h2>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {[
               {
                 name: "Александр К.",
@@ -182,68 +183,68 @@ const Index = () => {
       </section>
 
       {/* Guarantees */}
-      <section className="py-16 bg-white">
+      <section className="py-8 sm:py-12 lg:py-16 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Наши гарантии</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12">Наши гарантии</h2>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="text-center p-6">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Icon name="RotateCcw" size={24} className="text-green-600" />
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <Card className="text-center p-3 sm:p-4 lg:p-6">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                <Icon name="RotateCcw" size={20} className="text-green-600" />
               </div>
-              <h4 className="font-semibold mb-2">Возврат средств</h4>
-              <p className="text-sm text-gray-600">100% возврат если средства не поступили</p>
+              <h4 className="text-sm sm:text-base font-semibold mb-1 sm:mb-2">Возврат средств</h4>
+              <p className="text-xs sm:text-sm text-gray-600">100% возврат если средства не поступили</p>
             </Card>
             
-            <Card className="text-center p-6">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Icon name="FileText" size={24} className="text-blue-600" />
+            <Card className="text-center p-3 sm:p-4 lg:p-6">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                <Icon name="FileText" size={20} className="text-blue-600" />
               </div>
-              <h4 className="font-semibold mb-2">Официально</h4>
-              <p className="text-sm text-gray-600">Зарегистрированная компания с лицензией</p>
+              <h4 className="text-sm sm:text-base font-semibold mb-1 sm:mb-2">Официально</h4>
+              <p className="text-xs sm:text-sm text-gray-600">Зарегистрированная компания с лицензией</p>
             </Card>
             
-            <Card className="text-center p-6">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Icon name="Clock" size={24} className="text-purple-600" />
+            <Card className="text-center p-3 sm:p-4 lg:p-6">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                <Icon name="Clock" size={20} className="text-purple-600" />
               </div>
-              <h4 className="font-semibold mb-2">Быстро</h4>
-              <p className="text-sm text-gray-600">Максимум 10 минут на обработку</p>
+              <h4 className="text-sm sm:text-base font-semibold mb-1 sm:mb-2">Быстро</h4>
+              <p className="text-xs sm:text-sm text-gray-600">Максимум 10 минут на обработку</p>
             </Card>
             
-            <Card className="text-center p-6">
-              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Icon name="MessageCircle" size={24} className="text-red-600" />
+            <Card className="text-center p-3 sm:p-4 lg:p-6">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                <Icon name="MessageCircle" size={20} className="text-red-600" />
               </div>
-              <h4 className="font-semibold mb-2">Поддержка</h4>
-              <p className="text-sm text-gray-600">Оперативная помощь 24/7</p>
+              <h4 className="text-sm sm:text-base font-semibold mb-1 sm:mb-2">Поддержка</h4>
+              <p className="text-xs sm:text-sm text-gray-600">Оперативная помощь 24/7</p>
             </Card>
           </div>
         </div>
       </section>
 
       {/* Contact */}
-      <section className="py-16 bg-gray-900 text-white">
+      <section className="py-8 sm:py-12 lg:py-16 bg-gray-900 text-white">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold mb-6">Остались вопросы?</h2>
-              <p className="text-gray-300 mb-6 leading-relaxed">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Остались вопросы?</h2>
+              <p className="text-sm sm:text-base text-gray-300 mb-4 sm:mb-6 leading-relaxed">
                 Наша команда поддержки готова помочь вам 24/7. Свяжитесь с нами любым удобным способом.
               </p>
               
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div className="flex items-center gap-3">
-                  <Icon name="MessageCircle" size={20} className="text-primary" />
-                  <span>Telegram: @alipay_support</span>
+                  <Icon name="MessageCircle" size={18} className="text-primary" />
+                  <span className="text-sm sm:text-base">Telegram: @alipay_support</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Icon name="Mail" size={20} className="text-primary" />
-                  <span>support@alipay-service.ru</span>
+                  <Icon name="Mail" size={18} className="text-primary" />
+                  <span className="text-sm sm:text-base">support@alipay-service.ru</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Icon name="Phone" size={20} className="text-primary" />
-                  <span>+7 (800) 123-45-67</span>
+                  <Icon name="Phone" size={18} className="text-primary" />
+                  <span className="text-sm sm:text-base">+7 (800) 123-45-67</span>
                 </div>
               </div>
             </div>
@@ -271,20 +272,20 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 border-t border-gray-800 py-8">
+      <footer className="bg-gray-900 border-t border-gray-800 py-6 sm:py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center gap-3 mb-4 md:mb-0">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <Icon name="CreditCard" size={16} className="text-white" />
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary rounded-lg flex items-center justify-center">
+                <Icon name="CreditCard" size={14} className="text-white sm:w-4 sm:h-4" />
               </div>
-              <span className="text-white font-semibold">AliPay Service</span>
+              <span className="text-white font-semibold text-sm sm:text-base">AliPay Service</span>
             </div>
             
-            <div className="flex items-center gap-6 text-sm text-gray-400">
+            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 text-xs sm:text-sm text-gray-400 text-center">
               <span>© 2024 AliPay Service</span>
-              <span>Политика конфиденциальности</span>
-              <span>Условия использования</span>
+              <span className="hidden sm:inline">Политика конфиденциальности</span>
+              <span className="hidden sm:inline">Условия использования</span>
             </div>
           </div>
         </div>
