@@ -89,7 +89,11 @@ const Index = () => {
                   </div>
                 </div>
 
-                <Button className="w-full h-12 text-lg" size="lg">
+                <Button 
+                  className="w-full h-12 text-lg" 
+                  size="lg"
+                  onClick={() => window.open('https://t.me/devotedzen_bot', '_blank')}
+                >
                   <Icon name="ArrowRight" size={20} className="mr-2" />
                   Пополнить сейчас
                 </Button>
