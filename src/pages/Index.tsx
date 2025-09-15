@@ -223,53 +223,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Contact */}
-      <section className="py-8 sm:py-12 lg:py-16 bg-gray-900 text-white">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Остались вопросы?</h2>
-              <p className="text-sm sm:text-base text-gray-300 mb-4 sm:mb-6 leading-relaxed">
-                Наша команда поддержки готова помочь вам 24/7. Свяжитесь с нами любым удобным способом.
-              </p>
-              
-              <div className="space-y-3 sm:space-y-4">
-                <div className="flex items-center gap-3">
-                  <Icon name="MessageCircle" size={18} className="text-primary" />
-                  <span className="text-sm sm:text-base">Telegram: @alipay_support</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Icon name="Mail" size={18} className="text-primary" />
-                  <span className="text-sm sm:text-base">support@alipay-service.ru</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Icon name="Phone" size={18} className="text-primary" />
-                  <span className="text-sm sm:text-base">+7 (800) 123-45-67</span>
-                </div>
-              </div>
-            </div>
-            
-            <Card className="bg-gray-800 border-gray-700">
-              <CardHeader>
-                <CardTitle className="text-white">Написать нам</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Input placeholder="Ваше имя" className="bg-gray-700 border-gray-600 text-white" />
-                <Input placeholder="Email" className="bg-gray-700 border-gray-600 text-white" />
-                <textarea 
-                  placeholder="Ваш вопрос..."
-                  className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 resize-none"
-                  rows={4}
-                />
-                <Button className="w-full">
-                  <Icon name="Send" size={16} className="mr-2" />
-                  Отправить
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
+
 
       {/* Footer */}
       <footer className="bg-gray-900 border-t border-gray-800 py-6 sm:py-8">
