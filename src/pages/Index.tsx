@@ -66,11 +66,6 @@ const Index = () => {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Email от AliPay</label>
-                  <Input placeholder="example@email.com" className="h-12" />
-                </div>
-                
-                <div>
                   <label className="block text-sm font-medium mb-2">Сумма пополнения</label>
                   <div className="relative">
                     <Input placeholder="1000" className="h-12 pr-16" />
