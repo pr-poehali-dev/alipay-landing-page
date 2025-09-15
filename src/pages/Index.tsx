@@ -36,9 +36,8 @@ const Index = () => {
               <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
                 Пополните <span className="text-primary">AliPay</span> быстро и безопасно
               </h1>
-              <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed">
-                Надёжный сервис пополнения китайских кошельков с гарантией возврата средств и круглосуточной поддержкой.
-              </p>
+              <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed">Надёжный сервис пополнения китайских кошельков с гарантией возврата средств и круглосуточной поддержкой.
+Окажем помощь в пополнении.</p>
               
               <div className="flex flex-wrap gap-4 sm:gap-6 mb-6 sm:mb-8">
                 <div className="flex items-center gap-2">
