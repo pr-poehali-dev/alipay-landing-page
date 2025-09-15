@@ -90,7 +90,7 @@ const Index = () => {
                 <Button 
                   className="w-full h-12 text-lg" 
                   size="lg"
-                  onClick={() => window.open('https://t.me/devotedzen_bot', '_blank')}
+                  onClick={() => window.open('https://t.me/alipayservicebot', '_blank')}
                 >
                   <Icon name="ArrowRight" size={20} className="mr-2" />
                   Пополнить сейчас
