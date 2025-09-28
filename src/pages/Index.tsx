@@ -3,6 +3,7 @@ import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   return (
@@ -86,14 +87,23 @@ const Index = () => {
                   </div>
                 </div>
 
-                <Button 
-                  className="w-full h-12 text-lg" 
-                  size="lg"
-                  onClick={() => window.open('https://t.me/alipayservicebot', '_blank')}
-                >
-                  <Icon name="ArrowRight" size={20} className="mr-2" />
-                  Пополнить сейчас
-                </Button>
+                <div className="space-y-3">
+                  <Button 
+                    className="w-full h-12 text-lg" 
+                    size="lg"
+                    onClick={() => window.open('https://t.me/alipayservicebot', '_blank')}
+                  >
+                    <Icon name="ArrowRight" size={20} className="mr-2" />
+                    Пополнить сейчас
+                  </Button>
+                  
+                  <Link to="/reviews">
+                    <Button variant="outline" className="w-full h-10 text-sm">
+                      <Icon name="Star" size={16} className="mr-2" />
+                      Посмотреть отзывы
+                    </Button>
+                  </Link>
+                </div>
 
                 <div className="flex items-center justify-center gap-4 pt-4 border-t">
                   <Icon name="Lock" size={16} className="text-gray-400" />
