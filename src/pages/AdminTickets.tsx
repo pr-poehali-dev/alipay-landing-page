@@ -48,8 +48,21 @@ const AdminTickets = () => {
       });
       
       if (prevTicketCount > 0 && ticketsWithNew.length > prevTicketCount) {
-        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+Dvv2IdBSiG0fDTgjMGHGy57+ehTRAMUKXh8LZjHAU5kdfy0H0qBSh7yfDakj0JEmCz6OmlUhELRp/g7rdiFwUogdDwz4IyBxtvuvDroVEQC0ih4PGzYRYGOJHX8s9+KQUng8rx2JA+CRJfsujopVIRC0Wf4O63YhgGKIHO8NF+KgYbbLzv66JTDgtFoeDxsmEXBjmQ1vLPfSgGKIPK8diRPQcSX7Ln6KZSEQpGnt/uuWEYBSl/zvDRgCsGHGy77+ujUg4LRaCg8LNgFgU6jNTxz3woByuByvDUlD4IElyx6OilUREKRp7f7LZhGAUqfsrw0YAqBh1ru+/so1IOC0Wf4PKzYBYEOIzU8c98KAYqgsrw1JU+CRJcr+jopVERCkaen+u2YBgEKoDJ8NGAKgYea7zu7KRSDQtFn+DytGEVBTiM0/HOfCgGKoLJ8dOWPgkSXK7n6KRREQpGnt/st2AYBCp+yfDRgCkGH2y67+ykUQ4LRp3g8rNhFgU4i9Pw0HwpBSh/yfHTlT4IElux5+mlUREKRp3e7bZgGAQqf8nw0IAoBh9suu7spFEOC0Wc4PKzYhYEOIvT8c9+KAYpgMnx05U+BxJcr+boplESCkaen+u2YRcFKoDJ8M+AKQYfa7rt7KRRDgtFnODys2IXBTiL0/HPfScHKYDJ8dOWPgcSW67n6KdREQpFnd7rtmEYBSp/yfDQgCkGH2u57uykUQ4LRJve77JiGAU3i9Lxz3wpBil/yfHTlj4HEluu5uimUBELRZze7bVhGAUqfsnw0IAqBh5ruu7rpFIOC0Sb3u+zYhYFN4rT8M99KQYpf8jw1JY+CRNasublqVASCkWd3u22YRgFKn7J8M+AKgYea7ru7KNRDgtEm97vtWEYBTeL0/DPfSkGKX7I8NOWPwkSWq7m5qhQEQpEnN3ttmEXBSp+yfDPgCoGHmu67uujUg0LRJrd7rViFgY3itPxz3wpBil+yPDTlj8JElqu5uaoUBEKRJvd7rZiFwYqfcjwz4EpBh5ruu/solENC0Sa3e+1YhYGN4nS8c98KQYpfcjw1JY+ChNarubnp1ARCkSa3u62YhcFKn7I8M+AKgYfa7rv7KJRDgtFmt3vtWEWBjeK0vHOfSgGKX3I8NOXPgoSWK3m56hPEQpEmtzutmEXBSp+yfDPgCkGH2u67+uiURELRJnc77ZhFwY3idLxz34oBil9x/DTlz8JEliu5uenUBELRJnc7rZhGAUqfsjwz4ApBh9ruu/roVEQC0SZ3O+1YhcFN4nS8c99KAYqfsjw05c+ChJYrebnoE8RCkOZ3e+1YRgEKn3H8M+AKgYfa7nt7KFRDwtFmdzutGEXBTeJ0/HOfSgGKn7I8NOWPwkSWK7m5qhPEQpEmtzutmEXBSp9x/DPgCoGH2u47uqiUA8LRJnc7rNhFwU3idLxz3wpBip9yPDTlz8JEliu5uanUBEKRJrc7bVhGAUqfcfwz4AqBh9suu/roVEOC0SZ3O61YhcFN4nT8c99KAYqfcjw05c/CRJYrubmoE8RCkSZ3e+0YRgFKn3I8M+AKgYfa7nt66FRDgtFmdzutGEXBTeJ0/HOfSgGKn3I8NOWPwkSWK3m5adQEQpEmdzutmEYBSp9x/DPfykGHmu57+qhUA8LRJjb77RhFwU3idLxz3wpBip+yPDTlz8IEliu5uenTxEKRJnc7rVhGAUqfcjwz4ApBh9ru+7qolEOC0SY3O6zYhgFN4nS8c99KAYqfsjw05c/CRJYrebmp08RC... [truncated]
-        audio.play().catch(e => console.log('Звуковое уведомление отключено'));
+        try {
+          const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = 800;
+          osc.type = 'sine';
+          gain.gain.setValueAtTime(0.3, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+          osc.start(ctx.currentTime);
+          osc.stop(ctx.currentTime + 0.5);
+        } catch (e) {
+          console.log('Звук недоступен');
+        }
       }
       
       setPrevTicketCount(ticketsWithNew.length);
