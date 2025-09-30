@@ -13,6 +13,60 @@ export interface Ticket {
   created_at: string;
 }
 
+export interface Message {
+  id: number;
+  session_id: string;
+  user_name: string | null;
+  message: string;
+  is_admin: boolean;
+  image_url: string | null;
+  created_at: string;
+}
+
+export const MessageService = {
+  async sendMessage(sessionId: string, message: string, isAdmin: boolean = false, userName: string | null = null, imageUrl: string | null = null) {
+    const { data, error } = await supabase
+      .from('messages')
+      .insert([
+        { session_id: sessionId, message, is_admin: isAdmin, user_name: userName, image_url: imageUrl }
+      ])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data as Message;
+  },
+
+  async getMessages(sessionId: string) {
+    const { data, error } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('session_id', sessionId)
+      .order('created_at', { ascending: true });
+
+    if (error) throw error;
+    return data as Message[];
+  },
+
+  async uploadImage(file: File): Promise<string> {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random()}.${fileExt}`;
+    const filePath = `chat-images/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('images')
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data } = supabase.storage
+      .from('images')
+      .getPublicUrl(filePath);
+
+    return data.publicUrl;
+  }
+};
+
 export const TicketService = {
   async create(sessionId: string, amount: string, userName: string) {
     const { data, error } = await supabase
