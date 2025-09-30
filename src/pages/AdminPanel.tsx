@@ -17,6 +17,7 @@ interface ChatSession {
 interface Message {
   id: number;
   message: string;
+  image_url?: string;
   is_admin: boolean;
   created_at: string;
 }
@@ -177,7 +178,17 @@ export default function AdminPanel() {
                               : 'bg-white text-gray-800 shadow'
                           }`}
                         >
-                          <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
+                          {msg.image_url && (
+                            <img 
+                              src={msg.image_url} 
+                              alt="Изображение" 
+                              className="max-w-full rounded mb-2 cursor-pointer"
+                              onClick={() => window.open(msg.image_url, '_blank')}
+                            />
+                          )}
+                          {msg.message && (
+                            <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
+                          )}
                           <span className="text-xs opacity-70 mt-1 block">
                             {new Date(msg.created_at).toLocaleString('ru-RU')}
                           </span>

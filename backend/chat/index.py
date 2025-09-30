@@ -8,8 +8,15 @@ Returns: HTTP response dict с данными чата или тикетов
 import json
 import os
 from typing import Dict, Any
+from decimal import Decimal
 import psycopg2
 from psycopg2.extras import RealDictCursor
+
+def decimal_default(obj):
+    """JSON serializer для Decimal"""
+    if isinstance(obj, Decimal):
+        return str(obj)
+    raise TypeError
 
 def get_db_connection():
     """Создаёт подключение к БД"""
@@ -53,7 +60,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         t.subject,
                         t.status,
                         t.priority,
-                        t.amount,
+                        CAST(t.amount AS TEXT) as amount,
                         to_char(t.created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at,
                         to_char(t.updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at,
                         (SELECT COUNT(*) FROM ticket_messages WHERE ticket_id = t.id) as message_count,
@@ -72,7 +79,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 return {
                     'statusCode': 200,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'body': json.dumps({'tickets': tickets}),
+                    'body': json.dumps({'tickets': tickets}, default=decimal_default),
                     'isBase64Encoded': False
                 }
             
@@ -84,7 +91,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         t.subject,
                         t.status,
                         t.priority,
-                        t.amount,
+                        CAST(t.amount AS TEXT) as amount,
                         to_char(t.created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at,
                         to_char(t.updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at
                     FROM tickets t
@@ -107,6 +114,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         ticket_id,
                         sender_type,
                         message,
+                        image_url,
                         to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at
                     FROM ticket_messages
                     WHERE ticket_id = %s
@@ -153,7 +161,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 }
             
             cur.execute("""
-                SELECT id, session_id, message, is_admin, 
+                SELECT id, session_id, message, image_url, is_admin, 
                        to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at
                 FROM chat_messages 
                 WHERE session_id = %s 
@@ -172,14 +180,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         elif method == 'POST':
             body_data = json.loads(event.get('body', '{}'))
             message = body_data.get('message', '').strip()
+            image_url = body_data.get('image_url')
             is_admin = body_data.get('is_admin', False)
             user_name = body_data.get('name')
             
-            if not session_id or not message:
+            if not session_id or (not message and not image_url):
                 return {
                     'statusCode': 400,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'body': json.dumps({'error': 'Session ID and message required'}),
+                    'body': json.dumps({'error': 'Session ID and message or image required'}),
                     'isBase64Encoded': False
                 }
             
@@ -190,11 +199,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             """, (session_id, user_name))
             
             cur.execute("""
-                INSERT INTO chat_messages (session_id, message, is_admin)
-                VALUES (%s, %s, %s)
-                RETURNING id, session_id, message, is_admin, 
+                INSERT INTO chat_messages (session_id, message, image_url, is_admin)
+                VALUES (%s, %s, %s, %s)
+                RETURNING id, session_id, message, image_url, is_admin, 
                           to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at
-            """, (session_id, message, is_admin))
+            """, (session_id, message or '', image_url, is_admin))
             
             new_message = cur.fetchone()
             conn.commit()
@@ -218,24 +227,25 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
-            if 'message' in body_data:
-                message = body_data['message'].strip()
+            if 'message' in body_data or 'image_url' in body_data:
+                message = body_data.get('message', '').strip()
+                image_url = body_data.get('image_url')
                 sender_type = body_data.get('sender_type', 'client')
                 
-                if not message:
+                if not message and not image_url:
                     return {
                         'statusCode': 400,
                         'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                        'body': json.dumps({'error': 'Message required'}),
+                        'body': json.dumps({'error': 'Message or image required'}),
                         'isBase64Encoded': False
                     }
                 
                 cur.execute("""
-                    INSERT INTO ticket_messages (ticket_id, sender_type, message)
-                    VALUES (%s, %s, %s)
-                    RETURNING id, ticket_id, sender_type, message,
+                    INSERT INTO ticket_messages (ticket_id, sender_type, message, image_url)
+                    VALUES (%s, %s, %s, %s)
+                    RETURNING id, ticket_id, sender_type, message, image_url,
                               to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at
-                """, (ticket_id, sender_type, message))
+                """, (ticket_id, sender_type, message, image_url))
                 
                 new_message = cur.fetchone()
                 

@@ -3,9 +3,7 @@
     {
       "name": "GET: получение всех тикетов",
       "method": "GET",
-      "queryStringParameters": {
-        "tickets": "true"
-      },
+      "path": "/?tickets=true",
       "expectedStatus": 200
     }
   ]

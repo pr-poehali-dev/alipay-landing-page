@@ -7,6 +7,7 @@ import Icon from '@/components/ui/icon';
 interface Message {
   id: number;
   message: string;
+  image_url?: string;
   is_admin: boolean;
   created_at: string;
 }
@@ -17,8 +18,12 @@ export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [sessionId, setSessionId] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let sid = localStorage.getItem('chat_session_id');
@@ -59,10 +64,50 @@ export default function ChatWidget() {
     }
   };
 
-  const sendMessage = async () => {
-    if (!inputMessage.trim() || !sessionId) return;
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  };
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Файл слишком большой. Максимум 5 МБ');
+        return;
+      }
+      setSelectedImage(file);
+      const preview = URL.createObjectURL(file);
+      setImagePreview(preview);
+    }
+  };
+
+  const clearImage = () => {
+    setSelectedImage(null);
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+      setImagePreview(null);
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const sendMessage = async () => {
+    if ((!inputMessage.trim() && !selectedImage) || !sessionId) return;
+
+    setUploading(true);
     try {
+      let imageUrl = null;
+      
+      if (selectedImage) {
+        imageUrl = await convertToBase64(selectedImage);
+      }
+
       await fetch(CHAT_API, {
         method: 'POST',
         headers: {
@@ -71,14 +116,19 @@ export default function ChatWidget() {
         },
         body: JSON.stringify({
           message: inputMessage,
+          image_url: imageUrl,
           name: 'Клиент'
         })
       });
 
       setInputMessage('');
+      clearImage();
       loadMessages();
     } catch (error) {
       console.error('Ошибка отправки:', error);
+      alert('Ошибка отправки сообщения');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -139,7 +189,17 @@ export default function ChatWidget() {
                       : 'bg-primary text-white'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
+                  {msg.image_url && (
+                    <img 
+                      src={msg.image_url} 
+                      alt="Изображение" 
+                      className="max-w-full rounded mb-2 cursor-pointer"
+                      onClick={() => window.open(msg.image_url, '_blank')}
+                    />
+                  )}
+                  {msg.message && (
+                    <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
+                  )}
                   <span className="text-xs opacity-70 mt-1 block">
                     {new Date(msg.created_at).toLocaleTimeString('ru-RU', {
                       hour: '2-digit',
@@ -153,16 +213,52 @@ export default function ChatWidget() {
           </div>
 
           <div className="p-4 border-t bg-white rounded-b-lg">
+            {imagePreview && (
+              <div className="mb-2 relative inline-block">
+                <img 
+                  src={imagePreview} 
+                  alt="Preview" 
+                  className="max-h-20 rounded border"
+                />
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
+                  onClick={clearImage}
+                >
+                  <Icon name="X" size={14} />
+                </Button>
+              </div>
+            )}
             <div className="flex gap-2">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageSelect}
+                className="hidden"
+              />
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+              >
+                <Icon name="Image" size={18} />
+              </Button>
               <Input
                 placeholder="Напишите сообщение..."
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 className="flex-1"
+                disabled={uploading}
               />
-              <Button onClick={sendMessage} disabled={!inputMessage.trim()}>
-                <Icon name="Send" size={18} />
+              <Button 
+                onClick={sendMessage} 
+                disabled={(!inputMessage.trim() && !selectedImage) || uploading}
+              >
+                {uploading ? <Icon name="Loader2" size={18} className="animate-spin" /> : <Icon name="Send" size={18} />}
               </Button>
             </div>
           </div>

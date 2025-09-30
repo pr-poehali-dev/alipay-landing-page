@@ -12,6 +12,7 @@ interface Message {
   id: number;
   sender_type: string;
   message: string;
+  image_url?: string;
   created_at: string;
 }
 
@@ -240,7 +241,17 @@ const AdminTicketView = () => {
                       ? 'bg-primary text-white'
                       : 'bg-gray-100 text-gray-900'
                   }`}>
-                    <div className="text-sm break-words">{msg.message}</div>
+                    {msg.image_url && (
+                      <img 
+                        src={msg.image_url} 
+                        alt="Изображение" 
+                        className="max-w-full rounded mb-2 cursor-pointer"
+                        onClick={() => window.open(msg.image_url, '_blank')}
+                      />
+                    )}
+                    {msg.message && (
+                      <div className="text-sm break-words">{msg.message}</div>
+                    )}
                     <div className={`text-xs mt-1 ${
                       msg.sender_type === 'admin' ? 'text-white/70' : 'text-gray-500'
                     }`}>
