@@ -153,6 +153,11 @@ const AdminTickets = () => {
                                 {ticket.amount} ₽
                               </Badge>
                             )}
+                            {ticket.userName && (
+                              <Badge className="bg-blue-100 text-blue-800">
+                                {ticket.userName}
+                              </Badge>
+                            )}
                           </div>
                           <CardTitle className="text-lg text-white">{ticket.subject}</CardTitle>
                         </div>

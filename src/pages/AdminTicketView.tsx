@@ -131,10 +131,16 @@ const AdminTicketView = () => {
                       {ticket.amount} ₽
                     </Badge>
                   )}
+                  {ticket.userName && (
+                    <Badge className="bg-blue-100 text-blue-800">
+                      {ticket.userName}
+                    </Badge>
+                  )}
                 </div>
                 <CardTitle className="text-2xl text-white">{ticket.subject}</CardTitle>
                 <div className="text-sm text-gray-400 mt-2">
                   Создан: {new Date(ticket.createdAt).toLocaleString('ru')}
+                  {ticket.userName && <span className="ml-4">Клиент: {ticket.userName}</span>}
                 </div>
               </div>
               

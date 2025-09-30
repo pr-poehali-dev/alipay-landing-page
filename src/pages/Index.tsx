@@ -9,17 +9,35 @@ import { TicketStorage } from "@/lib/localStorage";
 
 const Index = () => {
   const [amount, setAmount] = useState('1000');
+  const [userName, setUserName] = useState('');
 
   const handlePaymentClick = () => {
     const sessionId = localStorage.getItem('chat_session_id') || 
       'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('chat_session_id', sessionId);
 
+    const lastTickets = TicketStorage.getRecentTickets(sessionId, 30);
+    if (lastTickets.length >= 2) {
+      alert('Вы можете создать максимум 2 заявки за 30 минут. Пожалуйста, подождите.');
+      return;
+    }
+
+    if (!userName.trim()) {
+      alert('Пожалуйста, введите ваше имя');
+      return;
+    }
+
     const amountValue = parseFloat(amount) || 1000;
+    if (amountValue < 500) {
+      alert('Минимальная сумма пополнения: 500₽');
+      return;
+    }
+
     TicketStorage.create(
       sessionId,
-      `Заявка на пополнение ${amountValue} ₽`,
-      String(amountValue)
+      `Заявка на пополнение AliPay от ${userName}`,
+      String(amountValue),
+      userName
     );
 
     const chatWidget = document.querySelector('[data-chat-widget]');
@@ -86,6 +104,16 @@ const Index = () => {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
+                  <label className="block text-sm font-medium mb-2">Ваше имя</label>
+                  <Input 
+                    placeholder="Введите ваше имя" 
+                    className="h-12" 
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                  />
+                </div>
+
+                <div>
                   <label className="block text-sm font-medium mb-2">Сумма пополнения</label>
                   <div className="relative">
                     <Input 
@@ -124,6 +152,13 @@ const Index = () => {
                     <Icon name="ArrowRight" size={20} className="mr-2" />
                     Пополнить сейчас
                   </Button>
+                  
+                  <a href="https://t.me/CrystalPaym" target="_blank" rel="noopener noreferrer" className="block">
+                    <Button variant="outline" className="w-full h-12 text-base bg-blue-500 hover:bg-blue-600 text-white border-blue-500">
+                      <Icon name="MessageCircle" size={18} className="mr-2" />
+                      Менеджер в Telegram 24 часа
+                    </Button>
+                  </a>
                   
                   <Link to="/reviews">
                     <Button variant="outline" className="w-full h-10 text-sm">

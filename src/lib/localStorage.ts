@@ -3,6 +3,7 @@ export interface Ticket {
   sessionId: string;
   subject: string;
   amount: string;
+  userName?: string;
   status: 'open' | 'closed';
   priority: 'high' | 'normal' | 'low';
   createdAt: string;
@@ -51,7 +52,7 @@ export const TicketStorage = {
     return tickets.find(t => t.id === id) || null;
   },
 
-  create(sessionId: string, subject: string, amount: string): Ticket {
+  create(sessionId: string, subject: string, amount: string, userName?: string): Ticket {
     const tickets = this.getAll();
     const nextId = this.getNextId();
     
@@ -60,6 +61,7 @@ export const TicketStorage = {
       sessionId,
       subject,
       amount,
+      userName,
       status: 'open',
       priority: 'high',
       createdAt: new Date().toISOString(),
@@ -67,7 +69,7 @@ export const TicketStorage = {
       messages: [{
         id: this.getNextMessageId(),
         senderType: 'client',
-        message: `Здравствуйте! Хочу пополнить счёт на ${amount} ₽`,
+        message: `Здравствуйте! Хочу пополнить AliPay на ${amount} ₽`,
         createdAt: new Date().toISOString(),
       }]
     };
@@ -75,6 +77,18 @@ export const TicketStorage = {
     tickets.push(newTicket);
     localStorage.setItem(STORAGE_KEYS.TICKETS, JSON.stringify(tickets));
     return newTicket;
+  },
+
+  getRecentTickets(sessionId: string, minutes: number): Ticket[] {
+    const tickets = this.getAll();
+    const now = Date.now();
+    const timeLimit = minutes * 60 * 1000;
+    
+    return tickets.filter(ticket => {
+      if (ticket.sessionId !== sessionId) return false;
+      const createdTime = new Date(ticket.createdAt).getTime();
+      return (now - createdTime) < timeLimit;
+    });
   },
 
   update(id: number, updates: Partial<Ticket>): Ticket | null {
