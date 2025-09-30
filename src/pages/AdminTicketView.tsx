@@ -5,105 +5,49 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
-
-const CHAT_API = 'https://functions.poehali.dev/22875b8b-5f66-444c-bd9f-f429cbc012a6';
-
-interface Message {
-  id: number;
-  sender_type: string;
-  message: string;
-  image_url?: string;
-  created_at: string;
-}
-
-interface Ticket {
-  id: number;
-  session_id: string;
-  subject: string;
-  status: string;
-  priority: string;
-  amount?: string;
-  created_at: string;
-  updated_at: string;
-}
+import { TicketStorage, Ticket, TicketMessage } from '@/lib/localStorage';
 
 const AdminTicketView = () => {
   const { ticketId } = useParams();
   const [ticket, setTicket] = useState<Ticket | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<TicketMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
-  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     loadTicketData();
-    const interval = setInterval(loadTicketData, 3000);
+    const interval = setInterval(loadTicketData, 2000);
     return () => clearInterval(interval);
   }, [ticketId]);
 
-  const loadTicketData = async () => {
-    try {
-      const response = await fetch(`${CHAT_API}?ticket_id=${ticketId}`);
-      const data = await response.json();
-      
-      if (data.ticket && data.messages) {
-        setTicket(data.ticket);
-        setMessages(data.messages);
-      }
-    } catch (error) {
-      console.error('Ошибка загрузки тикета:', error);
-    } finally {
-      setLoading(false);
+  const loadTicketData = () => {
+    if (!ticketId) return;
+
+    const foundTicket = TicketStorage.getById(parseInt(ticketId));
+    
+    if (foundTicket) {
+      setTicket(foundTicket);
+      setMessages(foundTicket.messages);
     }
+    
+    setLoading(false);
   };
 
-  const sendMessage = async (e: React.FormEvent) => {
+  const sendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!newMessage.trim() || !ticketId) return;
     
-    setSending(true);
-    try {
-      await fetch(CHAT_API, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ticket_id: parseInt(ticketId),
-          message: newMessage,
-          sender_type: 'admin'
-        })
-      });
-      
-      setNewMessage('');
-      await loadTicketData();
-    } catch (error) {
-      console.error('Ошибка отправки:', error);
-    } finally {
-      setSending(false);
-    }
+    TicketStorage.addMessage(parseInt(ticketId), 'admin', newMessage);
+    setNewMessage('');
+    loadTicketData();
   };
 
-  const updateStatus = async (status: string) => {
+  const updateStatus = (status: 'open' | 'closed') => {
     if (!ticketId) return;
     
-    try {
-      await fetch(CHAT_API, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ticket_id: parseInt(ticketId),
-          status
-        })
-      });
-      
-      await loadTicketData();
-    } catch (error) {
-      console.error('Ошибка обновления статуса:', error);
-    }
+    TicketStorage.update(parseInt(ticketId), { status });
+    loadTicketData();
   };
 
   const getPriorityColor = (priority: string) => {
@@ -118,7 +62,6 @@ const AdminTicketView = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'open': return 'bg-green-100 text-green-800';
-      case 'in_progress': return 'bg-red-100 text-red-800';
       case 'closed': return 'bg-gray-100 text-gray-800';
       default: return 'bg-yellow-100 text-yellow-800';
     }
@@ -181,8 +124,7 @@ const AdminTicketView = () => {
                      ticket.priority === 'normal' ? 'Обычный' : 'Низкий'}
                   </Badge>
                   <Badge className={getStatusColor(ticket.status)}>
-                    {ticket.status === 'open' ? 'Открыт' : 
-                     ticket.status === 'in_progress' ? 'В работе' : 'Закрыт'}
+                    {ticket.status === 'open' ? 'Открыт' : 'Закрыт'}
                   </Badge>
                   {ticket.amount && (
                     <Badge className="bg-red-100 text-red-800 border-red-300">
@@ -192,23 +134,12 @@ const AdminTicketView = () => {
                 </div>
                 <CardTitle className="text-2xl text-white">{ticket.subject}</CardTitle>
                 <div className="text-sm text-gray-400 mt-2">
-                  Создан: {new Date(ticket.created_at).toLocaleString('ru')}
+                  Создан: {new Date(ticket.createdAt).toLocaleString('ru')}
                 </div>
               </div>
               
               <div className="flex gap-2">
                 {ticket.status === 'open' && (
-                  <Button 
-                    size="sm" 
-                    variant="default"
-                    className="bg-red-500 hover:bg-red-600"
-                    onClick={() => updateStatus('in_progress')}
-                  >
-                    <Icon name="PlayCircle" size={16} className="mr-2" />
-                    Взять в работу
-                  </Button>
-                )}
-                {ticket.status === 'in_progress' && (
                   <Button 
                     size="sm" 
                     variant="outline"
@@ -248,28 +179,28 @@ const AdminTicketView = () => {
               messages.map((msg) => (
                 <div
                   key={msg.id}
-                  className={`flex ${msg.sender_type === 'admin' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex ${msg.senderType === 'admin' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div className={`max-w-[70%] rounded-lg p-3 ${
-                    msg.sender_type === 'admin'
+                    msg.senderType === 'admin'
                       ? 'bg-primary text-white'
                       : 'bg-gray-800 text-gray-100'
                   }`}>
-                    {msg.image_url && (
+                    {msg.imageUrl && (
                       <img 
-                        src={msg.image_url} 
+                        src={msg.imageUrl} 
                         alt="Изображение" 
                         className="max-w-full rounded mb-2 cursor-pointer"
-                        onClick={() => window.open(msg.image_url, '_blank')}
+                        onClick={() => window.open(msg.imageUrl, '_blank')}
                       />
                     )}
                     {msg.message && (
                       <div className="text-sm break-words">{msg.message}</div>
                     )}
                     <div className={`text-xs mt-1 ${
-                      msg.sender_type === 'admin' ? 'text-white/70' : 'text-gray-400'
+                      msg.senderType === 'admin' ? 'text-white/70' : 'text-gray-400'
                     }`}>
-                      {new Date(msg.created_at).toLocaleTimeString('ru', {
+                      {new Date(msg.createdAt).toLocaleTimeString('ru', {
                         hour: '2-digit',
                         minute: '2-digit'
                       })}
@@ -286,11 +217,11 @@ const AdminTicketView = () => {
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Введите сообщение..."
-                disabled={sending || ticket.status === 'closed'}
+                disabled={ticket.status === 'closed'}
               />
               <Button 
                 type="submit" 
-                disabled={sending || !newMessage.trim() || ticket.status === 'closed'}
+                disabled={!newMessage.trim() || ticket.status === 'closed'}
               >
                 <Icon name="Send" size={20} />
               </Button>

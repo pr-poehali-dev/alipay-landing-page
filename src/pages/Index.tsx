@@ -5,33 +5,26 @@ import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-
-const PAYMENT_API = 'https://functions.poehali.dev/ec7f246f-bf58-462e-8773-a897e33098cd';
+import { TicketStorage } from "@/lib/localStorage";
 
 const Index = () => {
   const [amount, setAmount] = useState('1000');
 
-  const handlePaymentClick = async () => {
+  const handlePaymentClick = () => {
     const sessionId = localStorage.getItem('chat_session_id') || 
       'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('chat_session_id', sessionId);
 
-    try {
-      await fetch(PAYMENT_API, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Session-Id': sessionId
-        },
-        body: JSON.stringify({ amount: parseFloat(amount) || 1000 })
-      });
+    const amountValue = parseFloat(amount) || 1000;
+    TicketStorage.create(
+      sessionId,
+      `Заявка на пополнение ${amountValue} ₽`,
+      String(amountValue)
+    );
 
-      const chatWidget = document.querySelector('[data-chat-widget]');
-      if (chatWidget) {
-        (chatWidget as HTMLButtonElement).click();
-      }
-    } catch (error) {
-      console.error('Ошибка создания заявки:', error);
+    const chatWidget = document.querySelector('[data-chat-widget]');
+    if (chatWidget) {
+      (chatWidget as HTMLButtonElement).click();
     }
   };
 

@@ -5,89 +5,41 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
-
-interface ChatSession {
-  session_id: string;
-  name: string | null;
-  message_count: number;
-  last_message: string | null;
-  last_message_time: string | null;
-}
-
-interface Message {
-  id: number;
-  message: string;
-  image_url?: string;
-  is_admin: boolean;
-  created_at: string;
-}
-
-const CHAT_API = 'https://functions.poehali.dev/22875b8b-5f66-444c-bd9f-f429cbc012a6';
+import { ChatStorage, ChatSession } from '@/lib/localStorage';
 
 export default function AdminPanel() {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [selectedSession, setSelectedSession] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
   const [adminMessage, setAdminMessage] = useState('');
 
   useEffect(() => {
     loadSessions();
-    const interval = setInterval(loadSessions, 5000);
+    const interval = setInterval(loadSessions, 3000);
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (selectedSession) {
-      loadMessages(selectedSession);
-      const interval = setInterval(() => loadMessages(selectedSession), 3000);
-      return () => clearInterval(interval);
-    }
-  }, [selectedSession]);
-
-  const loadSessions = async () => {
-    try {
-      const response = await fetch(`${CHAT_API}?admin=true`);
-      const data = await response.json();
-      setSessions(data.sessions || []);
-    } catch (error) {
-      console.error('Ошибка загрузки сессий:', error);
-    }
+  const loadSessions = () => {
+    const allSessions = ChatStorage.getAll();
+    setSessions(allSessions.sort((a, b) => {
+      const aLastMsg = a.messages[a.messages.length - 1];
+      const bLastMsg = b.messages[b.messages.length - 1];
+      
+      if (!aLastMsg) return 1;
+      if (!bLastMsg) return -1;
+      
+      return new Date(bLastMsg.createdAt).getTime() - new Date(aLastMsg.createdAt).getTime();
+    }));
   };
 
-  const loadMessages = async (sessionId: string) => {
-    try {
-      const response = await fetch(CHAT_API, {
-        headers: { 'X-Session-Id': sessionId }
-      });
-      const data = await response.json();
-      setMessages(data.messages || []);
-    } catch (error) {
-      console.error('Ошибка загрузки сообщений:', error);
-    }
-  };
-
-  const sendAdminMessage = async () => {
+  const sendAdminMessage = () => {
     if (!adminMessage.trim() || !selectedSession) return;
 
-    try {
-      await fetch(CHAT_API, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Session-Id': selectedSession
-        },
-        body: JSON.stringify({
-          message: adminMessage,
-          is_admin: true
-        })
-      });
-
-      setAdminMessage('');
-      loadMessages(selectedSession);
-    } catch (error) {
-      console.error('Ошибка отправки:', error);
-    }
+    ChatStorage.addMessage(selectedSession, adminMessage, true);
+    setAdminMessage('');
+    loadSessions();
   };
+
+  const currentSession = sessions.find(s => s.sessionId === selectedSession);
 
   return (
     <div className="min-h-screen bg-gray-950 p-6">
@@ -106,7 +58,6 @@ export default function AdminPanel() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {/* Список сессий */}
           <Card className="md:col-span-1 bg-gray-900 border-gray-800">
             <CardHeader className="border-gray-800">
               <CardTitle className="flex items-center gap-2 text-white">
@@ -116,34 +67,38 @@ export default function AdminPanel() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="max-h-[600px] overflow-y-auto">
-                {sessions.map((session) => (
-                  <div
-                    key={session.session_id}
-                    onClick={() => setSelectedSession(session.session_id)}
-                    className={`p-4 border-b border-gray-800 cursor-pointer hover:bg-gray-800 transition ${
-                      selectedSession === session.session_id ? 'bg-gray-800 border-l-4 border-l-primary' : ''
-                    }`}
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="font-semibold text-sm text-white">
-                        {session.name || 'Аноним'}
+                {sessions.map((session) => {
+                  const lastMessage = session.messages[session.messages.length - 1];
+                  
+                  return (
+                    <div
+                      key={session.sessionId}
+                      onClick={() => setSelectedSession(session.sessionId)}
+                      className={`p-4 border-b border-gray-800 cursor-pointer hover:bg-gray-800 transition ${
+                        selectedSession === session.sessionId ? 'bg-gray-800 border-l-4 border-l-primary' : ''
+                      }`}
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="font-semibold text-sm text-white">
+                          {session.name || 'Аноним'}
+                        </div>
+                        <Badge variant="secondary" className="text-xs">
+                          {session.messages.length}
+                        </Badge>
                       </div>
-                      <Badge variant="secondary" className="text-xs">
-                        {session.message_count}
-                      </Badge>
+                      {lastMessage && (
+                        <>
+                          <p className="text-sm text-gray-300 truncate mb-1">
+                            {lastMessage.message}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {new Date(lastMessage.createdAt).toLocaleString('ru-RU')}
+                          </p>
+                        </>
+                      )}
                     </div>
-                    {session.last_message && (
-                      <>
-                        <p className="text-sm text-gray-300 truncate mb-1">
-                          {session.last_message}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {session.last_message_time ? new Date(session.last_message_time).toLocaleString('ru-RU') : ''}
-                        </p>
-                      </>
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
                 {sessions.length === 0 && (
                   <div className="p-8 text-center text-gray-400">
                     <Icon name="MessageCircle" size={48} className="mx-auto mb-2 text-gray-700" />
@@ -154,7 +109,6 @@ export default function AdminPanel() {
             </CardContent>
           </Card>
 
-          {/* Окно чата */}
           <Card className="md:col-span-2 bg-gray-900 border-gray-800">
             <CardHeader className="border-gray-800">
               <CardTitle className="flex items-center gap-2 text-white">
@@ -163,34 +117,34 @@ export default function AdminPanel() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {selectedSession ? (
+              {selectedSession && currentSession ? (
                 <div className="flex flex-col h-[500px]">
                   <div className="flex-1 overflow-y-auto mb-4 space-y-3 p-4 bg-gray-950 rounded-lg">
-                    {messages.map((msg) => (
+                    {currentSession.messages.map((msg) => (
                       <div
                         key={msg.id}
-                        className={`flex ${msg.is_admin ? 'justify-end' : 'justify-start'}`}
+                        className={`flex ${msg.isAdmin ? 'justify-end' : 'justify-start'}`}
                       >
                         <div
                           className={`max-w-[70%] rounded-lg px-4 py-2 ${
-                            msg.is_admin
+                            msg.isAdmin
                               ? 'bg-primary text-white'
                               : 'bg-gray-800 text-gray-100 shadow'
                           }`}
                         >
-                          {msg.image_url && (
+                          {msg.imageUrl && (
                             <img 
-                              src={msg.image_url} 
+                              src={msg.imageUrl} 
                               alt="Изображение" 
                               className="max-w-full rounded mb-2 cursor-pointer"
-                              onClick={() => window.open(msg.image_url, '_blank')}
+                              onClick={() => window.open(msg.imageUrl, '_blank')}
                             />
                           )}
                           {msg.message && (
                             <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
                           )}
                           <span className="text-xs opacity-70 mt-1 block">
-                            {new Date(msg.created_at).toLocaleString('ru-RU')}
+                            {new Date(msg.createdAt).toLocaleString('ru-RU')}
                           </span>
                         </div>
                       </div>
