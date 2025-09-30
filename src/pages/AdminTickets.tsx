@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { Link } from 'react-router-dom';
-import { TicketStorage, Ticket } from '@/lib/localStorage';
+import { TicketStorage, Ticket, onStorageChange } from '@/lib/localStorage';
 
 const AdminTickets = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -14,7 +14,11 @@ const AdminTickets = () => {
   useEffect(() => {
     loadTickets();
     const interval = setInterval(loadTickets, 2000);
-    return () => clearInterval(interval);
+    const unsubscribe = onStorageChange(loadTickets);
+    return () => {
+      clearInterval(interval);
+      unsubscribe();
+    };
   }, [filter]);
 
   const loadTickets = () => {

@@ -43,6 +43,37 @@ const STORAGE_KEYS = {
   NEXT_MESSAGE_ID: 'alipay_next_message_id',
 };
 
+// Синхронизация между вкладками через storage events
+type StorageChangeListener = () => void;
+const storageListeners: StorageChangeListener[] = [];
+
+export const onStorageChange = (listener: StorageChangeListener) => {
+  storageListeners.push(listener);
+  return () => {
+    const index = storageListeners.indexOf(listener);
+    if (index > -1) storageListeners.splice(index, 1);
+  };
+};
+
+// Уведомляем все вкладки об изменениях
+const notifyChange = () => {
+  storageListeners.forEach(listener => listener());
+  window.dispatchEvent(new StorageEvent('storage', {
+    key: STORAGE_KEYS.TICKETS,
+    newValue: localStorage.getItem(STORAGE_KEYS.TICKETS),
+    url: window.location.href
+  }));
+};
+
+// Слушаем изменения из других вкладок
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (e) => {
+    if (e.key === STORAGE_KEYS.TICKETS || e.key === STORAGE_KEYS.CHAT_SESSIONS) {
+      storageListeners.forEach(listener => listener());
+    }
+  });
+}
+
 export const TicketStorage = {
   getAll(): Ticket[] {
     const data = localStorage.getItem(STORAGE_KEYS.TICKETS);
@@ -87,6 +118,7 @@ export const TicketStorage = {
 
     tickets.push(newTicket);
     localStorage.setItem(STORAGE_KEYS.TICKETS, JSON.stringify(tickets));
+    notifyChange();
     return newTicket;
   },
 
@@ -115,6 +147,7 @@ export const TicketStorage = {
     };
 
     localStorage.setItem(STORAGE_KEYS.TICKETS, JSON.stringify(tickets));
+    notifyChange();
     return tickets[index];
   },
 
@@ -137,6 +170,7 @@ export const TicketStorage = {
     ticket.updatedAt = new Date().toISOString();
 
     localStorage.setItem(STORAGE_KEYS.TICKETS, JSON.stringify(tickets));
+    notifyChange();
     return newMessage;
   },
 
@@ -147,6 +181,7 @@ export const TicketStorage = {
     if (filtered.length === tickets.length) return false;
 
     localStorage.setItem(STORAGE_KEYS.TICKETS, JSON.stringify(filtered));
+    notifyChange();
     return true;
   },
 

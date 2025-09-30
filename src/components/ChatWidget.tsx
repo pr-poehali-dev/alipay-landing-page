@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
-import { TicketStorage, Ticket, TicketMessage } from '@/lib/localStorage';
+import { TicketStorage, Ticket, TicketMessage, onStorageChange } from '@/lib/localStorage';
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,7 +30,11 @@ export default function ChatWidget() {
     if (isOpen && sessionId) {
       loadMessages();
       const interval = setInterval(loadMessages, 2000);
-      return () => clearInterval(interval);
+      const unsubscribe = onStorageChange(loadMessages);
+      return () => {
+        clearInterval(interval);
+        unsubscribe();
+      };
     }
   }, [isOpen, sessionId]);
 

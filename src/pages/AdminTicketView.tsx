@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
-import { TicketStorage, Ticket, TicketMessage } from '@/lib/localStorage';
+import { TicketStorage, Ticket, TicketMessage, onStorageChange } from '@/lib/localStorage';
 
 const MANAGERS = ['Георгий', 'Жека', 'Кристина', 'Тичер'];
 
@@ -20,7 +20,11 @@ const AdminTicketView = () => {
   useEffect(() => {
     loadTicketData();
     const interval = setInterval(loadTicketData, 2000);
-    return () => clearInterval(interval);
+    const unsubscribe = onStorageChange(loadTicketData);
+    return () => {
+      clearInterval(interval);
+      unsubscribe();
+    };
   }, [ticketId]);
 
   const loadTicketData = () => {
@@ -39,9 +43,10 @@ const AdminTicketView = () => {
   const sendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!newMessage.trim() || !ticketId) return;
+    if (!newMessage.trim() || !ticketId || !ticket) return;
     
-    TicketStorage.addMessage(parseInt(ticketId), 'admin', newMessage);
+    const managerName = ticket.assignedTo || 'Менеджер';
+    TicketStorage.addMessage(parseInt(ticketId), 'admin', newMessage, undefined, managerName);
     setNewMessage('');
     loadTicketData();
   };
