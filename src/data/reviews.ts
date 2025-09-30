@@ -13,7 +13,7 @@ export const reviews: Review[] = [
     name: "Александр Петров",
     rating: 5,
     text: "Отличный сервис! Быстро и удобно. Пользуюсь уже полгода, никаких проблем.",
-    date: "2024-09-15",
+    date: "2025-09-30",
     avatar: "АП"
   },
   {
@@ -21,7 +21,7 @@ export const reviews: Review[] = [
     name: "Мария Иванова",
     rating: 5,
     text: "Очень довольна качеством обслуживания. Всё работает как часы!",
-    date: "2024-09-14",
+    date: "2025-09-30",
     avatar: "МИ"
   },
   {
@@ -29,7 +29,7 @@ export const reviews: Review[] = [
     name: "Дмитрий Сидоров",
     rating: 4,
     text: "Хороший продукт, рекомендую всем. Есть небольшие недочёты, но в целом отлично.",
-    date: "2024-09-13",
+    date: "2025-09-29",
     avatar: "ДС"
   },
   {
@@ -37,7 +37,7 @@ export const reviews: Review[] = [
     name: "Елена Козлова",
     rating: 5,
     text: "Превосходное решение для бизнеса. Сэкономили много времени и денег.",
-    date: "2024-09-12",
+    date: "2025-09-29",
     avatar: "ЕК"
   },
   {
@@ -45,7 +45,7 @@ export const reviews: Review[] = [
     name: "Владимир Новиков",
     rating: 5,
     text: "Использую уже год. Всё работает стабильно, поддержка отзывчивая.",
-    date: "2024-09-11",
+    date: "2025-09-28",
     avatar: "ВН"
   },
   {
@@ -53,7 +53,7 @@ export const reviews: Review[] = [
     name: "Анна Федорова",
     rating: 4,
     text: "Интуитивно понятный интерфейс. Быстро разобралась без инструкций.",
-    date: "2024-09-10",
+    date: "2025-09-28",
     avatar: "АФ"
   },
   {
@@ -61,7 +61,7 @@ export const reviews: Review[] = [
     name: "Михаил Волков",
     rating: 5,
     text: "Потрясающий сервис! Решил все мои задачи на 100%.",
-    date: "2024-09-09",
+    date: "2025-09-27",
     avatar: "МВ"
   },
   {
@@ -69,7 +69,7 @@ export const reviews: Review[] = [
     name: "Ольга Смирнова",
     rating: 5,
     text: "Очень качественная работа. Результат превзошёл все ожидания!",
-    date: "2024-09-08",
+    date: "2025-09-27",
     avatar: "ОС"
   },
   {
@@ -77,7 +77,7 @@ export const reviews: Review[] = [
     name: "Сергей Морозов",
     rating: 4,
     text: "Хорошее соотношение цены и качества. Буду рекомендовать друзьям.",
-    date: "2024-09-07",
+    date: "2025-09-26",
     avatar: "СМ"
   },
   {
@@ -85,7 +85,7 @@ export const reviews: Review[] = [
     name: "Татьяна Лебедева",
     rating: 5,
     text: "Профессиональный подход к делу. Очень довольна сотрудничеством.",
-    date: "2024-09-06",
+    date: "2025-09-26",
     avatar: "ТЛ"
   },
   {
@@ -93,7 +93,7 @@ export const reviews: Review[] = [
     name: "Игорь Соколов",
     rating: 5,
     text: "Превосходное качество услуг. Всё выполнено в срок и на высшем уровне.",
-    date: "2024-09-05",
+    date: "2025-09-25",
     avatar: "ИС"
   },
   {
@@ -101,7 +101,7 @@ export const reviews: Review[] = [
     name: "Юлия Попова",
     rating: 4,
     text: "Хороший сервис, но есть куда развиваться. В целом рекомендую.",
-    date: "2024-09-04",
+    date: "2025-09-25",
     avatar: "ЮП"
   },
   {
@@ -109,7 +109,7 @@ export const reviews: Review[] = [
     name: "Андрей Захаров",
     rating: 5,
     text: "Отличная команда профессионалов. Решили сложную задачу быстро.",
-    date: "2024-09-03",
+    date: "2025-09-24",
     avatar: "АЗ"
   },
   {
@@ -117,7 +117,7 @@ export const reviews: Review[] = [
     name: "Наталья Романова",
     rating: 5,
     text: "Очень довольна результатом. Буду обращаться ещё не раз!",
-    date: "2024-09-02",
+    date: "2025-09-24",
     avatar: "НР"
   },
   {
@@ -125,7 +125,7 @@ export const reviews: Review[] = [
     name: "Константин Орлов",
     rating: 4,
     text: "Качественная работа, но немного затянули сроки. В остальном всё отлично.",
-    date: "2024-09-01",
+    date: "2025-09-23",
     avatar: "КО"
   },
   {
@@ -133,7 +133,7 @@ export const reviews: Review[] = [
     name: "Светлана Макарова",
     rating: 5,
     text: "Превосходный сервис! Очень быстро и качественно.",
-    date: "2024-08-31",
+    date: "2025-09-23",
     avatar: "СМ"
   },
   {
@@ -141,7 +141,7 @@ export const reviews: Review[] = [
     name: "Павел Зайцев",
     rating: 5,
     text: "Рекомендую всем! Отличное качество по разумной цене.",
-    date: "2024-08-30",
+    date: "2025-09-22",
     avatar: "ПЗ"
   },
   {
@@ -149,7 +149,7 @@ export const reviews: Review[] = [
     name: "Ирина Белова",
     rating: 4,
     text: "Хороший продукт с небольшими недочётами. Команда работает над улучшениями.",
-    date: "2024-08-29",
+    date: "2025-09-22",
     avatar: "ИБ"
   },
   {
@@ -157,7 +157,7 @@ export const reviews: Review[] = [
     name: "Роман Тарасов",
     rating: 5,
     text: "Использую уже несколько месяцев. Всё работает стабильно и надёжно.",
-    date: "2024-08-28",
+    date: "2025-09-21",
     avatar: "РТ"
   },
   {
@@ -165,7 +165,7 @@ export const reviews: Review[] = [
     name: "Екатерина Жукова",
     rating: 5,
     text: "Отличная поддержка клиентов. Всегда помогут и подскажут.",
-    date: "2024-08-27",
+    date: "2025-09-21",
     avatar: "ЕЖ"
   },
   {
@@ -173,7 +173,7 @@ export const reviews: Review[] = [
     name: "Алексей Крылов",
     rating: 4,
     text: "Хороший функционал, но интерфейс можно улучшить.",
-    date: "2024-08-26",
+    date: "2025-09-20",
     avatar: "АК"
   },
   {
@@ -181,7 +181,7 @@ export const reviews: Review[] = [
     name: "Валентина Григорьева",
     rating: 5,
     text: "Превосходное решение для малого бизнеса. Очень довольна!",
-    date: "2024-08-25",
+    date: "2025-09-20",
     avatar: "ВГ"
   },
   {
@@ -189,7 +189,7 @@ export const reviews: Review[] = [
     name: "Денис Васильев",
     rating: 5,
     text: "Быстро, качественно, надёжно. Всё как я люблю!",
-    date: "2024-08-24",
+    date: "2025-09-19",
     avatar: "ДВ"
   },
   {
@@ -197,7 +197,7 @@ export const reviews: Review[] = [
     name: "Людмила Кузнецова",
     rating: 4,
     text: "Хороший сервис с адекватными ценами. Рекомендую попробовать.",
-    date: "2024-08-23",
+    date: "2025-09-19",
     avatar: "ЛК"
   },
   {
@@ -205,7 +205,7 @@ export const reviews: Review[] = [
     name: "Максим Степанов",
     rating: 5,
     text: "Отличная работа! Превзошли все мои ожидания.",
-    date: "2024-08-22",
+    date: "2025-09-18",
     avatar: "МС"
   },
   {
@@ -213,7 +213,7 @@ export const reviews: Review[] = [
     name: "Галина Никитина",
     rating: 5,
     text: "Профессиональный подход и качественный результат. Спасибо!",
-    date: "2024-08-21",
+    date: "2025-09-18",
     avatar: "ГН"
   },
   {
@@ -221,7 +221,7 @@ export const reviews: Review[] = [
     name: "Виктор Борисов",
     rating: 4,
     text: "Хорошо, но есть небольшие моменты для улучшения.",
-    date: "2024-08-20",
+    date: "2025-09-17",
     avatar: "ВБ"
   },
   {
@@ -229,7 +229,7 @@ export const reviews: Review[] = [
     name: "Лариса Медведева",
     rating: 5,
     text: "Очень довольна качеством услуг. Буду рекомендовать!",
-    date: "2024-08-19",
+    date: "2025-09-17",
     avatar: "ЛМ"
   },
   {
@@ -237,7 +237,7 @@ export const reviews: Review[] = [
     name: "Евгений Соловьёв",
     rating: 5,
     text: "Превосходная команда! Работают быстро и профессионально.",
-    date: "2024-08-18",
+    date: "2025-09-16",
     avatar: "ЕС"
   },
   {
@@ -245,7 +245,7 @@ export const reviews: Review[] = [
     name: "Маргарита Комарова",
     rating: 4,
     text: "Качественный продукт по разумной цене. Есть куда расти.",
-    date: "2024-08-17",
+    date: "2025-09-16",
     avatar: "МК"
   },
   {
@@ -253,7 +253,7 @@ export const reviews: Review[] = [
     name: "Арсений Фролов",
     rating: 5,
     text: "Отличный сервис! Решили мою задачу за пару дней.",
-    date: "2024-08-16",
+    date: "2025-09-15",
     avatar: "АФ"
   },
   {
@@ -261,7 +261,7 @@ export const reviews: Review[] = [
     name: "Вера Алексеева",
     rating: 5,
     text: "Очень довольна сотрудничеством. Всё на высшем уровне!",
-    date: "2024-08-15",
+    date: "2025-09-15",
     avatar: "ВА"
   },
   {
@@ -269,7 +269,7 @@ export const reviews: Review[] = [
     name: "Геннадий Воронов",
     rating: 4,
     text: "Хорошая работа, но можно ускорить процессы.",
-    date: "2024-08-14",
+    date: "2025-09-14",
     avatar: "ГВ"
   },
   {
@@ -277,7 +277,7 @@ export const reviews: Review[] = [
     name: "Надежда Климова",
     rating: 5,
     text: "Превосходное качество! Рекомендую всем знакомым.",
-    date: "2024-08-13",
+    date: "2025-09-14",
     avatar: "НК"
   },
   {
@@ -285,7 +285,7 @@ export const reviews: Review[] = [
     name: "Станислав Егоров",
     rating: 5,
     text: "Отличная команда профессионалов. Спасибо за работу!",
-    date: "2024-08-12",
+    date: "2025-09-13",
     avatar: "СЕ"
   },
   {
@@ -293,7 +293,7 @@ export const reviews: Review[] = [
     name: "Жанна Панова",
     rating: 4,
     text: "Хороший результат, но процесс можно оптимизировать.",
-    date: "2024-08-11",
+    date: "2025-09-13",
     avatar: "ЖП"
   },
   {
@@ -301,7 +301,7 @@ export const reviews: Review[] = [
     name: "Леонид Савельев",
     rating: 5,
     text: "Всё выполнено качественно и в срок. Очень доволен!",
-    date: "2024-08-10",
+    date: "2025-09-12",
     avatar: "ЛС"
   },
   {
@@ -309,7 +309,7 @@ export const reviews: Review[] = [
     name: "Зинаида Герасимова",
     rating: 5,
     text: "Превосходный сервис с отличной поддержкой клиентов.",
-    date: "2024-08-09",
+    date: "2025-09-12",
     avatar: "ЗГ"
   },
   {
@@ -317,7 +317,7 @@ export const reviews: Review[] = [
     name: "Руслан Калинин",
     rating: 4,
     text: "Качественно, но есть моменты для доработки интерфейса.",
-    date: "2024-08-08",
+    date: "2025-09-11",
     avatar: "РК"
   },
   {
@@ -325,7 +325,7 @@ export const reviews: Review[] = [
     name: "Антонина Богданова",
     rating: 5,
     text: "Отличная работа! Превзошли все ожидания.",
-    date: "2024-08-07",
+    date: "2025-09-11",
     avatar: "АБ"
   },
   {
@@ -333,7 +333,7 @@ export const reviews: Review[] = [
     name: "Фёдор Лазарев",
     rating: 5,
     text: "Профессиональный подход к каждой задаче. Рекомендую!",
-    date: "2024-08-06",
+    date: "2025-09-10",
     avatar: "ФЛ"
   },
   {
@@ -341,7 +341,7 @@ export const reviews: Review[] = [
     name: "Раиса Титова",
     rating: 4,
     text: "Хороший продукт с потенциалом для развития.",
-    date: "2024-08-05",
+    date: "2025-09-10",
     avatar: "РТ"
   },
   {
@@ -349,7 +349,7 @@ export const reviews: Review[] = [
     name: "Глеб Семёнов",
     rating: 5,
     text: "Быстро, качественно, без лишних вопросов. Отлично!",
-    date: "2024-08-04",
+    date: "2025-09-09",
     avatar: "ГС"
   },
   {
@@ -357,7 +357,7 @@ export const reviews: Review[] = [
     name: "Клавдия Ушакова",
     rating: 5,
     text: "Очень довольна результатом. Буду обращаться снова!",
-    date: "2024-08-03",
+    date: "2025-09-09",
     avatar: "КУ"
   },
   {
@@ -365,7 +365,7 @@ export const reviews: Review[] = [
     name: "Тимур Щербаков",
     rating: 4,
     text: "Качественная работа, но сроки можно сократить.",
-    date: "2024-08-02",
+    date: "2025-09-08",
     avatar: "ТЩ"
   },
   {
@@ -373,7 +373,7 @@ export const reviews: Review[] = [
     name: "Нина Власова",
     rating: 5,
     text: "Превосходное качество услуг. Рекомендую!",
-    date: "2024-08-01",
+    date: "2025-09-08",
     avatar: "НВ"
   },
   {
@@ -381,7 +381,7 @@ export const reviews: Review[] = [
     name: "Кирилл Мельников",
     rating: 5,
     text: "Отличная команда! Решили сложную задачу легко и быстро.",
-    date: "2024-07-31",
+    date: "2025-09-07",
     avatar: "КМ"
   },
   {
@@ -389,7 +389,7 @@ export const reviews: Review[] = [
     name: "Альбина Гаврилова",
     rating: 4,
     text: "Хороший сервис с дружелюбной поддержкой.",
-    date: "2024-07-30",
+    date: "2025-09-07",
     avatar: "АГ"
   },
   {
@@ -397,7 +397,7 @@ export const reviews: Review[] = [
     name: "Никита Филиппов",
     rating: 5,
     text: "Всё работает как надо. Очень доволен результатом!",
-    date: "2024-07-29",
+    date: "2025-09-06",
     avatar: "НФ"
   },
   {
@@ -405,7 +405,7 @@ export const reviews: Review[] = [
     name: "Лидия Осипова",
     rating: 5,
     text: "Превосходная работа! Спасибо за профессионализм.",
-    date: "2024-07-28",
+    date: "2025-09-06",
     avatar: "ЛО"
   },
   {
@@ -413,7 +413,7 @@ export const reviews: Review[] = [
     name: "Эдуард Назаров",
     rating: 4,
     text: "Качественно выполненная работа с небольшими замечаниями.",
-    date: "2024-07-27",
+    date: "2025-09-05",
     avatar: "ЭН"
   },
   {
@@ -421,7 +421,7 @@ export const reviews: Review[] = [
     name: "Валерия Фомина",
     rating: 5,
     text: "Отличный сервис! Быстро и профессионально.",
-    date: "2024-07-26",
+    date: "2025-09-05",
     avatar: "ВФ"
   },
   {
@@ -429,7 +429,7 @@ export const reviews: Review[] = [
     name: "Матвей Баранов",
     rating: 5,
     text: "Превосходное качество работы. Рекомендую всем!",
-    date: "2024-07-25",
+    date: "2025-09-04",
     avatar: "МБ"
   },
   {
@@ -437,7 +437,7 @@ export const reviews: Review[] = [
     name: "Инесса Рыбакова",
     rating: 4,
     text: "Хорошо, но есть моменты для улучшения процесса.",
-    date: "2024-07-24",
+    date: "2025-09-04",
     avatar: "ИР"
   },
   {
@@ -445,7 +445,7 @@ export const reviews: Review[] = [
     name: "Ярослав Кудрявцев",
     rating: 5,
     text: "Отличная работа! Всё выполнено точно в срок.",
-    date: "2024-07-23",
+    date: "2025-09-03",
     avatar: "ЯК"
   },
   {
@@ -453,7 +453,7 @@ export const reviews: Review[] = [
     name: "Полина Третьякова",
     rating: 5,
     text: "Очень довольна качеством услуг. Превосходно!",
-    date: "2024-07-22",
+    date: "2025-09-03",
     avatar: "ПТ"
   },
   {
@@ -461,7 +461,7 @@ export const reviews: Review[] = [
     name: "Богдан Блинов",
     rating: 4,
     text: "Качественная работа, но интерфейс нуждается в доработке.",
-    date: "2024-07-21",
+    date: "2025-09-02",
     avatar: "ББ"
   },
   {
@@ -469,7 +469,7 @@ export const reviews: Review[] = [
     name: "Карина Антонова",
     rating: 5,
     text: "Превосходный сервис! Решили все мои задачи быстро.",
-    date: "2024-07-20",
+    date: "2025-09-02",
     avatar: "КА"
   },
   {
@@ -477,7 +477,7 @@ export const reviews: Review[] = [
     name: "Родион Гусев",
     rating: 5,
     text: "Отличная команда профессионалов. Спасибо за работу!",
-    date: "2024-07-19",
+    date: "2025-09-01",
     avatar: "РГ"
   },
   {
@@ -485,7 +485,7 @@ export const reviews: Review[] = [
     name: "Диана Воробьёва",
     rating: 4,
     text: "Хороший результат, но можно ускорить некоторые процессы.",
-    date: "2024-07-18",
+    date: "2025-09-01",
     avatar: "ДВ"
   },
   {
@@ -493,7 +493,7 @@ export const reviews: Review[] = [
     name: "Святослав Муравьёв",
     rating: 5,
     text: "Всё на высшем уровне! Очень доволен сотрудничеством.",
-    date: "2024-07-17",
+    date: "2025-08-31",
     avatar: "СМ"
   },
   {
@@ -501,7 +501,7 @@ export const reviews: Review[] = [
     name: "Регина Калашникова",
     rating: 5,
     text: "Превосходное качество работы. Рекомендую!",
-    date: "2024-07-16",
+    date: "2025-08-31",
     avatar: "РК"
   },
   {
@@ -509,7 +509,7 @@ export const reviews: Review[] = [
     name: "Лев Королёв",
     rating: 4,
     text: "Качественно, но есть куда развиваться.",
-    date: "2024-07-15",
+    date: "2025-08-30",
     avatar: "ЛК"
   },
   {
@@ -517,7 +517,7 @@ export const reviews: Review[] = [
     name: "Милана Субботина",
     rating: 5,
     text: "Отличная работа! Превзошли все ожидания.",
-    date: "2024-07-14",
+    date: "2025-08-30",
     avatar: "МС"
   },
   {
@@ -525,7 +525,7 @@ export const reviews: Review[] = [
     name: "Артём Носков",
     rating: 5,
     text: "Профессиональный подход и качественный результат.",
-    date: "2024-07-13",
+    date: "2025-08-29",
     avatar: "АН"
   },
   {
@@ -533,7 +533,7 @@ export const reviews: Review[] = [
     name: "Мирослава Логинова",
     rating: 4,
     text: "Хороший сервис с потенциалом для роста.",
-    date: "2024-07-12",
+    date: "2025-08-29",
     avatar: "МЛ"
   },
   {
@@ -541,7 +541,7 @@ export const reviews: Review[] = [
     name: "Тимофей Сафонов",
     rating: 5,
     text: "Быстро, качественно, профессионально. Отлично!",
-    date: "2024-07-11",
+    date: "2025-08-28",
     avatar: "ТС"
   },
   {
@@ -549,7 +549,7 @@ export const reviews: Review[] = [
     name: "Злата Синицына",
     rating: 5,
     text: "Очень довольна результатом. Буду рекомендовать!",
-    date: "2024-07-10",
+    date: "2025-08-28",
     avatar: "ЗС"
   },
   {
@@ -557,7 +557,7 @@ export const reviews: Review[] = [
     name: "Платон Силин",
     rating: 4,
     text: "Качественная работа, но сроки можно улучшить.",
-    date: "2024-07-09",
+    date: "2025-08-27",
     avatar: "ПС"
   },
   {
@@ -565,7 +565,7 @@ export const reviews: Review[] = [
     name: "Агата Горшкова",
     rating: 5,
     text: "Превосходный сервис! Всё выполнено идеально.",
-    date: "2024-07-08",
+    date: "2025-08-27",
     avatar: "АГ"
   },
   {
@@ -573,7 +573,7 @@ export const reviews: Review[] = [
     name: "Макар Лукин",
     rating: 5,
     text: "Отличная команда! Решили сложную задачу легко.",
-    date: "2024-07-07",
+    date: "2025-08-26",
     avatar: "МЛ"
   },
   {
@@ -581,7 +581,7 @@ export const reviews: Review[] = [
     name: "Виолетта Громова",
     rating: 4,
     text: "Хороший продукт с дружелюбной поддержкой.",
-    date: "2024-07-06",
+    date: "2025-08-26",
     avatar: "ВГ"
   },
   {
@@ -589,7 +589,7 @@ export const reviews: Review[] = [
     name: "Савелий Комаров",
     rating: 5,
     text: "Всё работает стабильно. Очень доволен!",
-    date: "2024-07-05",
+    date: "2025-08-25",
     avatar: "СК"
   },
   {
@@ -597,7 +597,7 @@ export const reviews: Review[] = [
     name: "Кристина Дорофеева",
     rating: 5,
     text: "Превосходная работа! Спасибо за профессионализм.",
-    date: "2024-07-04",
+    date: "2025-08-25",
     avatar: "КД"
   },
   {
@@ -605,7 +605,7 @@ export const reviews: Review[] = [
     name: "Давид Красильников",
     rating: 4,
     text: "Качественно выполненная работа с небольшими нюансами.",
-    date: "2024-07-03",
+    date: "2025-08-24",
     avatar: "ДК"
   },
   {
@@ -613,7 +613,7 @@ export const reviews: Review[] = [
     name: "Стефания Кошелева",
     rating: 5,
     text: "Отличный сервис! Быстро и качественно.",
-    date: "2024-07-02",
+    date: "2025-08-24",
     avatar: "СК"
   },
   {
@@ -621,7 +621,7 @@ export const reviews: Review[] = [
     name: "Мирон Гордеев",
     rating: 5,
     text: "Превосходное качество работы. Рекомендую!",
-    date: "2024-07-01",
+    date: "2025-08-23",
     avatar: "МГ"
   },
   {
@@ -629,7 +629,7 @@ export const reviews: Review[] = [
     name: "Виктория Быкова",
     rating: 4,
     text: "Хорошо, но есть моменты для оптимизации.",
-    date: "2024-06-30",
+    date: "2025-08-23",
     avatar: "ВБ"
   },
   {
@@ -637,7 +637,7 @@ export const reviews: Review[] = [
     name: "Демьян Панкратов",
     rating: 5,
     text: "Отличная работа! Всё выполнено в лучшем виде.",
-    date: "2024-06-29",
+    date: "2025-08-22",
     avatar: "ДП"
   },
   {
@@ -645,7 +645,7 @@ export const reviews: Review[] = [
     name: "Александра Шестакова",
     rating: 5,
     text: "Очень довольна качеством услуг. Превосходно!",
-    date: "2024-06-28",
+    date: "2025-08-22",
     avatar: "АШ"
   },
   {
@@ -653,7 +653,7 @@ export const reviews: Review[] = [
     name: "Ростислав Авдеев",
     rating: 4,
     text: "Качественная работа, но интерфейс можно улучшить.",
-    date: "2024-06-27",
+    date: "2025-08-23",
     avatar: "РА"
   },
   {
@@ -661,7 +661,7 @@ export const reviews: Review[] = [
     name: "Елизавета Сорокина",
     rating: 5,
     text: "Превосходный сервис! Решили все задачи быстро.",
-    date: "2024-06-26",
+    date: "2025-08-22",
     avatar: "ЕС"
   },
   {
@@ -669,7 +669,7 @@ export const reviews: Review[] = [
     name: "Захар Зубов",
     rating: 5,
     text: "Отличная команда профессионалов. Спасибо!",
-    date: "2024-06-25",
+    date: "2025-08-22",
     avatar: "ЗЗ"
   },
   {
@@ -677,7 +677,7 @@ export const reviews: Review[] = [
     name: "Ульяна Копылова",
     rating: 4,
     text: "Хороший результат, но процесс можно ускорить.",
-    date: "2024-06-24",
+    date: "2025-08-21",
     avatar: "УК"
   },
   {
@@ -685,7 +685,7 @@ export const reviews: Review[] = [
     name: "Елисей Беляков",
     rating: 5,
     text: "Всё на высшем уровне! Очень доволен работой.",
-    date: "2024-06-23",
+    date: "2025-08-21",
     avatar: "ЕБ"
   },
   {
@@ -693,7 +693,7 @@ export const reviews: Review[] = [
     name: "Варвара Цветкова",
     rating: 5,
     text: "Превосходное качество работы. Рекомендую!",
-    date: "2024-06-22",
+    date: "2025-08-20",
     avatar: "ВЦ"
   },
   {
@@ -701,7 +701,7 @@ export const reviews: Review[] = [
     name: "Марк Голубев",
     rating: 4,
     text: "Качественно, но есть куда расти и развиваться.",
-    date: "2024-06-21",
+    date: "2025-08-20",
     avatar: "МГ"
   },
   {
@@ -709,7 +709,7 @@ export const reviews: Review[] = [
     name: "Василиса Архипова",
     rating: 5,
     text: "Отличная работа! Превзошли все мои ожидания.",
-    date: "2024-06-20",
+    date: "2025-08-19",
     avatar: "ВА"
   },
   {
@@ -717,7 +717,7 @@ export const reviews: Review[] = [
     name: "Велимир Рогов",
     rating: 5,
     text: "Профессиональный подход и качественный результат.",
-    date: "2024-06-19",
+    date: "2025-08-19",
     avatar: "ВР"
   },
   {
@@ -725,7 +725,7 @@ export const reviews: Review[] = [
     name: "Дарья Шилова",
     rating: 4,
     text: "Хороший сервис с дружелюбной командой.",
-    date: "2024-06-18",
+    date: "2025-08-18",
     avatar: "ДШ"
   },
   {
@@ -733,7 +733,7 @@ export const reviews: Review[] = [
     name: "Лука Кузьмин",
     rating: 5,
     text: "Быстро, качественно, без лишних вопросов!",
-    date: "2024-06-17",
+    date: "2025-08-18",
     avatar: "ЛК"
   },
   {
@@ -741,7 +741,7 @@ export const reviews: Review[] = [
     name: "София Миронова",
     rating: 5,
     text: "Очень довольна результатом. Буду обращаться ещё!",
-    date: "2024-06-16",
+    date: "2025-08-17",
     avatar: "СМ"
   },
   {
@@ -749,7 +749,7 @@ export const reviews: Review[] = [
     name: "Адам Прохоров",
     rating: 4,
     text: "Качественная работа, но сроки можно сократить.",
-    date: "2024-06-15",
+    date: "2025-08-17",
     avatar: "АП"
   },
   {
@@ -757,7 +757,7 @@ export const reviews: Review[] = [
     name: "Евгения Казакова",
     rating: 5,
     text: "Превосходный сервис! Всё выполнено идеально.",
-    date: "2024-06-14",
+    date: "2025-08-16",
     avatar: "ЕК"
   },
   {
@@ -765,7 +765,7 @@ export const reviews: Review[] = [
     name: "Гордей Котов",
     rating: 5,
     text: "Отличная команда! Решили задачу быстро и качественно.",
-    date: "2024-06-13",
+    date: "2025-08-16",
     avatar: "ГК"
   },
   {
@@ -773,7 +773,7 @@ export const reviews: Review[] = [
     name: "Камилла Денисова",
     rating: 4,
     text: "Хороший продукт с потенциалом для улучшений.",
-    date: "2024-06-12",
+    date: "2025-08-15",
     avatar: "КД"
   },
   {
@@ -781,7 +781,7 @@ export const reviews: Review[] = [
     name: "Серафим Лавров",
     rating: 5,
     text: "Всё работает как часы. Очень доволен!",
-    date: "2024-06-11",
+    date: "2025-08-15",
     avatar: "СЛ"
   },
   {
@@ -789,7 +789,7 @@ export const reviews: Review[] = [
     name: "Мелания Тимофеева",
     rating: 5,
     text: "Превосходная работа! Спасибо за профессионализм.",
-    date: "2024-06-10",
+    date: "2025-08-14",
     avatar: "МТ"
   },
   {
@@ -797,7 +797,7 @@ export const reviews: Review[] = [
     name: "Остап Калугин",
     rating: 4,
     text: "Качественно выполненная работа с мелкими замечаниями.",
-    date: "2024-06-09",
+    date: "2025-08-14",
     avatar: "ОК"
   },
   {
@@ -805,7 +805,7 @@ export const reviews: Review[] = [
     name: "Есения Маслова",
     rating: 5,
     text: "Отличный сервис! Быстро и профессионально.",
-    date: "2024-06-08",
+    date: "2025-08-13",
     avatar: "ЕМ"
   }
 ];
@@ -867,9 +867,15 @@ for (let i = 101; i <= 500; i++) {
   const rating = Math.floor(Math.random() * 2) + 4; // 4 или 5 звёзд
   const text = reviewTexts[Math.floor(Math.random() * reviewTexts.length)];
   
-  // Генерируем дату в последние 6 месяцев
-  const date = new Date();
-  date.setDate(date.getDate() - Math.floor(Math.random() * 180));
+  // Генерируем дату в диапазоне от 2025-08-12 до 2025-07-30
+  // Для отзывов 101-500 (400 отзывов) распределяем по 43 дням
+  const startDate = new Date('2025-08-12');
+  const endDate = new Date('2025-07-30');
+  const daysDiff = Math.floor((startDate - endDate) / (1000 * 60 * 60 * 24));
+  const reviewIndex = i - 101; // 0-399
+  const daysBack = Math.floor((reviewIndex / 399) * daysDiff);
+  const reviewDate = new Date(startDate);
+  reviewDate.setDate(reviewDate.getDate() - daysBack);
   
   // Создаём инициалы для аватара
   const avatar = firstName.charAt(0) + lastName.charAt(0);
@@ -879,7 +885,7 @@ for (let i = 101; i <= 500; i++) {
     name: `${firstName} ${lastName}`,
     rating,
     text,
-    date: date.toISOString().split('T')[0],
+    date: reviewDate.toISOString().split('T')[0],
     avatar
   });
 }

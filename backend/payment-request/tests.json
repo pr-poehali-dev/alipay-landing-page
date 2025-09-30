@@ -1,0 +1,23 @@
+{
+  "tests": [
+    {
+      "name": "POST: создание заявки на пополнение",
+      "method": "POST",
+      "headers": {
+        "X-Session-Id": "test-payment-session"
+      },
+      "body": {
+        "amount": 5000
+      },
+      "expectedStatus": 201,
+      "expectedBody": {
+        "request": {
+          "amount": "string",
+          "session_id": "string",
+          "status": "string"
+        }
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
