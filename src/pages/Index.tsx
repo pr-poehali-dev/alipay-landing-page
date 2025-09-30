@@ -6,7 +6,9 @@ import Icon from "@/components/ui/icon";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { TicketStorage } from "@/lib/localStorage";
-import func2url from "../../backend/func2url.json";
+
+const TELEGRAM_BOT_TOKEN = '8415994300:AAFRN1T0Ih8mKTTy9L8FG89utMRKZJ0_7_c';
+const TELEGRAM_CHAT_ID = '-1002359673343'; // Замени на свой Chat ID
 
 const Index = () => {
   const [amount, setAmount] = useState('1000');
@@ -43,16 +45,17 @@ const Index = () => {
 
     // Send Telegram notification
     try {
-      await fetch(func2url['telegram-notify'], {
+      const message = `🔔 *Новая заявка #${ticket.id}*\n\n📝 *Тема:* ${ticket.subject}\n👤 *Клиент:* ${userName}\n💰 *Сумма:* ${amountValue} ₽\n\n⏰ Требует внимания!`;
+      
+      await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ticketId: ticket.id,
-          subject: ticket.subject,
-          amount: ticket.amount,
-          userName: userName
+          chat_id: TELEGRAM_CHAT_ID,
+          text: message,
+          parse_mode: 'Markdown'
         })
       });
     } catch (error) {
