@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Reviews from "./pages/Reviews";
 import Admin from "./pages/Admin";
+import AdminChat from "./pages/AdminChat";
 import AdminPanel from "./pages/AdminPanel";
 import AdminTickets from "./pages/AdminTickets";
 import AdminTicketView from "./pages/AdminTicketView";
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/reviews" element={<Reviews />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/chat/:sessionId" element={<AdminChat />} />
           <Route path="/admin-panel" element={<AdminPanel />} />
           <Route path="/admin/tickets" element={<AdminTickets />} />
           <Route path="/admin/ticket/:ticketId" element={<AdminTicketView />} />

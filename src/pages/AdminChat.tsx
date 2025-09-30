@@ -1,38 +1,30 @@
-import { useState, useEffect, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import Icon from '@/components/ui/icon';
-import { MessageService, Message } from '@/lib/supabase';
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import Icon from "@/components/ui/icon";
+import { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { MessageService, Message } from "@/lib/supabase";
 
-export default function ChatWidget() {
-  const [isOpen, setIsOpen] = useState(false);
+const AdminChat = () => {
+  const { sessionId } = useParams<{ sessionId: string }>();
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [sessionId, setSessionId] = useState('');
-  const [userName, setUserName] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    let sid = localStorage.getItem('chat_session_id');
-    if (!sid) {
-      sid = 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-      localStorage.setItem('chat_session_id', sid);
-    }
-    setSessionId(sid);
-  }, []);
-
-  useEffect(() => {
-    if (isOpen && sessionId) {
+    if (sessionId) {
       loadMessages();
-      const interval = setInterval(loadMessages, 3000);
+      const interval = setInterval(loadMessages, 2000);
       return () => clearInterval(interval);
     }
-  }, [isOpen, sessionId]);
+  }, [sessionId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -91,8 +83,8 @@ export default function ChatWidget() {
       await MessageService.sendMessage(
         sessionId, 
         inputMessage || '', 
-        false, 
-        userName || null,
+        true,
+        'Менеджер',
         imageUrl
       );
 
@@ -115,59 +107,54 @@ export default function ChatWidget() {
   };
 
   return (
-    <>
-      {!isOpen && (
-        <Button
-          onClick={() => setIsOpen(true)}
-          data-chat-widget
-          className="fixed bottom-4 right-4 h-14 w-14 rounded-full shadow-lg z-50"
-          size="lg"
-        >
-          <Icon name="MessageCircle" size={24} />
-        </Button>
-      )}
-
-      {isOpen && (
-        <Card className="fixed bottom-0 left-0 right-0 md:bottom-4 md:right-4 md:left-auto w-full md:max-w-md h-[100vh] md:h-[500px] md:w-96 shadow-2xl z-50 flex flex-col md:rounded-lg">
-          <div className="flex items-center justify-between p-4 border-b bg-primary text-white rounded-t-lg">
-            <div className="flex items-center gap-2">
-              <Icon name="MessageCircle" size={20} />
-              <span className="font-semibold">Чат с поддержкой</span>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsOpen(false)}
-              className="text-white hover:bg-primary-dark"
-            >
-              <Icon name="X" size={20} />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50">
+      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="sm" onClick={() => navigate('/admin')}>
+              <Icon name="ArrowLeft" size={20} />
             </Button>
+            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+              <Icon name="MessageCircle" size={24} className="text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-gray-900">Чат с клиентом</h1>
+              <p className="text-xs text-gray-500">Session: {sessionId?.substring(0, 20)}...</p>
+            </div>
           </div>
+        </div>
+      </header>
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <Card className="h-[calc(100vh-200px)] flex flex-col">
+          <CardHeader className="border-b">
+            <CardTitle>Переписка</CardTitle>
+          </CardHeader>
+          
+          <CardContent className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
             {messages.length === 0 && (
               <div className="text-center text-gray-500 mt-8">
                 <Icon name="MessageCircle" size={48} className="mx-auto mb-2 text-gray-300" />
-                <p>Начните диалог с нами!</p>
+                <p>Сообщений пока нет</p>
               </div>
             )}
             
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex ${msg.is_admin ? 'justify-start' : 'justify-end'}`}
+                className={`flex ${msg.is_admin ? 'justify-end' : 'justify-start'}`}
               >
-                <div className="flex flex-col gap-1">
-                  {msg.is_admin && (
+                <div className="flex flex-col gap-1 max-w-[70%]">
+                  {!msg.is_admin && msg.user_name && (
                     <span className="text-xs text-gray-500 px-2">
-                      Менеджер
+                      {msg.user_name}
                     </span>
                   )}
                   <div
-                    className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                    className={`rounded-lg px-4 py-2 ${
                       msg.is_admin
-                        ? 'bg-white text-gray-800 shadow'
-                        : 'bg-primary text-white'
+                        ? 'bg-primary text-white'
+                        : 'bg-white text-gray-800 shadow'
                     }`}
                   >
                     {msg.image_url && (
@@ -182,7 +169,10 @@ export default function ChatWidget() {
                       <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
                     )}
                     <span className="text-xs opacity-70 mt-1 block">
-                      {new Date(msg.created_at).toLocaleTimeString('ru-RU', {
+                      {new Date(msg.created_at).toLocaleString('ru-RU', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit'
                       })}
@@ -192,9 +182,9 @@ export default function ChatWidget() {
               </div>
             ))}
             <div ref={messagesEndRef} />
-          </div>
+          </CardContent>
 
-          <div className="p-4 border-t bg-white rounded-b-lg">
+          <div className="p-4 border-t bg-white">
             {imagePreview && (
               <div className="mb-2 relative inline-block">
                 <img 
@@ -229,7 +219,7 @@ export default function ChatWidget() {
                 <Icon name="Image" size={18} />
               </Button>
               <Input
-                placeholder="Напишите сообщение..."
+                placeholder="Напишите сообщение клиенту..."
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -245,7 +235,9 @@ export default function ChatWidget() {
             </div>
           </div>
         </Card>
-      )}
-    </>
+      </div>
+    </div>
   );
-}
+};
+
+export default AdminChat;

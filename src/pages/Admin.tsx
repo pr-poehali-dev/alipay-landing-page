@@ -4,9 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase, Ticket } from "@/lib/supabase";
 
 const Admin = () => {
+  const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -200,6 +202,7 @@ const Admin = () => {
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Сумма</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Дата</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Session ID</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Чат</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
@@ -228,6 +231,16 @@ const Admin = () => {
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap text-xs text-gray-400 font-mono">
                           {ticket.session_id.substring(0, 20)}...
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => navigate(`/admin/chat/${ticket.session_id}`)}
+                          >
+                            <Icon name="MessageCircle" size={16} className="mr-1" />
+                            Чат
+                          </Button>
                         </td>
                       </tr>
                     ))}
