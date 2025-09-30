@@ -19,9 +19,9 @@ const Index = () => {
       'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('chat_session_id', sessionId);
 
-    const lastTickets = TicketStorage.getRecentTickets(sessionId, 30);
-    if (lastTickets.length >= 2) {
-      alert('Вы можете создать максимум 2 заявки за 30 минут. Пожалуйста, подождите.');
+    const lastTickets = TicketStorage.getRecentTickets(sessionId, 1440); // 24 часа = 1440 минут
+    if (lastTickets.length >= 5) {
+      alert('Вы можете создать максимум 5 заявок за 24 часа. Пожалуйста, подождите.');
       return;
     }
 
