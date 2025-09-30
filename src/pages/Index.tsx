@@ -6,12 +6,13 @@ import Icon from "@/components/ui/icon";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { TicketStorage } from "@/lib/localStorage";
+import func2url from "../../backend/func2url.json";
 
 const Index = () => {
   const [amount, setAmount] = useState('1000');
   const [userName, setUserName] = useState('');
 
-  const handlePaymentClick = () => {
+  const handlePaymentClick = async () => {
     const sessionId = localStorage.getItem('chat_session_id') || 
       'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('chat_session_id', sessionId);
@@ -33,12 +34,30 @@ const Index = () => {
       return;
     }
 
-    TicketStorage.create(
+    const ticket = TicketStorage.create(
       sessionId,
       `Заявка на пополнение AliPay от ${userName}`,
       String(amountValue),
       userName
     );
+
+    // Send Telegram notification
+    try {
+      await fetch(func2url['telegram-notify'], {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ticketId: ticket.id,
+          subject: ticket.subject,
+          amount: ticket.amount,
+          userName: userName
+        })
+      });
+    } catch (error) {
+      console.log('Failed to send Telegram notification:', error);
+    }
 
     const chatWidget = document.querySelector('[data-chat-widget]');
     if (chatWidget) {
