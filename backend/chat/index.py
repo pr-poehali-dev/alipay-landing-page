@@ -60,6 +60,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         t.subject,
                         t.status,
                         t.priority,
+                        t.user_name,
+                        t.assigned_to,
                         CAST(t.amount AS TEXT) as amount,
                         to_char(t.created_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as created_at,
                         to_char(t.updated_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as updated_at,
@@ -91,6 +93,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         t.subject,
                         t.status,
                         t.priority,
+                        t.user_name,
+                        t.assigned_to,
                         CAST(t.amount AS TEXT) as amount,
                         to_char(t.created_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as created_at,
                         to_char(t.updated_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as updated_at
@@ -115,6 +119,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         sender_type,
                         message,
                         image_url,
+                        manager_name,
                         to_char(created_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as created_at
                     FROM ticket_messages
                     WHERE ticket_id = %s
@@ -179,6 +184,83 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         elif method == 'POST':
             body_data = json.loads(event.get('body', '{}'))
+            
+            # Создание нового тикета
+            if 'create_ticket' in body_data and body_data['create_ticket']:
+                subject = body_data.get('subject')
+                amount = body_data.get('amount', '0')
+                user_name = body_data.get('userName')
+                
+                if not session_id or not subject:
+                    return {
+                        'statusCode': 400,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'error': 'Session ID and subject required'}),
+                        'isBase64Encoded': False
+                    }
+                
+                # Проверка лимита (5 заявок за 24 часа)
+                cur.execute("""
+                    SELECT COUNT(*) as count
+                    FROM tickets
+                    WHERE session_id = %s 
+                    AND created_at > NOW() - INTERVAL '24 hours'
+                """, (session_id,))
+                
+                count_result = cur.fetchone()
+                if count_result['count'] >= 5:
+                    return {
+                        'statusCode': 429,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'error': 'Limit exceeded'}),
+                        'isBase64Encoded': False
+                    }
+                
+                # Создаём тикет
+                cur.execute("""
+                    INSERT INTO tickets (session_id, subject, amount, user_name, status, priority)
+                    VALUES (%s, %s, %s, %s, 'open', 'high')
+                    RETURNING id, session_id, subject, status, priority, user_name, assigned_to,
+                              CAST(amount AS TEXT) as amount,
+                              to_char(created_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as created_at,
+                              to_char(updated_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as updated_at
+                """, (session_id, subject, amount, user_name))
+                
+                new_ticket = cur.fetchone()
+                ticket_id = new_ticket['id']
+                
+                # Добавляем первое сообщение
+                cur.execute("""
+                    INSERT INTO ticket_messages (ticket_id, sender_type, message)
+                    VALUES (%s, 'client', %s)
+                    RETURNING id, sender_type, message, image_url, manager_name,
+                              to_char(created_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as created_at
+                """, (ticket_id, f'📋 Новая заявка на пополнение\n\n👤 Имя: {user_name}\n💰 Сумма: {amount} ₽\n\nЖду подтверждения от менеджера.'))
+                
+                msg1 = cur.fetchone()
+                
+                # Системное сообщение
+                cur.execute("""
+                    INSERT INTO ticket_messages (ticket_id, sender_type, message, manager_name)
+                    VALUES (%s, 'admin', 'Менеджер подключился к чату. Скоро с вами свяжутся.', 'Система')
+                    RETURNING id, sender_type, message, image_url, manager_name,
+                              to_char(created_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as created_at
+                """, (ticket_id,))
+                
+                msg2 = cur.fetchone()
+                
+                conn.commit()
+                
+                return {
+                    'statusCode': 201,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({
+                        'ticket': new_ticket,
+                        'messages': [msg1, msg2]
+                    }),
+                    'isBase64Encoded': False
+                }
+            
             message = body_data.get('message', '').strip()
             image_url = body_data.get('image_url')
             is_admin = body_data.get('is_admin', False)
@@ -240,12 +322,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'isBase64Encoded': False
                     }
                 
+                manager_name = body_data.get('manager_name')
+                
                 cur.execute("""
-                    INSERT INTO ticket_messages (ticket_id, sender_type, message, image_url)
-                    VALUES (%s, %s, %s, %s)
-                    RETURNING id, ticket_id, sender_type, message, image_url,
+                    INSERT INTO ticket_messages (ticket_id, sender_type, message, image_url, manager_name)
+                    VALUES (%s, %s, %s, %s, %s)
+                    RETURNING id, ticket_id, sender_type, message, image_url, manager_name,
                               to_char(created_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as created_at
-                """, (ticket_id, sender_type, message, image_url))
+                """, (ticket_id, sender_type, message, image_url, manager_name if sender_type == 'admin' else None))
                 
                 new_message = cur.fetchone()
                 
@@ -274,6 +358,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if 'priority' in body_data:
                 update_fields.append('priority = %s')
                 update_values.append(body_data['priority'])
+            
+            if 'assigned_to' in body_data:
+                update_fields.append('assigned_to = %s')
+                update_values.append(body_data['assigned_to'])
             
             if not update_fields:
                 return {
