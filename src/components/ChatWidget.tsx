@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
-import { FirebaseTicketStorage, FirebaseMessageStorage, Ticket, TicketMessage } from '@/lib/firebase';
+import { TicketStorage, Ticket, TicketMessage, onStorageChange } from '@/lib/localStorage';
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +14,6 @@ export default function ChatWidget() {
   const [uploading, setUploading] = useState(false);
   const [sessionId, setSessionId] = useState('');
   const [currentTicket, setCurrentTicket] = useState<Ticket | null>(null);
-  const [ticketId, setTicketId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -29,18 +28,15 @@ export default function ChatWidget() {
 
   useEffect(() => {
     if (isOpen && sessionId) {
-      loadTicket();
+      loadMessages();
+      const interval = setInterval(loadMessages, 2000);
+      const unsubscribe = onStorageChange(loadMessages);
+      return () => {
+        clearInterval(interval);
+        unsubscribe();
+      };
     }
   }, [isOpen, sessionId]);
-  
-  useEffect(() => {
-    if (ticketId) {
-      const unsubscribe = FirebaseMessageStorage.onMessagesChange(ticketId, (msgs) => {
-        setMessages(msgs);
-      });
-      return () => unsubscribe();
-    }
-  }, [ticketId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -50,19 +46,18 @@ export default function ChatWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const loadTicket = async () => {
+  const loadMessages = () => {
     if (!sessionId) return;
     
-    const tickets = await FirebaseTicketStorage.getBySessionId(sessionId);
+    const allTickets = TicketStorage.getAll();
+    const ticket = allTickets.find(t => t.sessionId === sessionId);
     
-    if (tickets.length > 0) {
-      const latestTicket = tickets[tickets.length - 1];
-      setCurrentTicket(latestTicket);
-      setTicketId(latestTicket.id);
+    if (ticket) {
+      setCurrentTicket(ticket);
+      setMessages(ticket.messages);
     } else {
-      setCurrentTicket(null);
-      setTicketId(null);
       setMessages([]);
+      setCurrentTicket(null);
     }
   };
 
@@ -100,7 +95,7 @@ export default function ChatWidget() {
   };
 
   const sendMessage = async () => {
-    if (!sessionId || !ticketId) {
+    if (!sessionId || !currentTicket) {
       console.error('Тикет не найден');
       return;
     }
@@ -115,10 +110,11 @@ export default function ChatWidget() {
         imageUrl = await convertToBase64(selectedImage);
       }
 
-      await FirebaseMessageStorage.add(ticketId, 'client', inputMessage || '', imageUrl);
+      TicketStorage.addMessage(currentTicket.id, 'client', inputMessage || '', imageUrl);
 
       setInputMessage('');
       clearImage();
+      loadMessages();
     } catch (error) {
       console.error('Ошибка отправки:', error);
       alert('Ошибка отправки сообщения. Проверьте консоль.');
