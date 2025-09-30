@@ -7,12 +7,15 @@ import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { TicketStorage, Ticket, TicketMessage } from '@/lib/localStorage';
 
+const MANAGERS = ['Георгий', 'Жека', 'Кристина', 'Тичер'];
+
 const AdminTicketView = () => {
   const { ticketId } = useParams();
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [messages, setMessages] = useState<TicketMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [showManagerSelect, setShowManagerSelect] = useState(false);
 
   useEffect(() => {
     loadTicketData();
@@ -47,6 +50,14 @@ const AdminTicketView = () => {
     if (!ticketId) return;
     
     TicketStorage.update(parseInt(ticketId), { status });
+    loadTicketData();
+  };
+
+  const assignToManager = (managerName: string) => {
+    if (!ticketId) return;
+    
+    TicketStorage.update(parseInt(ticketId), { assignedTo: managerName });
+    setShowManagerSelect(false);
     loadTicketData();
   };
 
@@ -136,6 +147,12 @@ const AdminTicketView = () => {
                       {ticket.userName}
                     </Badge>
                   )}
+                  {ticket.assignedTo && (
+                    <Badge className="bg-green-100 text-green-800">
+                      <Icon name="User" size={14} className="mr-1" />
+                      {ticket.assignedTo}
+                    </Badge>
+                  )}
                 </div>
                 <CardTitle className="text-2xl text-white">{ticket.subject}</CardTitle>
                 <div className="text-sm text-gray-400 mt-2">
@@ -145,6 +162,16 @@ const AdminTicketView = () => {
               </div>
               
               <div className="flex gap-2">
+                {!ticket.assignedTo && (
+                  <Button 
+                    size="sm" 
+                    variant="default"
+                    onClick={() => setShowManagerSelect(!showManagerSelect)}
+                  >
+                    <Icon name="UserPlus" size={16} className="mr-2" />
+                    Взять в работу
+                  </Button>
+                )}
                 {ticket.status === 'open' && (
                   <Button 
                     size="sm" 
@@ -169,6 +196,54 @@ const AdminTicketView = () => {
             </div>
           </CardHeader>
         </Card>
+
+        {showManagerSelect && (
+          <Card className="bg-gray-900 border-gray-800">
+            <CardHeader>
+              <CardTitle className="text-lg text-white">Выберите менеджера</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {MANAGERS.map((manager) => (
+                  <Button
+                    key={manager}
+                    variant="outline"
+                    onClick={() => assignToManager(manager)}
+                    className="h-16 text-base"
+                  >
+                    <Icon name="User" size={18} className="mr-2" />
+                    {manager}
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {ticket.assignedTo && (
+          <Card className="bg-gray-900 border-gray-800">
+            <CardContent className="py-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Icon name="User" size={18} className="text-green-400" />
+                  <span className="text-white">Менеджер:</span>
+                  <Badge className="bg-green-100 text-green-800 text-base">
+                    {ticket.assignedTo}
+                  </Badge>
+                </div>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => assignToManager('')}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <Icon name="X" size={16} className="mr-1" />
+                  Снять
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="flex flex-col h-[500px] bg-gray-900 border-gray-800">
           <CardHeader className="border-b border-gray-800">

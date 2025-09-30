@@ -158,6 +158,12 @@ const AdminTickets = () => {
                                 {ticket.userName}
                               </Badge>
                             )}
+                            {ticket.assignedTo && (
+                              <Badge className="bg-green-100 text-green-800">
+                                <Icon name="User" size={12} className="mr-1" />
+                                {ticket.assignedTo}
+                              </Badge>
+                            )}
                           </div>
                           <CardTitle className="text-lg text-white">{ticket.subject}</CardTitle>
                         </div>

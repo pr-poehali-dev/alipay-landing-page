@@ -4,6 +4,7 @@ export interface Ticket {
   subject: string;
   amount: string;
   userName?: string;
+  assignedTo?: string;
   status: 'open' | 'closed';
   priority: 'high' | 'normal' | 'low';
   createdAt: string;
