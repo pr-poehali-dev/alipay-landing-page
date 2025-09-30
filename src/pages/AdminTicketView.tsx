@@ -185,7 +185,7 @@ const AdminTicketView = () => {
                      ticket.status === 'in_progress' ? 'В работе' : 'Закрыт'}
                   </Badge>
                   {ticket.amount && (
-                    <Badge variant="outline">
+                    <Badge className="bg-red-100 text-red-800 border-red-300">
                       {ticket.amount} ₽
                     </Badge>
                   )}

@@ -26,6 +26,7 @@ const AdminTickets = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'open' | 'closed'>('all');
   const [prevTicketCount, setPrevTicketCount] = useState(0);
+  const [lastTicketIds, setLastTicketIds] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     loadTickets();
@@ -47,7 +48,10 @@ const AdminTickets = () => {
         };
       });
       
-      if (prevTicketCount > 0 && ticketsWithNew.length > prevTicketCount) {
+      const currentTicketIds = new Set(ticketsWithNew.map(t => t.id));
+      const newTickets = ticketsWithNew.filter(t => !lastTicketIds.has(t.id) && t.status === 'open');
+      
+      if (newTickets.length > 0 && lastTicketIds.size > 0) {
         try {
           const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
           const osc = ctx.createOscillator();
@@ -65,6 +69,7 @@ const AdminTickets = () => {
         }
       }
       
+      setLastTicketIds(currentTicketIds);
       setPrevTicketCount(ticketsWithNew.length);
       setTickets(ticketsWithNew);
     } catch (error) {
@@ -171,7 +176,7 @@ const AdminTickets = () => {
                              ticket.status === 'in_progress' ? 'В работе' : 'Закрыт'}
                           </Badge>
                           {ticket.amount && (
-                            <Badge variant="outline">
+                            <Badge className="bg-red-100 text-red-800 border-red-300">
                               {ticket.amount} ₽
                             </Badge>
                           )}

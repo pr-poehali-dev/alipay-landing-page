@@ -95,7 +95,13 @@ const Index = () => {
                 <div>
                   <label className="block text-sm font-medium mb-2">Сумма пополнения</label>
                   <div className="relative">
-                    <Input placeholder="1000" className="h-12 pr-16" />
+                    <Input 
+                      placeholder="1000" 
+                      className="h-12 pr-16" 
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      type="number"
+                    />
                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">₽</span>
                   </div>
                   <p className="text-xs text-gray-500 mt-1">Минимум: 500₽</p>
@@ -104,7 +110,7 @@ const Index = () => {
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <div className="flex justify-between items-center mb-2">
                     <span>К пополнению:</span>
-                    <span className="font-semibold">1000 ₽</span>
+                    <span className="font-semibold">{amount || 1000} ₽</span>
                   </div>
                   <div className="flex justify-between items-center mb-2">
                     <span>Комиссия:</span>
@@ -112,7 +118,7 @@ const Index = () => {
                   </div>
                   <div className="border-t pt-2 flex justify-between items-center font-bold">
                     <span>Итого:</span>
-                    <span>1000 ₽</span>
+                    <span>{amount || 1000} ₽</span>
                   </div>
                 </div>
 
