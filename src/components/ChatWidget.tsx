@@ -142,7 +142,7 @@ export default function ChatWidget() {
       )}
 
       {isOpen && (
-        <Card className="fixed bottom-4 right-4 w-full max-w-md h-[85vh] md:h-[500px] md:w-96 shadow-2xl z-50 flex flex-col mx-4 md:mx-0">
+        <Card className="fixed bottom-0 left-0 right-0 md:bottom-4 md:right-4 md:left-auto w-full md:max-w-md h-[100vh] md:h-[500px] md:w-96 shadow-2xl z-50 flex flex-col md:rounded-lg">
           <div className="flex items-center justify-between p-4 border-b bg-primary text-white rounded-t-lg">
             <div className="flex items-center gap-2">
               <Icon name="MessageCircle" size={20} />
