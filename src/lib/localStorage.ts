@@ -166,12 +166,13 @@ export const ChatStorage = {
   },
 
   addMessage(sessionId: string, message: string, isAdmin: boolean, imageUrl?: string): ChatMessage {
+    this.createOrGet(sessionId);
+    
     const sessions = this.getAll();
     const session = sessions.find(s => s.sessionId === sessionId);
 
     if (!session) {
-      const newSession = this.createOrGet(sessionId);
-      return this.addMessage(sessionId, message, isAdmin, imageUrl);
+      throw new Error('Failed to create or get session');
     }
 
     const newMessage: ChatMessage = {

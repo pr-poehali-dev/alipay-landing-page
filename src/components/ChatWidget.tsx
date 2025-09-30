@@ -92,7 +92,12 @@ export default function ChatWidget() {
   };
 
   const sendMessage = async () => {
-    if ((!inputMessage.trim() && !selectedImage) || !sessionId) return;
+    if (!sessionId) {
+      console.error('Session ID не инициализирован');
+      return;
+    }
+
+    if (!inputMessage.trim() && !selectedImage) return;
 
     setUploading(true);
     try {
@@ -103,14 +108,14 @@ export default function ChatWidget() {
       }
 
       ChatStorage.createOrGet(sessionId, 'Клиент');
-      ChatStorage.addMessage(sessionId, inputMessage, false, imageUrl);
+      ChatStorage.addMessage(sessionId, inputMessage || '', false, imageUrl);
 
       setInputMessage('');
       clearImage();
       loadMessages();
     } catch (error) {
       console.error('Ошибка отправки:', error);
-      alert('Ошибка отправки сообщения');
+      alert('Ошибка отправки сообщения. Проверьте консоль.');
     } finally {
       setUploading(false);
     }
