@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-const API_URL_REQUESTS = 'https://functions.poehali.dev/8b783943-0d99-40ca-9f51-6f816b6d01a0';
+import { TicketService } from "@/lib/supabase";
 
 const TELEGRAM_BOT_TOKEN = '8415994300:AAFRN1T0Ih8mKTTy9L8FG89utMRKZJ0_7_c';
 const TELEGRAM_CHAT_ID = '-1002938818696';
@@ -31,22 +31,27 @@ const Index = () => {
     }
 
     try {
-      const response = await fetch(API_URL_REQUESTS, {
+      const recentTickets = await TicketService.getRecentBySession(sessionId, 1440);
+      if (recentTickets.length >= 5) {
+        alert('Вы можете создать максимум 5 заявок за 24 часа. Пожалуйста, подождите.');
+        return;
+      }
+
+      const ticket = await TicketService.create(sessionId, String(amountValue), userName);
+
+      const message = `🔔 *Новая заявка #${ticket.id}*\n\n👤 *Имя:* ${userName}\n💰 *Сумма:* ${amountValue} ₽\n\n⏰ Требует внимания!`;
+      
+      await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          sessionId,
-          amount: String(amountValue)
+          chat_id: TELEGRAM_CHAT_ID,
+          text: message,
+          parse_mode: 'Markdown'
         })
       });
-
-      if (!response.ok) {
-        const error = await response.json();
-        alert(error.error || 'Ошибка создания заявки');
-        return;
-      }
 
       const chatWidget = document.querySelector('[data-chat-widget]');
       if (chatWidget) {
