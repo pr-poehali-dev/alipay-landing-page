@@ -47,7 +47,9 @@ const Index = () => {
     try {
       const message = `🔔 *Новая заявка #${ticket.id}*\n\n📝 *Тема:* ${ticket.subject}\n👤 *Клиент:* ${userName}\n💰 *Сумма:* ${amountValue} ₽\n\n⏰ Требует внимания!`;
       
-      await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      console.log('Отправка уведомления в Telegram...', { chat_id: TELEGRAM_CHAT_ID, ticket_id: ticket.id });
+      
+      const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,8 +60,16 @@ const Index = () => {
           parse_mode: 'Markdown'
         })
       });
+      
+      const result = await response.json();
+      
+      if (result.ok) {
+        console.log('✅ Уведомление отправлено успешно!', result);
+      } else {
+        console.error('❌ Ошибка Telegram API:', result);
+      }
     } catch (error) {
-      console.log('Failed to send Telegram notification:', error);
+      console.error('❌ Не удалось отправить уведомление:', error);
     }
 
     const chatWidget = document.querySelector('[data-chat-widget]');
