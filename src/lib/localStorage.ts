@@ -17,6 +17,7 @@ export interface TicketMessage {
   senderType: 'client' | 'admin';
   message: string;
   imageUrl?: string;
+  managerName?: string;
   createdAt: string;
 }
 
@@ -67,12 +68,21 @@ export const TicketStorage = {
       priority: 'high',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      messages: [{
-        id: this.getNextMessageId(),
-        senderType: 'client',
-        message: `Здравствуйте! Хочу пополнить AliPay на ${amount} ₽`,
-        createdAt: new Date().toISOString(),
-      }]
+      messages: [
+        {
+          id: this.getNextMessageId(),
+          senderType: 'client',
+          message: `📋 Новая заявка на пополнение\n\n👤 Имя: ${userName}\n💰 Сумма: ${amount} ₽\n\nЖду подтверждения от менеджера.`,
+          createdAt: new Date().toISOString(),
+        },
+        {
+          id: this.getNextMessageId(),
+          senderType: 'admin',
+          message: 'Менеджер подключился к чату. Скоро с вами свяжутся.',
+          managerName: 'Система',
+          createdAt: new Date().toISOString(),
+        }
+      ]
     };
 
     tickets.push(newTicket);
@@ -108,7 +118,7 @@ export const TicketStorage = {
     return tickets[index];
   },
 
-  addMessage(ticketId: number, senderType: 'client' | 'admin', message: string, imageUrl?: string): TicketMessage | null {
+  addMessage(ticketId: number, senderType: 'client' | 'admin', message: string, imageUrl?: string, managerName?: string): TicketMessage | null {
     const tickets = this.getAll();
     const ticket = tickets.find(t => t.id === ticketId);
     
@@ -119,6 +129,7 @@ export const TicketStorage = {
       senderType,
       message,
       imageUrl,
+      managerName: senderType === 'admin' ? (managerName || ticket.assignedTo || 'Менеджер') : undefined,
       createdAt: new Date().toISOString(),
     };
 

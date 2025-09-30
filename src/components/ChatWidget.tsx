@@ -3,22 +3,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
-import { ChatStorage } from '@/lib/localStorage';
+import { TicketStorage, Ticket, TicketMessage } from '@/lib/localStorage';
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Array<{
-    id: number;
-    message: string;
-    imageUrl?: string;
-    isAdmin: boolean;
-    createdAt: string;
-  }>>([]);
+  const [messages, setMessages] = useState<TicketMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [sessionId, setSessionId] = useState('');
+  const [currentTicket, setCurrentTicket] = useState<Ticket | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -50,11 +45,15 @@ export default function ChatWidget() {
   const loadMessages = () => {
     if (!sessionId) return;
     
-    const session = ChatStorage.getBySessionId(sessionId);
-    if (session) {
-      setMessages(session.messages);
+    const allTickets = TicketStorage.getAll();
+    const ticket = allTickets.find(t => t.sessionId === sessionId);
+    
+    if (ticket) {
+      setCurrentTicket(ticket);
+      setMessages(ticket.messages);
     } else {
       setMessages([]);
+      setCurrentTicket(null);
     }
   };
 
@@ -92,8 +91,8 @@ export default function ChatWidget() {
   };
 
   const sendMessage = async () => {
-    if (!sessionId) {
-      console.error('Session ID не инициализирован');
+    if (!sessionId || !currentTicket) {
+      console.error('Тикет не найден');
       return;
     }
 
@@ -107,8 +106,7 @@ export default function ChatWidget() {
         imageUrl = await convertToBase64(selectedImage);
       }
 
-      ChatStorage.createOrGet(sessionId, 'Клиент');
-      ChatStorage.addMessage(sessionId, inputMessage || '', false, imageUrl);
+      TicketStorage.addMessage(currentTicket.id, 'client', inputMessage || '', imageUrl);
 
       setInputMessage('');
       clearImage();
@@ -169,32 +167,39 @@ export default function ChatWidget() {
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex ${msg.isAdmin ? 'justify-start' : 'justify-end'}`}
+                className={`flex ${msg.senderType === 'admin' ? 'justify-start' : 'justify-end'}`}
               >
-                <div
-                  className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                    msg.isAdmin
-                      ? 'bg-white text-gray-800 shadow'
-                      : 'bg-primary text-white'
-                  }`}
-                >
-                  {msg.imageUrl && (
-                    <img 
-                      src={msg.imageUrl} 
-                      alt="Изображение" 
-                      className="max-w-full rounded mb-2 cursor-pointer"
-                      onClick={() => window.open(msg.imageUrl, '_blank')}
-                    />
+                <div className="flex flex-col gap-1">
+                  {msg.senderType === 'admin' && msg.managerName && (
+                    <span className="text-xs text-gray-500 px-2">
+                      Менеджер {msg.managerName}
+                    </span>
                   )}
-                  {msg.message && (
-                    <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
-                  )}
-                  <span className="text-xs opacity-70 mt-1 block">
-                    {new Date(msg.createdAt).toLocaleTimeString('ru-RU', {
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </span>
+                  <div
+                    className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                      msg.senderType === 'admin'
+                        ? 'bg-white text-gray-800 shadow'
+                        : 'bg-primary text-white'
+                    }`}
+                  >
+                    {msg.imageUrl && (
+                      <img 
+                        src={msg.imageUrl} 
+                        alt="Изображение" 
+                        className="max-w-full rounded mb-2 cursor-pointer"
+                        onClick={() => window.open(msg.imageUrl, '_blank')}
+                      />
+                    )}
+                    {msg.message && (
+                      <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
+                    )}
+                    <span className="text-xs opacity-70 mt-1 block">
+                      {new Date(msg.createdAt).toLocaleTimeString('ru-RU', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
