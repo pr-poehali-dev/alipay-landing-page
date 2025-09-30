@@ -1,0 +1,23 @@
+{
+  "tests": [
+    {
+      "name": "Send message",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "ticketId": 1,
+        "sender": "client",
+        "text": "Тестовое сообщение",
+        "imageUrl": ""
+      },
+      "expectedStatus": 201,
+      "expectedBody": {
+        "id": "number",
+        "ticket_id": "number",
+        "sender": "string",
+        "text": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

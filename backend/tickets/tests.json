@@ -1,0 +1,43 @@
+{
+  "tests": [
+    {
+      "name": "Create new ticket",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "sessionId": "test-session-123",
+        "title": "Тест пополнения",
+        "amount": "1000",
+        "userName": "Тестовый пользователь"
+      },
+      "expectedStatus": 201,
+      "expectedBody": {
+        "id": "number",
+        "session_id": "string",
+        "title": "string",
+        "amount": "string",
+        "status": "open"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Get tickets by session",
+      "method": "GET",
+      "path": "/?sessionId=test-session-123",
+      "expectedStatus": 200,
+      "expectedBody": "array",
+      "bodyMatcher": "type"
+    },
+    {
+      "name": "Admin get all tickets",
+      "method": "GET",
+      "path": "/",
+      "headers": {
+        "X-Admin-Mode": "true"
+      },
+      "expectedStatus": 200,
+      "expectedBody": "array",
+      "bodyMatcher": "type"
+    }
+  ]
+}
