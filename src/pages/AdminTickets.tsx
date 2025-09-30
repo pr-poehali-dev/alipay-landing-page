@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { Link } from 'react-router-dom';
-import { TicketStorage, Ticket, onStorageChange } from '@/lib/localStorage';
+import { FirebaseTicketStorage, Ticket } from '@/lib/firebase';
 
 const AdminTickets = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -12,56 +12,50 @@ const AdminTickets = () => {
   const [lastTicketIds, setLastTicketIds] = useState<Set<number>>(new Set());
 
   useEffect(() => {
-    loadTickets();
-    const interval = setInterval(loadTickets, 2000);
-    const unsubscribe = onStorageChange(loadTickets);
-    return () => {
-      clearInterval(interval);
-      unsubscribe();
-    };
-  }, [filter]);
+    const unsubscribe = FirebaseTicketStorage.onTicketsChange((allTickets) => {
+      const filteredTickets = filter === 'all' 
+        ? allTickets 
+        : allTickets.filter(t => t.status === filter);
 
-  const loadTickets = () => {
-    const allTickets = TicketStorage.getAll();
-    
-    const filteredTickets = filter === 'all' 
-      ? allTickets 
-      : allTickets.filter(t => t.status === filter);
+      const ticketsWithNew = filteredTickets.map(ticket => {
+        const createdTime = new Date(ticket.createdAt).getTime();
+        const now = Date.now();
+        const hoursSinceCreation = (now - createdTime) / (1000 * 60 * 60);
+        return {
+          ...ticket,
+          is_new: hoursSinceCreation < 1 && ticket.status === 'open'
+        };
+      });
 
-    const ticketsWithNew = filteredTickets.map(ticket => {
-      const createdTime = new Date(ticket.createdAt).getTime();
-      const now = Date.now();
-      const hoursSinceCreation = (now - createdTime) / (1000 * 60 * 60);
-      return {
-        ...ticket,
-        is_new: hoursSinceCreation < 1 && ticket.status === 'open'
-      };
-    });
+      const currentTicketIds = new Set(ticketsWithNew.map(t => t.id));
+      const newTickets = ticketsWithNew.filter(t => !lastTicketIds.has(t.id) && t.status === 'open');
 
-    const currentTicketIds = new Set(ticketsWithNew.map(t => t.id));
-    const newTickets = ticketsWithNew.filter(t => !lastTicketIds.has(t.id) && t.status === 'open');
-
-    if (newTickets.length > 0 && lastTicketIds.size > 0) {
-      try {
-        const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.frequency.value = 800;
-        osc.type = 'sine';
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-        osc.start(ctx.currentTime);
-        osc.stop(ctx.currentTime + 0.5);
-      } catch (e) {
-        console.log('Звук недоступен');
+      if (newTickets.length > 0 && lastTicketIds.size > 0) {
+        try {
+          const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = 800;
+          osc.type = 'sine';
+          gain.gain.setValueAtTime(0.3, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+          osc.start(ctx.currentTime);
+          osc.stop(ctx.currentTime + 0.5);
+        } catch (e) {
+          console.log('Звук недоступен');
+        }
       }
-    }
 
-    setLastTicketIds(currentTicketIds);
-    setTickets(ticketsWithNew);
-  };
+      setLastTicketIds(currentTicketIds);
+      setTickets(ticketsWithNew);
+    });
+    
+    return () => unsubscribe();
+  }, [filter, lastTicketIds]);
+
+
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {

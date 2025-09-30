@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { TicketStorage } from "@/lib/localStorage";
+import { FirebaseTicketStorage } from "@/lib/firebase";
 
 const TELEGRAM_BOT_TOKEN = '8415994300:AAFRN1T0Ih8mKTTy9L8FG89utMRKZJ0_7_c';
 const TELEGRAM_CHAT_ID = '-1002938818696';
@@ -19,8 +19,9 @@ const Index = () => {
       'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('chat_session_id', sessionId);
 
-    const lastTickets = TicketStorage.getRecentTickets(sessionId, 1440); // 24 часа = 1440 минут
-    if (lastTickets.length >= 5) {
+    // Проверка лимита через Firebase
+    const limitExceeded = await FirebaseTicketStorage.checkLimit(sessionId);
+    if (limitExceeded) {
       alert('Вы можете создать максимум 5 заявок за 24 часа. Пожалуйста, подождите.');
       return;
     }
@@ -36,7 +37,8 @@ const Index = () => {
       return;
     }
 
-    const ticket = TicketStorage.create(
+    // Создаём тикет в Firebase
+    const ticket = await FirebaseTicketStorage.create(
       sessionId,
       `Заявка на пополнение AliPay от ${userName}`,
       String(amountValue),
@@ -45,7 +47,7 @@ const Index = () => {
 
     // Send Telegram notification
     try {
-      const message = `🔔 *Новая заявка #${ticket.id}*\n\n👤 *Имя:* ${userName}\n💰 *Сумма:* ${amountValue} ₽\n\n⏰ Требует внимания!`;
+      const message = `🔔 *Новая заявка #${ticket.id.slice(0, 8)}*\n\n👤 *Имя:* ${userName}\n💰 *Сумма:* ${amountValue} ₽\n\n⏰ Требует внимания!`;
       
       await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',

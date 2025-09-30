@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
-import { TicketStorage, Ticket, TicketMessage, onStorageChange } from '@/lib/localStorage';
+import { FirebaseTicketStorage, FirebaseMessageStorage, Ticket, TicketMessage } from '@/lib/firebase';
 
 const MANAGERS = ['Георгий', 'Жека', 'Кристина', 'Тичер'];
 
@@ -18,52 +18,46 @@ const AdminTicketView = () => {
   const [showManagerSelect, setShowManagerSelect] = useState(false);
 
   useEffect(() => {
-    loadTicketData();
-    const interval = setInterval(loadTicketData, 2000);
-    const unsubscribe = onStorageChange(loadTicketData);
+    if (!ticketId) return;
+    
+    const unsubTicket = FirebaseTicketStorage.onTicketChange(ticketId, (t) => {
+      setTicket(t);
+      setLoading(false);
+    });
+    
+    const unsubMessages = FirebaseMessageStorage.onMessagesChange(ticketId, (msgs) => {
+      setMessages(msgs);
+    });
+    
     return () => {
-      clearInterval(interval);
-      unsubscribe();
+      unsubTicket();
+      unsubMessages();
     };
   }, [ticketId]);
 
-  const loadTicketData = () => {
-    if (!ticketId) return;
 
-    const foundTicket = TicketStorage.getById(parseInt(ticketId));
-    
-    if (foundTicket) {
-      setTicket(foundTicket);
-      setMessages(foundTicket.messages);
-    }
-    
-    setLoading(false);
-  };
 
-  const sendMessage = (e: React.FormEvent) => {
+  const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!newMessage.trim() || !ticketId || !ticket) return;
     
     const managerName = ticket.assignedTo || 'Менеджер';
-    TicketStorage.addMessage(parseInt(ticketId), 'admin', newMessage, undefined, managerName);
+    await FirebaseMessageStorage.add(ticketId, 'admin', newMessage, undefined, managerName);
     setNewMessage('');
-    loadTicketData();
   };
 
-  const updateStatus = (status: 'open' | 'closed') => {
+  const updateStatus = async (status: 'open' | 'closed') => {
     if (!ticketId) return;
     
-    TicketStorage.update(parseInt(ticketId), { status });
-    loadTicketData();
+    await FirebaseTicketStorage.update(ticketId, { status });
   };
 
-  const assignToManager = (managerName: string) => {
+  const assignToManager = async (managerName: string) => {
     if (!ticketId) return;
     
-    TicketStorage.update(parseInt(ticketId), { assignedTo: managerName });
+    await FirebaseTicketStorage.update(ticketId, { assignedTo: managerName });
     setShowManagerSelect(false);
-    loadTicketData();
   };
 
   const getPriorityColor = (priority: string) => {
