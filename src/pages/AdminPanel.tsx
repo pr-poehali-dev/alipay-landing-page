@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -90,9 +91,17 @@ export default function AdminPanel() {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="container mx-auto">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Админ-панель</h1>
-          <p className="text-gray-600">Управление чатами с клиентами</p>
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Админ-панель</h1>
+            <p className="text-gray-600">Управление чатами с клиентами</p>
+          </div>
+          <Link to="/admin/tickets">
+            <Button variant="outline">
+              <Icon name="Ticket" size={18} className="mr-2" />
+              Тикеты
+            </Button>
+          </Link>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">

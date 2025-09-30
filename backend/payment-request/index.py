@@ -58,17 +58,29 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
-        # Создать заявку
+        # Создать тикет (тему)
+        cur.execute("""
+            INSERT INTO tickets (session_id, subject, amount, status, priority)
+            VALUES (%s, %s, %s, 'open', 'high')
+            RETURNING id, session_id, subject, CAST(amount AS TEXT) as amount, status, priority,
+                      to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at
+        """, (session_id, f"Заявка на пополнение {amount} ₽", amount))
+        
+        ticket = dict(cur.fetchone())
+        
+        # Добавить первое сообщение в тикет
+        cur.execute("""
+            INSERT INTO ticket_messages (ticket_id, sender_type, message)
+            VALUES (%s, 'client', %s)
+        """, (ticket['id'], f"Здравствуйте! Хочу пополнить счёт на {amount} ₽"))
+        
+        # Создать заявку в старой таблице (для совместимости)
         cur.execute("""
             INSERT INTO payment_requests (session_id, amount, status)
             VALUES (%s, %s, 'pending')
-            RETURNING id, session_id, CAST(amount AS TEXT) as amount, status, 
-                      to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at
         """, (session_id, amount))
         
-        request = dict(cur.fetchone())
-        
-        # Отправить автоматическое сообщение в чат
+        # Отправить автоматическое сообщение в старый чат
         cur.execute("""
             INSERT INTO chat_messages (session_id, message, is_admin)
             VALUES (%s, %s, false)
@@ -79,7 +91,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         return {
             'statusCode': 201,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'request': request}),
+            'body': json.dumps({'ticket': ticket}),
             'isBase64Encoded': False
         }
     

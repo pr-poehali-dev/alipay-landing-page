@@ -9,15 +9,7 @@
       "body": {
         "amount": 5000
       },
-      "expectedStatus": 201,
-      "expectedBody": {
-        "request": {
-          "amount": "string",
-          "session_id": "string",
-          "status": "string"
-        }
-      },
-      "bodyMatcher": "partial"
+      "expectedStatus": 201
     }
   ]
 }

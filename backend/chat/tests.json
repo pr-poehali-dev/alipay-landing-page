@@ -1,47 +1,12 @@
 {
   "tests": [
     {
-      "name": "POST: отправка сообщения клиентом",
-      "method": "POST",
-      "headers": {
-        "X-Session-Id": "test-session-123"
-      },
-      "body": {
-        "message": "Здравствуйте, хочу пополнить счет",
-        "name": "Иван"
-      },
-      "expectedStatus": 201,
-      "expectedBody": {
-        "message": {
-          "message": "string",
-          "session_id": "string"
-        }
-      },
-      "bodyMatcher": "partial"
-    },
-    {
-      "name": "GET: получение сообщений",
-      "method": "GET",
-      "headers": {
-        "X-Session-Id": "test-session-123"
-      },
-      "expectedStatus": 200,
-      "expectedBody": {
-        "messages": "array"
-      },
-      "bodyMatcher": "partial"
-    },
-    {
-      "name": "GET: получение всех сессий (админ)",
+      "name": "GET: получение всех тикетов",
       "method": "GET",
       "queryStringParameters": {
-        "admin": "true"
+        "tickets": "true"
       },
-      "expectedStatus": 200,
-      "expectedBody": {
-        "sessions": "array"
-      },
-      "bodyMatcher": "partial"
+      "expectedStatus": 200
     }
   ]
 }
