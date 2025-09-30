@@ -8,7 +8,7 @@ import { useState } from "react";
 import { TicketStorage } from "@/lib/localStorage";
 
 const TELEGRAM_BOT_TOKEN = '8415994300:AAFRN1T0Ih8mKTTy9L8FG89utMRKZJ0_7_c';
-const TELEGRAM_CHAT_ID = '-1002359673343'; // Замени на свой Chat ID
+const TELEGRAM_CHAT_ID = '-1002938818696';
 
 const Index = () => {
   const [amount, setAmount] = useState('1000');

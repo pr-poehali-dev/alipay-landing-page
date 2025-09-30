@@ -11,7 +11,7 @@ from typing import Dict, Any
 
 
 TELEGRAM_BOT_TOKEN = '8415994300:AAFRN1T0Ih8mKTTy9L8FG89utMRKZJ0_7_c'
-TELEGRAM_CHAT_ID = '-1002359673343'
+TELEGRAM_CHAT_ID = '-1002938818696'
 
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
