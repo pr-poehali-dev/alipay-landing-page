@@ -3,20 +3,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
-
-interface Message {
-  id: number;
-  message: string;
-  image_url?: string;
-  is_admin: boolean;
-  created_at: string;
-}
-
-const CHAT_API = 'https://functions.poehali.dev/22875b8b-5f66-444c-bd9f-f429cbc012a6';
+import { ChatStorage } from '@/lib/localStorage';
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Array<{
+    id: number;
+    message: string;
+    imageUrl?: string;
+    isAdmin: boolean;
+    createdAt: string;
+  }>>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -37,7 +34,7 @@ export default function ChatWidget() {
   useEffect(() => {
     if (isOpen && sessionId) {
       loadMessages();
-      const interval = setInterval(loadMessages, 3000);
+      const interval = setInterval(loadMessages, 2000);
       return () => clearInterval(interval);
     }
   }, [isOpen, sessionId]);
@@ -50,17 +47,14 @@ export default function ChatWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const loadMessages = async () => {
+  const loadMessages = () => {
     if (!sessionId) return;
     
-    try {
-      const response = await fetch(CHAT_API, {
-        headers: { 'X-Session-Id': sessionId }
-      });
-      const data = await response.json();
-      setMessages(data.messages || []);
-    } catch (error) {
-      console.error('Ошибка загрузки сообщений:', error);
+    const session = ChatStorage.getBySessionId(sessionId);
+    if (session) {
+      setMessages(session.messages);
+    } else {
+      setMessages([]);
     }
   };
 
@@ -102,24 +96,14 @@ export default function ChatWidget() {
 
     setUploading(true);
     try {
-      let imageUrl = null;
+      let imageUrl: string | undefined = undefined;
       
       if (selectedImage) {
         imageUrl = await convertToBase64(selectedImage);
       }
 
-      await fetch(CHAT_API, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Session-Id': sessionId
-        },
-        body: JSON.stringify({
-          message: inputMessage,
-          image_url: imageUrl,
-          name: 'Клиент'
-        })
-      });
+      ChatStorage.createOrGet(sessionId, 'Клиент');
+      ChatStorage.addMessage(sessionId, inputMessage, false, imageUrl);
 
       setInputMessage('');
       clearImage();
@@ -180,28 +164,28 @@ export default function ChatWidget() {
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex ${msg.is_admin ? 'justify-start' : 'justify-end'}`}
+                className={`flex ${msg.isAdmin ? 'justify-start' : 'justify-end'}`}
               >
                 <div
                   className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                    msg.is_admin
+                    msg.isAdmin
                       ? 'bg-white text-gray-800 shadow'
                       : 'bg-primary text-white'
                   }`}
                 >
-                  {msg.image_url && (
+                  {msg.imageUrl && (
                     <img 
-                      src={msg.image_url} 
+                      src={msg.imageUrl} 
                       alt="Изображение" 
                       className="max-w-full rounded mb-2 cursor-pointer"
-                      onClick={() => window.open(msg.image_url, '_blank')}
+                      onClick={() => window.open(msg.imageUrl, '_blank')}
                     />
                   )}
                   {msg.message && (
                     <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
                   )}
                   <span className="text-xs opacity-70 mt-1 block">
-                    {new Date(msg.created_at).toLocaleTimeString('ru-RU', {
+                    {new Date(msg.createdAt).toLocaleTimeString('ru-RU', {
                       hour: '2-digit',
                       minute: '2-digit'
                     })}
