@@ -67,7 +67,7 @@ const Index = () => {
 
       {/* Hero Section */}
       <section className="py-8 sm:py-16 lg:py-20 px-4">
-        <div className="container mx-auto max-w-6xl">
+        <div className="container mx-auto max-w-6xl px-4">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div>
               <Badge className="mb-4 sm:mb-6 bg-blue-100 text-blue-800 text-xs sm:text-sm">
