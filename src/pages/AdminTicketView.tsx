@@ -118,6 +118,7 @@ const AdminTicketView = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'open': return 'bg-green-100 text-green-800';
+      case 'in_progress': return 'bg-red-100 text-red-800';
       case 'closed': return 'bg-gray-100 text-gray-800';
       default: return 'bg-yellow-100 text-yellow-800';
     }
@@ -125,10 +126,10 @@ const AdminTicketView = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50 p-6">
+      <div className="min-h-screen bg-gray-950 p-6">
         <div className="max-w-4xl mx-auto">
-          <Card>
-            <CardContent className="py-12 text-center text-gray-500">
+          <Card className="bg-gray-900 border-gray-800">
+            <CardContent className="py-12 text-center text-gray-400">
               Загрузка...
             </CardContent>
           </Card>
@@ -139,10 +140,10 @@ const AdminTicketView = () => {
 
   if (!ticket) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50 p-6">
+      <div className="min-h-screen bg-gray-950 p-6">
         <div className="max-w-4xl mx-auto">
-          <Card>
-            <CardContent className="py-12 text-center text-gray-500">
+          <Card className="bg-gray-900 border-gray-800">
+            <CardContent className="py-12 text-center text-gray-400">
               <Icon name="AlertCircle" size={48} className="mx-auto mb-3 opacity-30" />
               <p>Тикет не найден</p>
               <Link to="/admin/tickets">
@@ -159,7 +160,7 @@ const AdminTicketView = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50 p-6">
+    <div className="min-h-screen bg-gray-950 p-6">
       <div className="max-w-4xl mx-auto space-y-4">
         <div className="flex items-center gap-4">
           <Link to="/admin/tickets">
@@ -170,8 +171,8 @@ const AdminTicketView = () => {
           </Link>
         </div>
 
-        <Card>
-          <CardHeader>
+        <Card className="bg-gray-900 border-gray-800">
+          <CardHeader className="border-gray-800">
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
@@ -180,7 +181,8 @@ const AdminTicketView = () => {
                      ticket.priority === 'normal' ? 'Обычный' : 'Низкий'}
                   </Badge>
                   <Badge className={getStatusColor(ticket.status)}>
-                    {ticket.status === 'open' ? 'Открыт' : 'Закрыт'}
+                    {ticket.status === 'open' ? 'Открыт' : 
+                     ticket.status === 'in_progress' ? 'В работе' : 'Закрыт'}
                   </Badge>
                   {ticket.amount && (
                     <Badge variant="outline">
@@ -188,14 +190,25 @@ const AdminTicketView = () => {
                     </Badge>
                   )}
                 </div>
-                <CardTitle className="text-2xl">{ticket.subject}</CardTitle>
-                <div className="text-sm text-gray-500 mt-2">
+                <CardTitle className="text-2xl text-white">{ticket.subject}</CardTitle>
+                <div className="text-sm text-gray-400 mt-2">
                   Создан: {new Date(ticket.created_at).toLocaleString('ru')}
                 </div>
               </div>
               
               <div className="flex gap-2">
-                {ticket.status === 'open' ? (
+                {ticket.status === 'open' && (
+                  <Button 
+                    size="sm" 
+                    variant="default"
+                    className="bg-red-500 hover:bg-red-600"
+                    onClick={() => updateStatus('in_progress')}
+                  >
+                    <Icon name="PlayCircle" size={16} className="mr-2" />
+                    Взять в работу
+                  </Button>
+                )}
+                {ticket.status === 'in_progress' && (
                   <Button 
                     size="sm" 
                     variant="outline"
@@ -204,7 +217,8 @@ const AdminTicketView = () => {
                     <Icon name="CheckCircle" size={16} className="mr-2" />
                     Закрыть
                   </Button>
-                ) : (
+                )}
+                {ticket.status === 'closed' && (
                   <Button 
                     size="sm" 
                     variant="outline"
@@ -219,14 +233,14 @@ const AdminTicketView = () => {
           </CardHeader>
         </Card>
 
-        <Card className="flex flex-col h-[500px]">
-          <CardHeader className="border-b">
-            <CardTitle className="text-lg">Сообщения</CardTitle>
+        <Card className="flex flex-col h-[500px] bg-gray-900 border-gray-800">
+          <CardHeader className="border-b border-gray-800">
+            <CardTitle className="text-lg text-white">Сообщения</CardTitle>
           </CardHeader>
           
-          <CardContent className="flex-1 overflow-y-auto p-4 space-y-3">
+          <CardContent className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-950">
             {messages.length === 0 ? (
-              <div className="text-center text-gray-500 py-8">
+              <div className="text-center text-gray-400 py-8">
                 <Icon name="MessageCircle" size={48} className="mx-auto mb-3 opacity-30" />
                 <p>Нет сообщений</p>
               </div>
@@ -239,7 +253,7 @@ const AdminTicketView = () => {
                   <div className={`max-w-[70%] rounded-lg p-3 ${
                     msg.sender_type === 'admin'
                       ? 'bg-primary text-white'
-                      : 'bg-gray-100 text-gray-900'
+                      : 'bg-gray-800 text-gray-100'
                   }`}>
                     {msg.image_url && (
                       <img 
@@ -253,7 +267,7 @@ const AdminTicketView = () => {
                       <div className="text-sm break-words">{msg.message}</div>
                     )}
                     <div className={`text-xs mt-1 ${
-                      msg.sender_type === 'admin' ? 'text-white/70' : 'text-gray-500'
+                      msg.sender_type === 'admin' ? 'text-white/70' : 'text-gray-400'
                     }`}>
                       {new Date(msg.created_at).toLocaleTimeString('ru', {
                         hour: '2-digit',
@@ -266,7 +280,7 @@ const AdminTicketView = () => {
             )}
           </CardContent>
           
-          <div className="border-t p-4">
+          <div className="border-t border-gray-800 p-4 bg-gray-900">
             <form onSubmit={sendMessage} className="flex gap-2">
               <Input
                 value={newMessage}

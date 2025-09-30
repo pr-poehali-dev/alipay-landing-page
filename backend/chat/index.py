@@ -61,8 +61,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         t.status,
                         t.priority,
                         CAST(t.amount AS TEXT) as amount,
-                        to_char(t.created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at,
-                        to_char(t.updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at,
+                        to_char(t.created_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as created_at,
+                        to_char(t.updated_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as updated_at,
                         (SELECT COUNT(*) FROM ticket_messages WHERE ticket_id = t.id) as message_count,
                         (SELECT message FROM ticket_messages WHERE ticket_id = t.id ORDER BY created_at DESC LIMIT 1) as last_message
                     FROM tickets t
@@ -92,8 +92,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         t.status,
                         t.priority,
                         CAST(t.amount AS TEXT) as amount,
-                        to_char(t.created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at,
-                        to_char(t.updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at
+                        to_char(t.created_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as created_at,
+                        to_char(t.updated_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as updated_at
                     FROM tickets t
                     WHERE t.id = %s
                 """, (ticket_id,))
@@ -115,7 +115,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         sender_type,
                         message,
                         image_url,
-                        to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at
+                        to_char(created_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as created_at
                     FROM ticket_messages
                     WHERE ticket_id = %s
                     ORDER BY created_at ASC
@@ -135,10 +135,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     SELECT 
                         cu.session_id,
                         cu.name,
-                        to_char(cu.created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at,
+                        to_char(cu.created_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as created_at,
                         (SELECT COUNT(*) FROM chat_messages WHERE session_id = cu.session_id) as message_count,
                         (SELECT message FROM chat_messages WHERE session_id = cu.session_id ORDER BY created_at DESC LIMIT 1) as last_message,
-                        (SELECT to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') FROM chat_messages WHERE session_id = cu.session_id ORDER BY created_at DESC LIMIT 1) as last_message_time
+                        (SELECT to_char(created_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') FROM chat_messages WHERE session_id = cu.session_id ORDER BY created_at DESC LIMIT 1) as last_message_time
                     FROM chat_users cu
                     ORDER BY (SELECT created_at FROM chat_messages WHERE session_id = cu.session_id ORDER BY created_at DESC LIMIT 1) DESC NULLS LAST
                 """)
@@ -162,7 +162,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             cur.execute("""
                 SELECT id, session_id, message, image_url, is_admin, 
-                       to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at
+                       to_char(created_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as created_at
                 FROM chat_messages 
                 WHERE session_id = %s 
                 ORDER BY created_at ASC
@@ -202,7 +202,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 INSERT INTO chat_messages (session_id, message, image_url, is_admin)
                 VALUES (%s, %s, %s, %s)
                 RETURNING id, session_id, message, image_url, is_admin, 
-                          to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at
+                          to_char(created_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as created_at
             """, (session_id, message or '', image_url, is_admin))
             
             new_message = cur.fetchone()
@@ -244,7 +244,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     INSERT INTO ticket_messages (ticket_id, sender_type, message, image_url)
                     VALUES (%s, %s, %s, %s)
                     RETURNING id, ticket_id, sender_type, message, image_url,
-                              to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at
+                              to_char(created_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as created_at
                 """, (ticket_id, sender_type, message, image_url))
                 
                 new_message = cur.fetchone()
@@ -291,7 +291,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 SET {', '.join(update_fields)}
                 WHERE id = %s
                 RETURNING id, status, priority,
-                          to_char(updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at
+                          to_char(updated_at + interval '3 hours', 'YYYY-MM-DD HH24:MI:SS') as updated_at
             """
             
             cur.execute(query, update_values)

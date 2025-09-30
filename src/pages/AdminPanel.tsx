@@ -90,12 +90,12 @@ export default function AdminPanel() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-950 p-6">
       <div className="container mx-auto">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Админ-панель</h1>
-            <p className="text-gray-600">Управление чатами с клиентами</p>
+            <h1 className="text-3xl font-bold text-white mb-2">Админ-панель</h1>
+            <p className="text-gray-400">Управление чатами с клиентами</p>
           </div>
           <Link to="/admin/tickets">
             <Button variant="outline">
@@ -107,9 +107,9 @@ export default function AdminPanel() {
 
         <div className="grid md:grid-cols-3 gap-6">
           {/* Список сессий */}
-          <Card className="md:col-span-1">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <Card className="md:col-span-1 bg-gray-900 border-gray-800">
+            <CardHeader className="border-gray-800">
+              <CardTitle className="flex items-center gap-2 text-white">
                 <Icon name="Users" size={20} />
                 Активные чаты ({sessions.length})
               </CardTitle>
@@ -120,12 +120,12 @@ export default function AdminPanel() {
                   <div
                     key={session.session_id}
                     onClick={() => setSelectedSession(session.session_id)}
-                    className={`p-4 border-b cursor-pointer hover:bg-gray-50 transition ${
-                      selectedSession === session.session_id ? 'bg-blue-50 border-l-4 border-l-primary' : ''
+                    className={`p-4 border-b border-gray-800 cursor-pointer hover:bg-gray-800 transition ${
+                      selectedSession === session.session_id ? 'bg-gray-800 border-l-4 border-l-primary' : ''
                     }`}
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <div className="font-semibold text-sm">
+                      <div className="font-semibold text-sm text-white">
                         {session.name || 'Аноним'}
                       </div>
                       <Badge variant="secondary" className="text-xs">
@@ -134,10 +134,10 @@ export default function AdminPanel() {
                     </div>
                     {session.last_message && (
                       <>
-                        <p className="text-sm text-gray-600 truncate mb-1">
+                        <p className="text-sm text-gray-300 truncate mb-1">
                           {session.last_message}
                         </p>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-xs text-gray-500">
                           {session.last_message_time ? new Date(session.last_message_time).toLocaleString('ru-RU') : ''}
                         </p>
                       </>
@@ -145,8 +145,8 @@ export default function AdminPanel() {
                   </div>
                 ))}
                 {sessions.length === 0 && (
-                  <div className="p-8 text-center text-gray-500">
-                    <Icon name="MessageCircle" size={48} className="mx-auto mb-2 text-gray-300" />
+                  <div className="p-8 text-center text-gray-400">
+                    <Icon name="MessageCircle" size={48} className="mx-auto mb-2 text-gray-700" />
                     <p>Нет активных чатов</p>
                   </div>
                 )}
@@ -155,9 +155,9 @@ export default function AdminPanel() {
           </Card>
 
           {/* Окно чата */}
-          <Card className="md:col-span-2">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <Card className="md:col-span-2 bg-gray-900 border-gray-800">
+            <CardHeader className="border-gray-800">
+              <CardTitle className="flex items-center gap-2 text-white">
                 <Icon name="MessageSquare" size={20} />
                 {selectedSession ? `Чат: ${selectedSession}` : 'Выберите чат'}
               </CardTitle>
@@ -165,7 +165,7 @@ export default function AdminPanel() {
             <CardContent>
               {selectedSession ? (
                 <div className="flex flex-col h-[500px]">
-                  <div className="flex-1 overflow-y-auto mb-4 space-y-3 p-4 bg-gray-50 rounded-lg">
+                  <div className="flex-1 overflow-y-auto mb-4 space-y-3 p-4 bg-gray-950 rounded-lg">
                     {messages.map((msg) => (
                       <div
                         key={msg.id}
@@ -175,7 +175,7 @@ export default function AdminPanel() {
                           className={`max-w-[70%] rounded-lg px-4 py-2 ${
                             msg.is_admin
                               ? 'bg-primary text-white'
-                              : 'bg-white text-gray-800 shadow'
+                              : 'bg-gray-800 text-gray-100 shadow'
                           }`}
                         >
                           {msg.image_url && (
@@ -215,9 +215,9 @@ export default function AdminPanel() {
                   </div>
                 </div>
               ) : (
-                <div className="h-[500px] flex items-center justify-center text-gray-500">
+                <div className="h-[500px] flex items-center justify-center text-gray-400">
                   <div className="text-center">
-                    <Icon name="MessageCircle" size={64} className="mx-auto mb-4 text-gray-300" />
+                    <Icon name="MessageCircle" size={64} className="mx-auto mb-4 text-gray-700" />
                     <p>Выберите чат из списка слева</p>
                   </div>
                 </div>
