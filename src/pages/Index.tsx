@@ -31,18 +31,14 @@ const Index = () => {
     }
 
     try {
-      console.log('Проверка лимита для сессии:', sessionId);
       const recentTickets = await TicketService.getRecentBySession(sessionId, 1440);
-      console.log('Найдено заявок:', recentTickets.length);
       
       if (recentTickets.length >= 5) {
         alert('Вы можете создать максимум 5 заявок за 24 часа. Пожалуйста, подождите.');
         return;
       }
 
-      console.log('Создание заявки:', { sessionId, amountValue, userName });
       const ticket = await TicketService.create(sessionId, String(amountValue), userName);
-      console.log('Заявка создана:', ticket);
 
       const message = `🔔 *Новая заявка #${ticket.id}*\n\n👤 *Имя:* ${userName}\n💰 *Сумма:* ${amountValue} ₽\n\n⏰ Требует внимания!`;
       
@@ -58,17 +54,13 @@ const Index = () => {
         })
       });
 
-      alert('Заявка успешно создана! ID: ' + ticket.id);
-
       const chatWidget = document.querySelector('[data-chat-widget]');
       if (chatWidget) {
         (chatWidget as HTMLButtonElement).click();
       }
     } catch (error: any) {
-      console.error('ПОЛНАЯ ОШИБКА:', error);
-      console.error('Сообщение ошибки:', error?.message);
-      console.error('Детали ошибки:', JSON.stringify(error, null, 2));
-      alert('Ошибка: ' + (error?.message || 'Попробуйте позже'));
+      console.error('Ошибка создания заявки:', error);
+      alert('Ошибка создания заявки. Попробуйте позже.');
     }
   };
 
