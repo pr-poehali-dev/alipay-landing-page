@@ -1,27 +1,26 @@
 {
   "tests": [
     {
-      "name": "Send chat message",
+      "name": "Create payment request",
       "method": "POST",
       "path": "/",
       "body": {
-        "sessionId": "test-session-123",
-        "message": "Тестовое сообщение",
-        "isAdmin": false,
-        "imageUrl": ""
+        "sessionId": "test-session-999",
+        "amount": "1500"
       },
       "expectedStatus": 201,
       "expectedBody": {
         "id": "number",
         "session_id": "string",
-        "message": "string"
+        "amount": "string",
+        "status": "pending"
       },
       "bodyMatcher": "partial"
     },
     {
-      "name": "Get chat messages",
+      "name": "Get requests by session",
       "method": "GET",
-      "path": "/?sessionId=test-session-123",
+      "path": "/?sessionId=test-session-999",
       "expectedStatus": 200,
       "expectedBody": "array",
       "bodyMatcher": "type"

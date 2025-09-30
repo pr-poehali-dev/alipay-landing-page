@@ -4,13 +4,14 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from typing import Dict, Any
 from datetime import datetime, timedelta
+from decimal import Decimal
 import requests
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: API для управления тикетами - создание, получение, обновление, админ-панель
+    Business: API для управления заявками на пополнение - создание, получение, обновление
     Args: event с httpMethod, body, queryStringParameters, headers
-    Returns: HTTP ответ с данными тикета или списком всех тикетов
+    Returns: HTTP ответ с данными заявки или списком всех заявок
     '''
     method: str = event.get('httpMethod', 'GET')
     headers = event.get('headers', {})
@@ -31,30 +32,25 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     db_url = os.environ.get('DATABASE_URL')
     conn = psycopg2.connect(db_url)
-    conn.autocommit = False
-    
-    schema_name = 't_p7235020_alipay_landing_page'
     
     try:
         if method == 'POST':
             body_data = json.loads(event.get('body', '{}'))
             session_id = body_data.get('sessionId')
-            title = body_data.get('title')
             amount = body_data.get('amount')
-            user_name = body_data.get('userName')
             
-            if not session_id or not title:
+            if not session_id or not amount:
                 return {
                     'statusCode': 400,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'body': json.dumps({'error': 'sessionId и title обязательны'}),
+                    'body': json.dumps({'error': 'sessionId и amount обязательны'}),
                     'isBase64Encoded': False
                 }
             
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 time_limit = datetime.now() - timedelta(hours=24)
                 cur.execute(
-                    f"SELECT COUNT(*) as count FROM {schema_name}.tickets WHERE session_id = %s AND created_at > %s",
+                    "SELECT COUNT(*) as count FROM payment_requests WHERE session_id = %s AND created_at > %s",
                     (session_id, time_limit)
                 )
                 count = cur.fetchone()['count']
@@ -68,19 +64,26 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     }
                 
                 cur.execute(
-                    f"""INSERT INTO {schema_name}.tickets (session_id, title, amount, user_name, status)
-                       VALUES (%s, %s, %s, %s, 'open') RETURNING id, session_id, title, amount, user_name, status, 
-                       created_at, updated_at""",
-                    (session_id, title, amount, user_name)
+                    """INSERT INTO payment_requests (session_id, amount, status)
+                       VALUES (%s, %s, 'pending') RETURNING id, session_id, amount, status, created_at""",
+                    (session_id, float(amount))
                 )
-                ticket = dict(cur.fetchone())
+                row = cur.fetchone()
                 conn.commit()
+                
+                request = {
+                    'id': row['id'],
+                    'session_id': row['session_id'],
+                    'amount': str(row['amount']),
+                    'status': row['status'],
+                    'created_at': row['created_at'].isoformat()
+                }
                 
                 telegram_token = os.environ.get('TELEGRAM_BOT_TOKEN')
                 telegram_chat = os.environ.get('TELEGRAM_CHAT_ID')
                 
                 if telegram_token and telegram_chat:
-                    message = f"🔔 *Новая заявка #{ticket['id']}*\n\n👤 *Имя:* {user_name}\n💰 *Сумма:* {amount} ₽\n\n⏰ Требует внимания!"
+                    message = f"🔔 *Новая заявка #{request['id']}*\n\n💰 *Сумма:* {amount} ₽\n\n⏰ Требует внимания!"
                     try:
                         requests.post(
                             f"https://api.telegram.org/bot{telegram_token}/sendMessage",
@@ -94,13 +97,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     except Exception:
                         pass
                 
-                ticket['created_at'] = ticket['created_at'].isoformat()
-                ticket['updated_at'] = ticket['updated_at'].isoformat()
-                
                 return {
                     'statusCode': 201,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'body': json.dumps(ticket),
+                    'body': json.dumps(request),
                     'isBase64Encoded': False
                 }
         
@@ -113,37 +113,30 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     if status_filter:
                         cur.execute(
-                            f"""SELECT id, session_id, title, amount, user_name, status, created_at, updated_at 
-                               FROM {schema_name}.tickets WHERE status = %s ORDER BY created_at DESC""",
+                            """SELECT id, session_id, amount, status, created_at 
+                               FROM payment_requests WHERE status = %s ORDER BY created_at DESC""",
                             (status_filter,)
                         )
                     else:
                         cur.execute(
-                            f"""SELECT id, session_id, title, amount, user_name, status, created_at, updated_at 
-                               FROM {schema_name}.tickets ORDER BY created_at DESC"""
+                            """SELECT id, session_id, amount, status, created_at 
+                               FROM payment_requests ORDER BY created_at DESC"""
                         )
                     
-                    tickets = [dict(row) for row in cur.fetchall()]
-                    
-                    for ticket in tickets:
-                        ticket['created_at'] = ticket['created_at'].isoformat()
-                        ticket['updated_at'] = ticket['updated_at'].isoformat()
-                        
-                        cur.execute(
-                            f"SELECT id, ticket_id, sender, text, image_url, created_at FROM {schema_name}.messages WHERE ticket_id = %s ORDER BY created_at ASC",
-                            (ticket['id'],)
-                        )
-                        messages = [dict(msg) for msg in cur.fetchall()]
-                        
-                        for msg in messages:
-                            msg['created_at'] = msg['created_at'].isoformat()
-                        
-                        ticket['messages'] = messages
+                    requests_list = []
+                    for row in cur.fetchall():
+                        requests_list.append({
+                            'id': row['id'],
+                            'session_id': row['session_id'],
+                            'amount': str(row['amount']),
+                            'status': row['status'],
+                            'created_at': row['created_at'].isoformat()
+                        })
                     
                     return {
                         'statusCode': 200,
                         'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                        'body': json.dumps(tickets),
+                        'body': json.dumps(requests_list),
                         'isBase64Encoded': False
                     }
             else:
@@ -159,39 +152,44 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     cur.execute(
-                        f"SELECT id, session_id, title, amount, user_name, status, created_at, updated_at FROM {schema_name}.tickets WHERE session_id = %s ORDER BY created_at DESC",
+                        "SELECT id, session_id, amount, status, created_at FROM payment_requests WHERE session_id = %s ORDER BY created_at DESC",
                         (session_id,)
                     )
-                    tickets = [dict(row) for row in cur.fetchall()]
                     
-                    for ticket in tickets:
-                        ticket['created_at'] = ticket['created_at'].isoformat()
-                        ticket['updated_at'] = ticket['updated_at'].isoformat()
+                    requests_list = []
+                    for row in cur.fetchall():
+                        requests_list.append({
+                            'id': row['id'],
+                            'session_id': row['session_id'],
+                            'amount': str(row['amount']),
+                            'status': row['status'],
+                            'created_at': row['created_at'].isoformat()
+                        })
                     
                     return {
                         'statusCode': 200,
                         'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                        'body': json.dumps(tickets),
+                        'body': json.dumps(requests_list),
                         'isBase64Encoded': False
                     }
         
         elif method == 'PUT':
             body_data = json.loads(event.get('body', '{}'))
-            ticket_id = body_data.get('ticketId')
+            request_id = body_data.get('requestId')
             status = body_data.get('status')
             
-            if not ticket_id or not status:
+            if not request_id or not status:
                 return {
                     'statusCode': 400,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'body': json.dumps({'error': 'ticketId и status обязательны'}),
+                    'body': json.dumps({'error': 'requestId и status обязательны'}),
                     'isBase64Encoded': False
                 }
             
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute(
-                    f"UPDATE {schema_name}.tickets SET status = %s, updated_at = CURRENT_TIMESTAMP WHERE id = %s RETURNING id, status, updated_at",
-                    (status, ticket_id)
+                    "UPDATE payment_requests SET status = %s WHERE id = %s RETURNING id, status",
+                    (status, request_id)
                 )
                 result = cur.fetchone()
                 conn.commit()
@@ -200,17 +198,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     return {
                         'statusCode': 404,
                         'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                        'body': json.dumps({'error': 'Тикет не найден'}),
+                        'body': json.dumps({'error': 'Заявка не найдена'}),
                         'isBase64Encoded': False
                     }
                 
-                ticket = dict(result)
-                ticket['updated_at'] = ticket['updated_at'].isoformat()
+                request = {'id': result['id'], 'status': result['status']}
                 
                 return {
                     'statusCode': 200,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'body': json.dumps(ticket),
+                    'body': json.dumps(request),
                     'isBase64Encoded': False
                 }
         

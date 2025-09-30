@@ -1,3 +1,5 @@
 {
-  "tickets": "https://functions.poehali.dev/8026df96-a88c-4386-b9a2-753c6faa2f4c"
+  "payment-requests": "https://functions.poehali.dev/8b783943-0d99-40ca-9f51-6f816b6d01a0",
+  "messages": "https://functions.poehali.dev/55ffc95c-6162-4458-8c6e-8d11555582da",
+  "telegram-notify": "https://functions.poehali.dev/f63ca5dd-7e46-4b75-af31-feb8ab1d6d4a"
 }

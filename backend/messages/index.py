@@ -6,7 +6,7 @@ from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: API для управления сообщениями в тикетах
+    Business: API для управления сообщениями в чате заявок
     Args: event с httpMethod, body, queryStringParameters
     Returns: HTTP ответ с данными сообщений
     '''
@@ -27,31 +27,28 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     db_url = os.environ.get('DATABASE_URL')
     conn = psycopg2.connect(db_url)
-    conn.autocommit = False
-    
-    schema_name = 't_p7235020_alipay_landing_page'
     
     try:
         if method == 'POST':
             body_data = json.loads(event.get('body', '{}'))
-            ticket_id = body_data.get('ticketId')
-            sender = body_data.get('sender')
-            text = body_data.get('text', '')
+            session_id = body_data.get('sessionId')
+            message_text = body_data.get('message', '')
             image_url = body_data.get('imageUrl', '')
+            is_admin = body_data.get('isAdmin', False)
             
-            if not ticket_id or not sender:
+            if not session_id:
                 return {
                     'statusCode': 400,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'body': json.dumps({'error': 'ticketId и sender обязательны'}),
+                    'body': json.dumps({'error': 'sessionId обязателен'}),
                     'isBase64Encoded': False
                 }
             
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute(
-                    f"""INSERT INTO {schema_name}.messages (ticket_id, sender, text, image_url)
-                       VALUES (%s, %s, %s, %s) RETURNING id, ticket_id, sender, text, image_url, created_at""",
-                    (ticket_id, sender, text, image_url)
+                    """INSERT INTO chat_messages (session_id, message, is_admin, image_url)
+                       VALUES (%s, %s, %s, %s) RETURNING id, session_id, message, is_admin, image_url, created_at""",
+                    (session_id, message_text, is_admin, image_url)
                 )
                 message = dict(cur.fetchone())
                 conn.commit()
@@ -67,25 +64,25 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         elif method == 'GET':
             params = event.get('queryStringParameters', {}) or {}
-            ticket_id = params.get('ticketId')
+            session_id = params.get('sessionId')
             
-            if not ticket_id:
+            if not session_id:
                 return {
                     'statusCode': 400,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'body': json.dumps({'error': 'ticketId обязателен'}),
+                    'body': json.dumps({'error': 'sessionId обязателен'}),
                     'isBase64Encoded': False
                 }
             
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute(
-                    f"SELECT id, ticket_id, sender, text, image_url, created_at FROM {schema_name}.messages WHERE ticket_id = %s ORDER BY created_at ASC",
-                    (ticket_id,)
+                    "SELECT id, session_id, message, is_admin, image_url, created_at FROM chat_messages WHERE session_id = %s ORDER BY created_at ASC",
+                    (session_id,)
                 )
                 messages = [dict(row) for row in cur.fetchall()]
                 
-                for message in messages:
-                    message['created_at'] = message['created_at'].isoformat()
+                for msg in messages:
+                    msg['created_at'] = msg['created_at'].isoformat()
                 
                 return {
                     'statusCode': 200,

@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { TicketStorage } from "@/lib/localStorage";
+const API_URL_REQUESTS = 'https://functions.poehali.dev/8b783943-0d99-40ca-9f51-6f816b6d01a0';
 
 const TELEGRAM_BOT_TOKEN = '8415994300:AAFRN1T0Ih8mKTTy9L8FG89utMRKZJ0_7_c';
 const TELEGRAM_CHAT_ID = '-1002938818696';
@@ -19,13 +19,6 @@ const Index = () => {
       'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('chat_session_id', sessionId);
 
-    // Проверка лимита
-    const lastTickets = TicketStorage.getRecentTickets(sessionId, 1440);
-    if (lastTickets.length >= 5) {
-      alert('Вы можете создать максимум 5 заявок за 24 часа. Пожалуйста, подождите.');
-      return;
-    }
-
     if (!userName.trim()) {
       alert('Пожалуйста, введите ваше имя');
       return;
@@ -37,36 +30,31 @@ const Index = () => {
       return;
     }
 
-    // Создаём тикет
-    const ticket = TicketStorage.create(
-      sessionId,
-      `Заявка на пополнение AliPay от ${userName}`,
-      String(amountValue),
-      userName
-    );
-
-    // Send Telegram notification
     try {
-      const message = `🔔 *Новая заявка #${ticket.id}*\n\n👤 *Имя:* ${userName}\n💰 *Сумма:* ${amountValue} ₽\n\n⏰ Требует внимания!`;
-      
-      await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      const response = await fetch(API_URL_REQUESTS, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          chat_id: TELEGRAM_CHAT_ID,
-          text: message,
-          parse_mode: 'Markdown'
+          sessionId,
+          amount: String(amountValue)
         })
       });
-    } catch (error) {
-      console.error('Ошибка отправки уведомления:', error);
-    }
 
-    const chatWidget = document.querySelector('[data-chat-widget]');
-    if (chatWidget) {
-      (chatWidget as HTMLButtonElement).click();
+      if (!response.ok) {
+        const error = await response.json();
+        alert(error.error || 'Ошибка создания заявки');
+        return;
+      }
+
+      const chatWidget = document.querySelector('[data-chat-widget]');
+      if (chatWidget) {
+        (chatWidget as HTMLButtonElement).click();
+      }
+    } catch (error) {
+      console.error('Ошибка создания заявки:', error);
+      alert('Ошибка создания заявки. Попробуйте позже.');
     }
   };
 
