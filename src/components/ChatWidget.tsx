@@ -82,21 +82,6 @@ export default function ChatWidget() {
     }
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 10 * 1024 * 1024) {
-        alert('PDF слишком большой. Максимум 10 МБ');
-        return;
-      }
-      if (file.type !== 'application/pdf') {
-        alert('Можно загружать только PDF файлы');
-        return;
-      }
-      setSelectedFile(file);
-    }
-  };
-
   const clearImage = () => {
     setSelectedImage(null);
     if (imagePreview) {
