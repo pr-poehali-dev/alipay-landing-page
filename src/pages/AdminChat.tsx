@@ -5,7 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { MessageService, Message } from "@/lib/supabase";
+import { MessageService, Message, supabase, Ticket } from "@/lib/supabase";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const AdminChat = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
@@ -15,6 +22,7 @@ const AdminChat = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [selectedManager, setSelectedManager] = useState<string>('AliPay Service');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -84,8 +92,9 @@ const AdminChat = () => {
         sessionId, 
         inputMessage || '', 
         true,
-        'Менеджер',
-        imageUrl
+        null,
+        imageUrl,
+        selectedManager
       );
 
       setInputMessage('');
@@ -122,6 +131,18 @@ const AdminChat = () => {
               <p className="text-xs text-gray-500">Session: {sessionId?.substring(0, 20)}...</p>
             </div>
           </div>
+          <Select value={selectedManager} onValueChange={setSelectedManager}>
+            <SelectTrigger className="w-48">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="AliPay Service">AliPay Service</SelectItem>
+              <SelectItem value="Кристина">Кристина</SelectItem>
+              <SelectItem value="Евгений">Евгений</SelectItem>
+              <SelectItem value="Георгий">Георгий</SelectItem>
+              <SelectItem value="Василий">Василий</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </header>
 

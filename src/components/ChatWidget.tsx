@@ -160,7 +160,7 @@ export default function ChatWidget() {
                 <div className="flex flex-col gap-1">
                   {msg.is_admin && (
                     <span className="text-xs text-gray-500 px-2">
-                      Менеджер
+                      Менеджер {msg.manager_name || 'AliPay Service'}
                     </span>
                   )}
                   <div

@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { TicketService } from "@/lib/supabase";
+import { TicketService, MessageService } from "@/lib/supabase";
 
 const TELEGRAM_BOT_TOKEN = '8415994300:AAFRN1T0Ih8mKTTy9L8FG89utMRKZJ0_7_c';
 const TELEGRAM_CHAT_ID = '-1002938818696';
@@ -39,6 +39,24 @@ const Index = () => {
       }
 
       const ticket = await TicketService.create(sessionId, String(amountValue), userName);
+
+      await MessageService.sendMessage(
+        sessionId,
+        `Я хочу пополнить кошелёк на сумму ${amountValue} ₽`,
+        false,
+        userName,
+        null,
+        null
+      );
+
+      await MessageService.sendMessage(
+        sessionId,
+        'Менеджер подключился в чат',
+        true,
+        null,
+        null,
+        'AliPay Service'
+      );
 
       const message = `🔔 *Новая заявка #${ticket.id}*\n\n👤 *Имя:* ${userName}\n💰 *Сумма:* ${amountValue} ₽\n\n⏰ Требует внимания!`;
       

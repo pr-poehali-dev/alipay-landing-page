@@ -83,6 +83,15 @@ const Admin = () => {
     }
   };
 
+  const handleManagerChange = async (ticketId: number, newManager: Ticket['manager']) => {
+    try {
+      await TicketService.updateManager(ticketId, newManager);
+      setTickets(tickets.map(t => t.id === ticketId ? { ...t, manager: newManager } : t));
+    } catch (error) {
+      console.error('Ошибка обновления менеджера:', error);
+    }
+  };
+
   const getStatusBadge = (status: Ticket['status']) => {
     const statusConfig = {
       'новая': { color: 'bg-gray-100 text-gray-800', label: 'Новая' },
@@ -247,6 +256,7 @@ const Admin = () => {
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Имя</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Сумма</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Статус</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Менеджер</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Дата</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Session ID</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Чат</th>
@@ -300,6 +310,34 @@ const Admin = () => {
                                   Успешный платеж
                                 </span>
                               </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap">
+                          <Select 
+                            value={ticket.manager || 'unassigned'} 
+                            onValueChange={(value) => handleManagerChange(ticket.id, value === 'unassigned' ? null : value as Ticket['manager'])}
+                          >
+                            <SelectTrigger className="w-36">
+                              <SelectValue placeholder="Не назначен">
+                                {ticket.manager ? (
+                                  <span className="flex items-center">
+                                    <Icon name="UserCheck" size={14} className="mr-1" />
+                                    {ticket.manager}
+                                  </span>
+                                ) : (
+                                  <span className="text-gray-400">Не назначен</span>
+                                )}
+                              </SelectValue>
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="unassigned">
+                                <span className="text-gray-400">Не назначен</span>
+                              </SelectItem>
+                              <SelectItem value="Кристина">Кристина</SelectItem>
+                              <SelectItem value="Евгений">Евгений</SelectItem>
+                              <SelectItem value="Георгий">Георгий</SelectItem>
+                              <SelectItem value="Василий">Василий</SelectItem>
                             </SelectContent>
                           </Select>
                         </td>
