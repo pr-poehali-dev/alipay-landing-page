@@ -23,6 +23,7 @@ const Admin = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [prevTicketCount, setPrevTicketCount] = useState(0);
+  const [onlineCount, setOnlineCount] = useState(0);
 
   const ADMIN_PASSWORD = 'admin123';
 
@@ -82,6 +83,24 @@ const Admin = () => {
     const interval = setInterval(loadTickets, 3000);
     return () => clearInterval(interval);
   }, [isAuthenticated, prevTicketCount]);
+
+  useEffect(() => {
+    const fetchOnline = async () => {
+      try {
+        const res = await fetch('https://functions.poehali.dev/55ffc95c-6162-4458-8c6e-8d11555582da?action=online');
+        if (res.ok) {
+          const data = await res.json();
+          setOnlineCount(data.online_count || 0);
+        }
+      } catch (e) {
+        console.error('Online count error:', e);
+      }
+    };
+
+    fetchOnline();
+    const interval = setInterval(fetchOnline, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogout = () => {
     setIsAuthenticated(false);
@@ -196,7 +215,7 @@ const Admin = () => {
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -220,6 +239,21 @@ const Admin = () => {
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                   <Icon name="DollarSign" size={24} className="text-green-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Онлайн на сайте</p>
+                  <p className="text-3xl font-bold">{onlineCount}</p>
+                </div>
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center relative">
+                  <Icon name="Users" size={24} className="text-purple-600" />
+                  <div className="absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                 </div>
               </div>
             </CardContent>

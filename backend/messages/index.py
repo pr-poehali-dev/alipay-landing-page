@@ -3,6 +3,7 @@ import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from typing import Dict, Any
+from datetime import datetime, timedelta
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -65,6 +66,43 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         elif method == 'GET':
             params = event.get('queryStringParameters', {}) or {}
             session_id = params.get('sessionId')
+            action = params.get('action')
+            
+            if action == 'online':
+                session_to_update = params.get('session')
+                
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    if session_to_update:
+                        user_agent = event.get('headers', {}).get('user-agent', '')
+                        cur.execute('''
+                            INSERT INTO t_p7235020_alipay_landing_page.online_users 
+                            (session_id, last_seen, user_agent)
+                            VALUES (%s, CURRENT_TIMESTAMP, %s)
+                            ON CONFLICT (session_id) 
+                            DO UPDATE SET last_seen = CURRENT_TIMESTAMP
+                        ''', (session_to_update, user_agent))
+                        conn.commit()
+                    
+                    threshold = (datetime.now() - timedelta(seconds=30)).strftime('%Y-%m-%d %H:%M:%S')
+                    cur.execute('''
+                        DELETE FROM t_p7235020_alipay_landing_page.online_users 
+                        WHERE last_seen < %s
+                    ''', (threshold,))
+                    conn.commit()
+                    
+                    cur.execute('''
+                        SELECT COUNT(*) as count 
+                        FROM t_p7235020_alipay_landing_page.online_users
+                    ''')
+                    result = cur.fetchone()
+                    count = result['count'] if result else 0
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'online_count': count}),
+                        'isBase64Encoded': False
+                    }
             
             if not session_id:
                 return {
