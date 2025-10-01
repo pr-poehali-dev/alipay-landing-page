@@ -115,6 +115,10 @@ export const TicketService = {
   },
 
   async updateManager(id: number, manager: Ticket['manager']) {
+    if (!manager) {
+      throw new Error('Менеджер не выбран');
+    }
+
     const { data, error } = await supabase
       .from('tickets')
       .update({ manager })
@@ -122,7 +126,15 @@ export const TicketService = {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase error:', error);
+      throw new Error(`Ошибка обновления: ${error.message}`);
+    }
+    
+    if (!data) {
+      throw new Error('Не удалось обновить менеджера');
+    }
+    
     return data as Ticket;
   },
 

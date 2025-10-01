@@ -31,6 +31,7 @@ const AdminChat = () => {
   useEffect(() => {
     if (sessionId) {
       loadMessages();
+      loadTicketManager();
       const interval = setInterval(loadMessages, 2000);
       return () => clearInterval(interval);
     }
@@ -51,6 +52,25 @@ const AdminChat = () => {
       setMessages(data);
     } catch (error) {
       console.error('Ошибка загрузки сообщений:', error);
+    }
+  };
+
+  const loadTicketManager = async () => {
+    if (!sessionId) return;
+    try {
+      const { data, error } = await supabase
+        .from('tickets')
+        .select('manager')
+        .eq('session_id', sessionId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (data && data.manager) {
+        setSelectedManager(data.manager);
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки менеджера:', error);
     }
   };
 
@@ -158,7 +178,27 @@ const AdminChat = () => {
               <p className="text-xs text-gray-500">Session: {sessionId?.substring(0, 20)}...</p>
             </div>
           </div>
-          <Select value={selectedManager} onValueChange={setSelectedManager}>
+          <Select 
+            value={selectedManager} 
+            onValueChange={async (value) => {
+              setSelectedManager(value);
+              
+              if (!sessionId) return;
+              try {
+                const { data, error } = await supabase
+                  .from('tickets')
+                  .update({ manager: value })
+                  .eq('session_id', sessionId)
+                  .select();
+
+                if (error) {
+                  console.error('Ошибка обновления менеджера:', error);
+                }
+              } catch (error) {
+                console.error('Ошибка сохранения менеджера:', error);
+              }
+            }}
+          >
             <SelectTrigger className="w-48">
               <SelectValue />
             </SelectTrigger>
