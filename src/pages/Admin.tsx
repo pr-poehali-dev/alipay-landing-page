@@ -5,7 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase, Ticket } from "@/lib/supabase";
+import { supabase, Ticket, TicketService } from "@/lib/supabase";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -14,6 +21,7 @@ const Admin = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
 
   const ADMIN_PASSWORD = 'admin123';
 
@@ -58,11 +66,37 @@ const Admin = () => {
     setPassword('');
   };
 
-  const filteredTickets = tickets.filter(ticket => 
-    ticket.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ticket.amount.includes(searchTerm) ||
-    ticket.session_id.includes(searchTerm)
-  );
+  const filteredTickets = tickets.filter(ticket => {
+    const matchesSearch = ticket.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ticket.amount.includes(searchTerm) ||
+      ticket.session_id.includes(searchTerm);
+    const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  const handleStatusChange = async (ticketId: number, newStatus: Ticket['status']) => {
+    try {
+      await TicketService.updateStatus(ticketId, newStatus);
+      setTickets(tickets.map(t => t.id === ticketId ? { ...t, status: newStatus } : t));
+    } catch (error) {
+      console.error('Ошибка обновления статуса:', error);
+    }
+  };
+
+  const getStatusBadge = (status: Ticket['status']) => {
+    const statusConfig = {
+      'новая': { color: 'bg-gray-100 text-gray-800', label: 'Новая' },
+      'обработан': { color: 'bg-purple-100 text-purple-800', label: 'Обработан' },
+      'скам': { color: 'bg-red-100 text-red-800', label: 'Скам' },
+      'успешный платеж': { color: 'bg-green-100 text-green-800', label: 'Успешный платеж' },
+    };
+    const config = statusConfig[status] || statusConfig['новая'];
+    return (
+      <Badge className={`${config.color} border-0`}>
+        {config.label}
+      </Badge>
+    );
+  };
 
   const totalAmount = tickets.reduce((sum, ticket) => sum + parseFloat(ticket.amount), 0);
 
@@ -171,7 +205,19 @@ const Admin = () => {
           <CardHeader>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <CardTitle>Заявки на пополнение</CardTitle>
-              <div className="w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-full sm:w-48">
+                    <SelectValue placeholder="Все статусы" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Все статусы</SelectItem>
+                    <SelectItem value="новая">Новая</SelectItem>
+                    <SelectItem value="обработан">Обработан</SelectItem>
+                    <SelectItem value="скам">Скам</SelectItem>
+                    <SelectItem value="успешный платеж">Успешный платеж</SelectItem>
+                  </SelectContent>
+                </Select>
                 <Input
                   placeholder="Поиск по имени, сумме, ID..."
                   value={searchTerm}
@@ -200,6 +246,7 @@ const Admin = () => {
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Имя</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Сумма</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Статус</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Дата</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Session ID</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Чат</th>
@@ -219,6 +266,42 @@ const Admin = () => {
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap">
                           <span className="text-green-600 font-semibold">{ticket.amount} ₽</span>
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap">
+                          <Select 
+                            value={ticket.status} 
+                            onValueChange={(value) => handleStatusChange(ticket.id, value as Ticket['status'])}
+                          >
+                            <SelectTrigger className="w-44">
+                              <SelectValue>{getStatusBadge(ticket.status)}</SelectValue>
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="новая">
+                                <span className="flex items-center">
+                                  <span className="w-2 h-2 rounded-full bg-gray-500 mr-2"></span>
+                                  Новая
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="обработан">
+                                <span className="flex items-center">
+                                  <span className="w-2 h-2 rounded-full bg-purple-500 mr-2"></span>
+                                  Обработан
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="скам">
+                                <span className="flex items-center">
+                                  <span className="w-2 h-2 rounded-full bg-red-500 mr-2"></span>
+                                  Скам
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="успешный платеж">
+                                <span className="flex items-center">
+                                  <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+                                  Успешный платеж
+                                </span>
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                           {new Date(ticket.created_at).toLocaleString('ru-RU', {

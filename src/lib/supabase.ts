@@ -10,6 +10,7 @@ export interface Ticket {
   session_id: string;
   amount: string;
   user_name: string;
+  status: 'новая' | 'обработан' | 'скам' | 'успешный платеж';
   created_at: string;
 }
 
@@ -74,6 +75,18 @@ export const TicketService = {
       .insert([
         { session_id: sessionId, amount, user_name: userName }
       ])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data as Ticket;
+  },
+
+  async updateStatus(id: number, status: Ticket['status']) {
+    const { data, error } = await supabase
+      .from('tickets')
+      .update({ status })
+      .eq('id', id)
       .select()
       .single();
 
