@@ -11,6 +11,7 @@ export interface Ticket {
   amount: string;
   user_name: string;
   status: 'новая' | 'обработан' | 'скам' | 'успешный платеж';
+  manager: 'Кристина' | 'Евгений' | 'Георгий' | 'Василий' | null;
   created_at: string;
 }
 
@@ -21,15 +22,16 @@ export interface Message {
   message: string;
   is_admin: boolean;
   image_url: string | null;
+  manager_name: string | null;
   created_at: string;
 }
 
 export const MessageService = {
-  async sendMessage(sessionId: string, message: string, isAdmin: boolean = false, userName: string | null = null, imageUrl: string | null = null) {
+  async sendMessage(sessionId: string, message: string, isAdmin: boolean = false, userName: string | null = null, imageUrl: string | null = null, managerName: string | null = null) {
     const { data, error } = await supabase
       .from('messages')
       .insert([
-        { session_id: sessionId, message, is_admin: isAdmin, user_name: userName, image_url: imageUrl }
+        { session_id: sessionId, message, is_admin: isAdmin, user_name: userName, image_url: imageUrl, manager_name: managerName }
       ])
       .select()
       .single();
@@ -86,6 +88,18 @@ export const TicketService = {
     const { data, error } = await supabase
       .from('tickets')
       .update({ status })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data as Ticket;
+  },
+
+  async updateManager(id: number, manager: Ticket['manager']) {
+    const { data, error } = await supabase
+      .from('tickets')
+      .update({ manager })
       .eq('id', id)
       .select()
       .single();
