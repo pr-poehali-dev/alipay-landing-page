@@ -67,6 +67,24 @@ export const MessageService = {
       .getPublicUrl(filePath);
 
     return data.publicUrl;
+  },
+
+  async uploadFile(file: File): Promise<string> {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
+    const filePath = `chat-files/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('images')
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data } = supabase.storage
+      .from('images')
+      .getPublicUrl(filePath);
+
+    return data.publicUrl;
   }
 };
 
@@ -120,5 +138,14 @@ export const TicketService = {
 
     if (error) throw error;
     return data as Ticket[];
+  },
+
+  async delete(id: number) {
+    const { error } = await supabase
+      .from('tickets')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
   }
 };

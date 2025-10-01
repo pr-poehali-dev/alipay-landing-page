@@ -89,6 +89,19 @@ const Admin = () => {
       setTickets(tickets.map(t => t.id === ticketId ? { ...t, manager: newManager } : t));
     } catch (error) {
       console.error('Ошибка обновления менеджера:', error);
+      alert('Ошибка назначения менеджера');
+    }
+  };
+
+  const handleDeleteTicket = async (ticketId: number) => {
+    if (!confirm('Удалить заявку? Это действие нельзя отменить.')) return;
+    
+    try {
+      await TicketService.delete(ticketId);
+      setTickets(tickets.filter(t => t.id !== ticketId));
+    } catch (error) {
+      console.error('Ошибка удаления:', error);
+      alert('Ошибка удаления заявки');
     }
   };
 
@@ -259,7 +272,7 @@ const Admin = () => {
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Менеджер</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Дата</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Session ID</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Чат</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Действия</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
@@ -354,14 +367,24 @@ const Admin = () => {
                           {ticket.session_id.substring(0, 20)}...
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap">
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => navigate(`/admin/chat/${ticket.session_id}`)}
-                          >
-                            <Icon name="MessageCircle" size={16} className="mr-1" />
-                            Чат
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => navigate(`/admin/chat/${ticket.session_id}`)}
+                            >
+                              <Icon name="MessageCircle" size={16} className="mr-1" />
+                              Чат
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => handleDeleteTicket(ticket.id)}
+                              className="hover:bg-red-50"
+                            >
+                              <Icon name="Trash2" size={16} className="text-red-500" />
+                            </Button>
+                          </div>
                         </td>
                       </tr>
                     ))}
