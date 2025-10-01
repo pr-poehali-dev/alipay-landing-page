@@ -28,20 +28,10 @@ const Admin = () => {
 
   const playNotificationSound = () => {
     try {
-      console.log('🔔 Попытка воспроизвести звук');
-      
       const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzGJ0fPTgjMGHG2+8OOZSg0PVqzn77JZFAw+lcvs2H4sBS1+zPLaizsIDFun6fCsWhQMQ5zd8L1nHgg3j9T0yH0pBSt6x/HejDsIEGS58OScTQ0OUqrm8LVgGgY6lNXyyX0qBSx+zPDaizsIDFun6fCsWhQMQ5zd8L1nHgg3j9T0yH0pBSt6x/HejDsIEGS58OScTQ0OUqrm8LVgGgY6lNXyyX0qBSx+zPDaizsIDFun6fCsWhQMQ5zd8L1nHgg3j9T0yH0pBSt6x/HejDsIEGS58OScTQ0OUqrm8LVgGgY6lNXyyX0qBSx+zPDaizsIDFun6fCsWhQMQ5zd8L1nHgg3j9T0yH0pBSt6x/HejDsIEGS58OScTQ0OUqrm8LVgGgY6lNXyyX0qBSx+zPDaizsIDFun6fCsWhQMQ5zd8L1nHgg3j9T0yH0pBSt6x/HejDsIEGS58OScTQ0OUqrm8LVgGgY6lNXyyX0qBSx+zPDaizsIDFun6fCsWhQMQ5zd8L1nHgg3j9T0yH0pBSt6x/HejDsIEGS58OScTQ0OUqrm8LVgGgY6lNXyyX0qBSx+zPDaizsIDFun6fCsWhQMQ5zd8L1nHgg3j9T0yH0pBSt6x/HejDsIEGS58OScTQ0OUqrm8LVgGg==');
-      audio.volume = 0.5;
-      
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => console.log('✅ Звук воспроизведен'))
-          .catch(e => console.log('❌ Ошибка звука:', e));
-      }
-    } catch (e) {
-      console.log('❌ Звук не поддерживается:', e);
-    }
+      audio.volume = 0.7;
+      audio.play().catch(() => {});
+    } catch (e) {}
   };
 
   const handleLogin = () => {
@@ -66,12 +56,7 @@ const Admin = () => {
       
       const newData = data || [];
       if (prevTicketCount > 0 && newData.length > prevTicketCount) {
-        console.log('🎉 Обнаружена новая заявка!', newData.length, 'vs', prevTicketCount);
         playNotificationSound();
-        const latestTicket = newData[0];
-        setTimeout(() => {
-          alert(`🎉 Новая заявка от ${latestTicket.user_name} на сумму ${latestTicket.amount}`);
-        }, 100);
       }
       
       setTickets(newData);
