@@ -71,11 +71,34 @@ const Admin = () => {
           const newTicket = payload.new as Ticket;
           setTickets(prev => [newTicket, ...prev]);
           
-          const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
-          audio.play().catch(() => {});
+          const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.value = 800;
+          oscillator.type = 'sine';
+          gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+          
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.5);
+          
+          if (Notification.permission === 'granted') {
+            new Notification('Новая заявка! 🎉', {
+              body: `От ${newTicket.user_name} на сумму ${newTicket.amount}`,
+              icon: '/favicon.ico'
+            });
+          }
         }
       )
       .subscribe();
+
+    if (Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
 
     return () => {
       subscription.unsubscribe();
