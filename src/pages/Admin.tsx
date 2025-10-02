@@ -24,9 +24,6 @@ const Admin = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [prevTicketCount, setPrevTicketCount] = useState(0);
   const [onlineCount, setOnlineCount] = useState(0);
-  const [theme, setTheme] = useState<'light' | 'dark' | 'gold'>(() => {
-    return (localStorage.getItem('admin_theme') as 'light' | 'dark' | 'gold') || 'light';
-  });
 
   const ADMIN_PASSWORD = 'admin123';
 
@@ -177,56 +174,19 @@ const Admin = () => {
     );
   }
 
-  const themeClasses = {
-    light: {
-      bg: 'bg-gradient-to-br from-blue-50 to-gray-50',
-      header: 'bg-white/80',
-      card: 'bg-white',
-      text: 'text-gray-900',
-      textMuted: 'text-gray-600'
-    },
-    dark: {
-      bg: 'bg-gradient-to-br from-gray-900 to-gray-800',
-      header: 'bg-gray-800/80',
-      card: 'bg-gray-800',
-      text: 'text-white',
-      textMuted: 'text-gray-400'
-    },
-    gold: {
-      bg: 'bg-gradient-to-br from-amber-900 to-yellow-800',
-      header: 'bg-amber-900/80',
-      card: 'bg-amber-900',
-      text: 'text-amber-50',
-      textMuted: 'text-amber-200'
-    }
-  };
 
-  const currentTheme = themeClasses[theme];
 
   return (
-    <div className={`min-h-screen ${currentTheme.bg}`}>
-      <header className={`border-b ${currentTheme.header} backdrop-blur-sm sticky top-0 z-50`}>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50">
+      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
               <Icon name="LayoutDashboard" size={24} className="text-white" />
             </div>
-            <h1 className={`text-lg sm:text-2xl font-bold ${currentTheme.text}`}>Админ-панель</h1>
+            <h1 className="text-lg sm:text-2xl font-bold">Админ-панель</h1>
           </div>
           <div className="flex items-center gap-4">
-            <Select value={theme} onValueChange={(val: 'light' | 'dark' | 'gold') => {
-              setTheme(val);
-              localStorage.setItem('admin_theme', val);
-            }}>
-              <SelectTrigger className="w-36">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="light">Светлая</SelectItem>
-                <SelectItem value="dark">Темная</SelectItem>
-                <SelectItem value="gold">Золотая</SelectItem>
-              </SelectContent>
-            </Select>
             <Button variant="outline" size="sm" onClick={loadTickets}>
               <Icon name="RefreshCw" size={16} className="mr-2" />
               Обновить
@@ -241,12 +201,12 @@ const Admin = () => {
 
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className={currentTheme.card}>
+          <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className={`text-sm ${currentTheme.textMuted}`}>Всего заявок</p>
-                  <p className={`text-3xl font-bold ${currentTheme.text}`}>{tickets.length}</p>
+                  <p className="text-sm text-gray-600">Всего заявок</p>
+                  <p className="text-3xl font-bold">{tickets.length}</p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <Icon name="FileText" size={24} className="text-blue-600" />
@@ -255,12 +215,12 @@ const Admin = () => {
             </CardContent>
           </Card>
 
-          <Card className={currentTheme.card}>
+          <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className={`text-sm ${currentTheme.textMuted}`}>Общая сумма</p>
-                  <p className={`text-3xl font-bold ${currentTheme.text}`}>{totalAmount.toLocaleString()} ₽</p>
+                  <p className="text-sm text-gray-600">Общая сумма</p>
+                  <p className="text-3xl font-bold">{totalAmount.toLocaleString()} ₽</p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                   <Icon name="DollarSign" size={24} className="text-green-600" />
@@ -269,12 +229,12 @@ const Admin = () => {
             </CardContent>
           </Card>
 
-          <Card className={currentTheme.card}>
+          <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className={`text-sm ${currentTheme.textMuted}`}>Онлайн на сайте</p>
-                  <p className={`text-3xl font-bold ${currentTheme.text}`}>{onlineCount}</p>
+                  <p className="text-sm text-gray-600">Онлайн на сайте</p>
+                  <p className="text-3xl font-bold">{onlineCount}</p>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center relative">
                   <Icon name="Users" size={24} className="text-purple-600" />
@@ -284,12 +244,12 @@ const Admin = () => {
             </CardContent>
           </Card>
 
-          <Card className={currentTheme.card}>
+          <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className={`text-sm ${currentTheme.textMuted}`}>Сегодня</p>
-                  <p className={`text-3xl font-bold ${currentTheme.text}`}>
+                  <p className="text-sm text-gray-600">Сегодня</p>
+                  <p className="text-3xl font-bold">
                     {tickets.filter(t => {
                       const today = new Date().toDateString();
                       const ticketDate = new Date(t.created_at).toDateString();
@@ -308,7 +268,7 @@ const Admin = () => {
         <Card className={currentTheme.card}>
           <CardHeader>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <CardTitle className={currentTheme.text}>Заявки на пополнение</CardTitle>
+              <CardTitle>Заявки на пополнение</CardTitle>
               <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-full sm:w-48">
