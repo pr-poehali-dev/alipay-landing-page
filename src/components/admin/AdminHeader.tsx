@@ -4,9 +4,11 @@ import Icon from "@/components/ui/icon";
 interface AdminHeaderProps {
   onRefresh: () => void;
   onLogout: () => void;
+  onToggleSound?: () => void;
+  soundEnabled?: boolean;
 }
 
-export default function AdminHeader({ onRefresh, onLogout }: AdminHeaderProps) {
+export default function AdminHeader({ onRefresh, onLogout, onToggleSound, soundEnabled }: AdminHeaderProps) {
   return (
     <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -17,6 +19,16 @@ export default function AdminHeader({ onRefresh, onLogout }: AdminHeaderProps) {
           <h1 className="text-lg sm:text-2xl font-bold">Админ-панель</h1>
         </div>
         <div className="flex items-center gap-4">
+          {onToggleSound && (
+            <Button 
+              variant={soundEnabled ? "default" : "outline"} 
+              size="sm" 
+              onClick={onToggleSound}
+            >
+              <Icon name={soundEnabled ? "Volume2" : "VolumeX"} size={16} className="mr-2" />
+              {soundEnabled ? "Звук вкл" : "Звук выкл"}
+            </Button>
+          )}
           <Button variant="outline" size="sm" onClick={onRefresh}>
             <Icon name="RefreshCw" size={16} className="mr-2" />
             Обновить

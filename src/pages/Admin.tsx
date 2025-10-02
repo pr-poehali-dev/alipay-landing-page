@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase, Ticket, TicketService, MessageService, BlockService } from "@/lib/supabase";
 import AdminLogin from "@/components/admin/AdminLogin";
@@ -18,6 +18,8 @@ const Admin = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [prevTicketCount, setPrevTicketCount] = useState(0);
   const [onlineCount, setOnlineCount] = useState(0);
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const ADMIN_PASSWORD = 'admin123';
 
@@ -82,6 +84,11 @@ const Admin = () => {
               const newTicket = payload.new as Ticket;
               const unreadCount = await MessageService.getUnreadCount(newTicket.session_id, true);
               setTickets(prev => [{ ...newTicket, unread_messages: unreadCount }, ...prev]);
+              
+              if (soundEnabled && audioRef.current) {
+                audioRef.current.currentTime = 0;
+                audioRef.current.play().catch(e => console.log('Sound blocked:', e));
+              }
             } else if (payload.eventType === 'UPDATE') {
               const updatedTicket = payload.new as Ticket;
               setTickets(prev => prev.map(t => 
@@ -108,6 +115,11 @@ const Admin = () => {
                 }
                 return t;
               }).then(promises => Promise.all(promises)));
+              
+              if (soundEnabled && audioRef.current) {
+                audioRef.current.currentTime = 0;
+                audioRef.current.play().catch(e => console.log('Sound blocked:', e));
+              }
             }
           }
         )
@@ -142,6 +154,22 @@ const Admin = () => {
     setIsAuthenticated(false);
     localStorage.removeItem('admin_auth');
     setPassword('');
+  };
+
+  const toggleSound = () => {
+    if (!soundEnabled) {
+      audioRef.current = new Audio('https://cdn.pixabay.com/audio/2022/03/10/audio_4deabc2110.mp3');
+      audioRef.current.volume = 0.3;
+      audioRef.current.play().then(() => {
+        setSoundEnabled(true);
+      }).catch(e => {
+        console.log('Audio init failed:', e);
+        alert('Не удалось включить звук. Попробуйте ещё раз.');
+      });
+    } else {
+      setSoundEnabled(false);
+      audioRef.current = null;
+    }
   };
 
   const filteredTickets = tickets.filter(ticket => {
@@ -212,7 +240,12 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50">
-      <AdminHeader onRefresh={loadTickets} onLogout={handleLogout} />
+      <AdminHeader 
+        onRefresh={loadTickets} 
+        onLogout={handleLogout}
+        onToggleSound={toggleSound}
+        soundEnabled={soundEnabled}
+      />
 
       <div className="container mx-auto px-4 py-8">
         <AdminStats tickets={tickets} onlineCount={onlineCount} />
