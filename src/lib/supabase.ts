@@ -44,26 +44,38 @@ export const MessageService = {
   },
 
   async markAsRead(sessionId: string, isAdmin: boolean) {
-    const field = isAdmin ? 'read_by_admin' : 'read_by_user';
-    const { error } = await supabase
-      .from('messages')
-      .update({ [field]: true })
-      .eq('session_id', sessionId)
-      .eq(field, false);
+    try {
+      const field = isAdmin ? 'read_by_admin' : 'read_by_user';
+      const { error } = await supabase
+        .from('messages')
+        .update({ [field]: true })
+        .eq('session_id', sessionId)
+        .eq(field, false);
 
-    if (error) throw error;
+      if (error && !error.message.includes('column')) {
+        console.error('markAsRead error:', error);
+      }
+    } catch (e) {
+      console.log('markAsRead not available yet');
+    }
   },
 
   async getUnreadCount(sessionId: string, isAdmin: boolean) {
-    const field = isAdmin ? 'read_by_admin' : 'read_by_user';
-    const { data, error } = await supabase
-      .from('messages')
-      .select('id', { count: 'exact' })
-      .eq('session_id', sessionId)
-      .eq(field, false);
+    try {
+      const field = isAdmin ? 'read_by_admin' : 'read_by_user';
+      const { data, error } = await supabase
+        .from('messages')
+        .select('id', { count: 'exact' })
+        .eq('session_id', sessionId)
+        .eq(field, false);
 
-    if (error) throw error;
-    return data?.length || 0;
+      if (error && !error.message.includes('column')) {
+        console.error('getUnreadCount error:', error);
+      }
+      return data?.length || 0;
+    } catch (e) {
+      return 0;
+    }
   },
 
   async getMessages(sessionId: string) {

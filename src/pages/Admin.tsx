@@ -49,15 +49,23 @@ const Admin = () => {
       
       const newData = data || [];
       
-      const ticketsWithUnread = await Promise.all(
-        newData.map(async (ticket) => {
-          const unreadCount = await MessageService.getUnreadCount(ticket.session_id, true);
-          return { ...ticket, unread_messages: unreadCount };
-        })
-      );
-      
-      setTickets(ticketsWithUnread);
-      setPrevTicketCount(ticketsWithUnread.length);
+      try {
+        const ticketsWithUnread = await Promise.all(
+          newData.map(async (ticket) => {
+            try {
+              const unreadCount = await MessageService.getUnreadCount(ticket.session_id, true);
+              return { ...ticket, unread_messages: unreadCount };
+            } catch (e) {
+              return { ...ticket, unread_messages: 0 };
+            }
+          })
+        );
+        setTickets(ticketsWithUnread);
+        setPrevTicketCount(ticketsWithUnread.length);
+      } catch (e) {
+        setTickets(newData);
+        setPrevTicketCount(newData.length);
+      }
     } catch (error) {
       console.error('Ошибка загрузки заявок:', error);
     } finally {
