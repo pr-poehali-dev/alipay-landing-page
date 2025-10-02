@@ -32,9 +32,10 @@ export interface Message {
 export const BlockService = {
   async isBlocked(sessionId: string): Promise<boolean> {
     const { data } = await supabase
-      .from('blocked_users')
-      .select('id')
+      .from('tickets')
+      .select('is_blocked')
       .eq('session_id', sessionId)
+      .eq('is_blocked', true)
       .maybeSingle();
     
     return !!data;
@@ -42,10 +43,10 @@ export const BlockService = {
 
   async block(sessionId: string, reason: string = 'Нарушение правил') {
     const { data, error } = await supabase
-      .from('blocked_users')
-      .insert([{ session_id: sessionId, reason }])
-      .select()
-      .single();
+      .from('tickets')
+      .update({ is_blocked: true })
+      .eq('session_id', sessionId)
+      .select();
 
     if (error) throw error;
     return data;
@@ -53,8 +54,8 @@ export const BlockService = {
 
   async unblock(sessionId: string) {
     const { error } = await supabase
-      .from('blocked_users')
-      .delete()
+      .from('tickets')
+      .update({ is_blocked: false })
       .eq('session_id', sessionId);
 
     if (error) throw error;

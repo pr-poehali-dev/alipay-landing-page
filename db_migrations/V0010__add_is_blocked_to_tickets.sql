@@ -1,0 +1,2 @@
+ALTER TABLE t_p7235020_alipay_landing_page.tickets 
+ADD COLUMN IF NOT EXISTS is_blocked BOOLEAN DEFAULT FALSE;
