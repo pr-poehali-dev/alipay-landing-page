@@ -173,15 +173,15 @@ export default function TicketsTable({
               </td>
               <td className="px-4 py-4 whitespace-nowrap">
                 <Select 
-                  value={ticket.manager || 'unassigned'} 
+                  value={ticket.assigned_manager || 'unassigned'} 
                   onValueChange={(value) => onManagerChange(ticket.id, value === 'unassigned' ? null : value)}
                 >
                   <SelectTrigger className="w-36">
                     <SelectValue placeholder="Не назначен">
-                      {ticket.manager ? (
+                      {ticket.assigned_manager ? (
                         <span className="flex items-center">
                           <Icon name="UserCheck" size={14} className="mr-1" />
-                          {ticket.manager}
+                          {ticket.assigned_manager}
                         </span>
                       ) : (
                         <span className="text-gray-400">Не назначен</span>

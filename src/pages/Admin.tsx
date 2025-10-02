@@ -120,7 +120,7 @@ const Admin = () => {
   const handleManagerChange = async (ticketId: number, newManager: string | null) => {
     try {
       await TicketService.updateManager(ticketId, newManager);
-      setTickets(tickets.map(t => t.id === ticketId ? { ...t, manager: newManager } : t));
+      setTickets(tickets.map(t => t.id === ticketId ? { ...t, assigned_manager: newManager } : t));
     } catch (error) {
       console.error('Ошибка обновления менеджера:', error);
       alert('Ошибка назначения менеджера');

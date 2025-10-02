@@ -11,7 +11,7 @@ export interface Ticket {
   amount: string;
   user_name: string | null;
   status: string;
-  manager: string | null;
+  assigned_manager: string | null;
   created_at: string;
   unread_messages?: number;
 }
