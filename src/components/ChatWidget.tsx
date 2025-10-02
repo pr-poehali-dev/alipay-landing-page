@@ -129,8 +129,8 @@ export default function ChatWidget() {
       loadMessages();
     } catch (error: any) {
       console.error('Ошибка отправки:', error);
-      if (error.message?.includes('заблокированы')) {
-        alert('Вы заблокированы администратором. Обратитесь в поддержку.');
+      if (error.message?.includes('лимит')) {
+        alert(error.message);
       } else {
         alert('Ошибка отправки сообщения');
       }

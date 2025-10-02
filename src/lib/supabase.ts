@@ -58,6 +58,10 @@ export const BlockService = {
       .eq('session_id', sessionId);
 
     if (error) throw error;
+  },
+
+  getRateLimitMessage(): string {
+    return 'Превышен лимит запросов. Попробуйте позже.';
   }
 };
 
@@ -66,7 +70,7 @@ export const MessageService = {
     if (!isAdmin) {
       const isBlocked = await BlockService.isBlocked(sessionId);
       if (isBlocked) {
-        throw new Error('Вы заблокированы администратором');
+        throw new Error(BlockService.getRateLimitMessage());
       }
     }
 
@@ -169,7 +173,7 @@ export const TicketService = {
   async create(sessionId: string, amount: string, userName: string) {
     const isBlocked = await BlockService.isBlocked(sessionId);
     if (isBlocked) {
-      throw new Error('Вы заблокированы администратором');
+      throw new Error(BlockService.getRateLimitMessage());
     }
 
     const { data, error } = await supabase
