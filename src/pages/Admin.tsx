@@ -73,11 +73,50 @@ const Admin = () => {
       setIsAuthenticated(true);
       loadTickets();
       
-      const interval = setInterval(() => {
-        loadTickets();
-      }, 3000);
+      const ticketsChannel = supabase
+        .channel('tickets-changes')
+        .on('postgres_changes', 
+          { event: '*', schema: 'public', table: 'tickets' },
+          async (payload) => {
+            if (payload.eventType === 'INSERT') {
+              const newTicket = payload.new as Ticket;
+              const unreadCount = await MessageService.getUnreadCount(newTicket.session_id, true);
+              setTickets(prev => [{ ...newTicket, unread_messages: unreadCount }, ...prev]);
+            } else if (payload.eventType === 'UPDATE') {
+              const updatedTicket = payload.new as Ticket;
+              setTickets(prev => prev.map(t => 
+                t.id === updatedTicket.id ? { ...t, ...updatedTicket } : t
+              ));
+            } else if (payload.eventType === 'DELETE') {
+              setTickets(prev => prev.filter(t => t.id !== payload.old.id));
+            }
+          }
+        )
+        .subscribe();
+
+      const messagesChannel = supabase
+        .channel('messages-changes')
+        .on('postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'messages' },
+          async (payload) => {
+            const newMessage = payload.new as any;
+            if (!newMessage.is_admin) {
+              setTickets(prev => prev.map(async (t) => {
+                if (t.session_id === newMessage.session_id) {
+                  const unreadCount = await MessageService.getUnreadCount(t.session_id, true);
+                  return { ...t, unread_messages: unreadCount };
+                }
+                return t;
+              }).then(promises => Promise.all(promises)));
+            }
+          }
+        )
+        .subscribe();
       
-      return () => clearInterval(interval);
+      return () => {
+        supabase.removeChannel(ticketsChannel);
+        supabase.removeChannel(messagesChannel);
+      };
     }
   }, []);
 
