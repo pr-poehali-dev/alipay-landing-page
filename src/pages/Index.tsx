@@ -167,7 +167,7 @@ const Index = () => {
                     />
                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">₽</span>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Минимум: 500₽</p>
+                  <p className="text-xs text-gray-500 mt-1">Минимум: 2000₽</p>
                 </div>
 
                 <div className="bg-gray-50 p-4 rounded-lg">
