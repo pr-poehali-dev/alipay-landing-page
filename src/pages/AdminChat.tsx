@@ -27,6 +27,13 @@ const AdminChat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pdfInputRef = useRef<HTMLInputElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const lastMessageCountRef = useRef<number>(0);
+
+  useEffect(() => {
+    audioRef.current = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
+    audioRef.current.volume = 0.5;
+  }, []);
 
   useEffect(() => {
     if (sessionId) {
@@ -43,6 +50,12 @@ const AdminChat = () => {
 
   useEffect(() => {
     scrollToBottom();
+    
+    const userMessages = messages.filter(m => !m.is_admin);
+    if (lastMessageCountRef.current > 0 && userMessages.length > lastMessageCountRef.current) {
+      audioRef.current?.play().catch(e => console.log('Audio play failed:', e));
+    }
+    lastMessageCountRef.current = userMessages.length;
   }, [messages]);
 
   const scrollToBottom = () => {
