@@ -3,11 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = 'https://keefvvarqolszayrasaj.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtlZWZ2dmFycW9sc3pheXJhc2FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyMzEwNDIsImV4cCI6MjA3NDgwNzA0Mn0.mX5T3T-VmE1TszTFfXzIVV9b5Hi9ZqDb96R-z03wUgQ';
 
-export const supabase = createClient(supabaseUrl, supabaseKey, {
-  db: {
-    schema: 't_p7235020_alipay_landing_page'
-  }
-});
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
 export interface Ticket {
   id: number;
