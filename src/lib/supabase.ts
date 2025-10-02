@@ -204,7 +204,7 @@ export const TicketService = {
   async updateManager(id: number, manager: string | null) {
     const { data, error } = await supabase
       .from('tickets')
-      .update({ manager })
+      .update({ assigned_manager: manager })
       .eq('id', id)
       .select()
       .single();
