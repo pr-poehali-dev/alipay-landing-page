@@ -157,16 +157,25 @@ const Admin = () => {
   };
 
   const toggleSound = () => {
+    console.log('toggleSound clicked, current state:', soundEnabled);
     if (!soundEnabled) {
-      audioRef.current = new Audio('https://cdn.pixabay.com/audio/2022/03/10/audio_4deabc2110.mp3');
-      audioRef.current.volume = 0.3;
-      audioRef.current.play().then(() => {
-        setSoundEnabled(true);
-      }).catch(e => {
-        console.log('Audio init failed:', e);
-        alert('Не удалось включить звук. Попробуйте ещё раз.');
-      });
+      try {
+        audioRef.current = new Audio('https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3');
+        audioRef.current.volume = 0.5;
+        console.log('Audio created, trying to play...');
+        audioRef.current.play().then(() => {
+          console.log('Audio played successfully');
+          setSoundEnabled(true);
+        }).catch(e => {
+          console.error('Audio play failed:', e);
+          alert('Ошибка воспроизведения звука: ' + e.message);
+        });
+      } catch (error) {
+        console.error('Audio creation failed:', error);
+        alert('Ошибка создания аудио');
+      }
     } else {
+      console.log('Disabling sound');
       setSoundEnabled(false);
       audioRef.current = null;
     }
