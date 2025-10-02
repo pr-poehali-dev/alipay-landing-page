@@ -1,0 +1,1 @@
+ALTER TABLE t_p7235020_alipay_landing_page.blocked_users DISABLE ROW LEVEL SECURITY;

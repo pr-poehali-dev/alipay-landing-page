@@ -9,9 +9,9 @@ export interface Ticket {
   id: number;
   session_id: string;
   amount: string;
-  user_name: string;
-  status: 'новая' | 'обработан' | 'скам' | 'успешный платеж' | 'в работе спикер' | 'в работе кристи' | 'в работе тичер' | 'в работе жека' | 'закрыт';
-  manager: 'Кристина' | 'Евгений' | 'Георгий' | 'Василий' | null;
+  user_name: string | null;
+  status: string;
+  manager: string | null;
   created_at: string;
   unread_messages?: number;
 }
@@ -188,7 +188,7 @@ export const TicketService = {
     return data as Ticket;
   },
 
-  async updateStatus(id: number, status: Ticket['status']) {
+  async updateStatus(id: number, status: string) {
     const { data, error } = await supabase
       .from('tickets')
       .update({ status })
@@ -200,11 +200,7 @@ export const TicketService = {
     return data as Ticket;
   },
 
-  async updateManager(id: number, manager: Ticket['manager']) {
-    if (!manager) {
-      throw new Error('Менеджер не выбран');
-    }
-
+  async updateManager(id: number, manager: string | null) {
     const { data, error } = await supabase
       .from('tickets')
       .update({ manager })

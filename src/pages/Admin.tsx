@@ -107,7 +107,7 @@ const Admin = () => {
     return matchesSearch && matchesStatus;
   });
 
-  const handleStatusChange = async (ticketId: number, newStatus: Ticket['status']) => {
+  const handleStatusChange = async (ticketId: number, newStatus: string) => {
     try {
       await TicketService.updateStatus(ticketId, newStatus);
       setTickets(tickets.map(t => t.id === ticketId ? { ...t, status: newStatus } : t));
@@ -116,7 +116,7 @@ const Admin = () => {
     }
   };
 
-  const handleManagerChange = async (ticketId: number, newManager: Ticket['manager']) => {
+  const handleManagerChange = async (ticketId: number, newManager: string | null) => {
     try {
       await TicketService.updateManager(ticketId, newManager);
       setTickets(tickets.map(t => t.id === ticketId ? { ...t, manager: newManager } : t));
@@ -148,9 +148,9 @@ const Admin = () => {
     try {
       await BlockService.block(sessionId, 'Заблокирован администратором');
       alert('Пользователь заблокирован');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Ошибка блокировки:', error);
-      alert('Ошибка блокировки пользователя');
+      alert(`Ошибка блокировки: ${error.message || 'Неизвестная ошибка'}`);
     }
   };
 

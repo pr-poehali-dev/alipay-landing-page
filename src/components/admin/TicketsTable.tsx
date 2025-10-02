@@ -13,8 +13,8 @@ import {
 interface TicketsTableProps {
   tickets: Ticket[];
   loading: boolean;
-  onStatusChange: (ticketId: number, newStatus: Ticket['status']) => void;
-  onManagerChange: (ticketId: number, newManager: Ticket['manager']) => void;
+  onStatusChange: (ticketId: number, newStatus: string) => void;
+  onManagerChange: (ticketId: number, newManager: string | null) => void;
   onDeleteTicket: (ticketId: number) => void;
   onOpenChat: (sessionId: string) => void;
   onBlockUser: (sessionId: string) => void;
@@ -29,8 +29,8 @@ export default function TicketsTable({
   onOpenChat,
   onBlockUser
 }: TicketsTableProps) {
-  const getStatusBadge = (status: Ticket['status']) => {
-    const statusConfig = {
+  const getStatusBadge = (status: string) => {
+    const statusConfig: Record<string, { color: string; label: string }> = {
       'новая': { color: 'bg-gray-100 text-gray-800', label: 'Новая' },
       'обработан': { color: 'bg-purple-100 text-purple-800', label: 'Обработан' },
       'скам': { color: 'bg-red-100 text-red-800', label: 'Скам' },
@@ -40,8 +40,11 @@ export default function TicketsTable({
       'в работе тичер': { color: 'bg-cyan-100 text-cyan-800', label: 'В работе Тичер' },
       'в работе жека': { color: 'bg-lime-100 text-lime-800', label: 'В работе Жека' },
       'закрыт': { color: 'bg-green-100 text-green-800', label: 'Закрыт' },
+      'open': { color: 'bg-gray-100 text-gray-800', label: 'Открыта' },
+      'in_progress': { color: 'bg-blue-100 text-blue-800', label: 'В обработке' },
+      'closed': { color: 'bg-green-100 text-green-800', label: 'Закрыта' },
     };
-    const config = statusConfig[status] || statusConfig['новая'];
+    const config = statusConfig[status] || { color: 'bg-gray-100 text-gray-800', label: status };
     return (
       <Badge className={`${config.color} border-0`}>
         {config.label}
@@ -105,7 +108,7 @@ export default function TicketsTable({
               <td className="px-4 py-4 whitespace-nowrap">
                 <Select 
                   value={ticket.status} 
-                  onValueChange={(value) => onStatusChange(ticket.id, value as Ticket['status'])}
+                  onValueChange={(value) => onStatusChange(ticket.id, value)}
                 >
                   <SelectTrigger className="w-44">
                     <SelectValue>{getStatusBadge(ticket.status)}</SelectValue>
@@ -171,7 +174,7 @@ export default function TicketsTable({
               <td className="px-4 py-4 whitespace-nowrap">
                 <Select 
                   value={ticket.manager || 'unassigned'} 
-                  onValueChange={(value) => onManagerChange(ticket.id, value === 'unassigned' ? null : value as Ticket['manager'])}
+                  onValueChange={(value) => onManagerChange(ticket.id, value === 'unassigned' ? null : value)}
                 >
                   <SelectTrigger className="w-36">
                     <SelectValue placeholder="Не назначен">
