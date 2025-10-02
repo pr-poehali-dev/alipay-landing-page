@@ -72,6 +72,12 @@ const Admin = () => {
     if (auth === 'true') {
       setIsAuthenticated(true);
       loadTickets();
+      
+      const interval = setInterval(() => {
+        loadTickets();
+      }, 3000);
+      
+      return () => clearInterval(interval);
     }
   }, []);
 
