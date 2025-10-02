@@ -127,9 +127,13 @@ export default function ChatWidget() {
       clearImage();
       clearFile();
       loadMessages();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Ошибка отправки:', error);
-      alert('Ошибка отправки сообщения');
+      if (error.message?.includes('заблокированы')) {
+        alert('Вы заблокированы администратором. Обратитесь в поддержку.');
+      } else {
+        alert('Ошибка отправки сообщения');
+      }
     } finally {
       setUploading(false);
     }

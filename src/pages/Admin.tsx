@@ -1,7 +1,7 @@
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase, Ticket, TicketService, MessageService } from "@/lib/supabase";
+import { supabase, Ticket, TicketService, MessageService, BlockService } from "@/lib/supabase";
 import AdminLogin from "@/components/admin/AdminLogin";
 import AdminHeader from "@/components/admin/AdminHeader";
 import AdminStats from "@/components/admin/AdminStats";
@@ -142,6 +142,18 @@ const Admin = () => {
     navigate(`/admin/chat/${sessionId}`);
   };
 
+  const handleBlockUser = async (sessionId: string) => {
+    if (!confirm('Заблокировать пользователя? Он не сможет создавать заявки и писать в чат.')) return;
+    
+    try {
+      await BlockService.block(sessionId, 'Заблокирован администратором');
+      alert('Пользователь заблокирован');
+    } catch (error) {
+      console.error('Ошибка блокировки:', error);
+      alert('Ошибка блокировки пользователя');
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <AdminLogin
@@ -179,6 +191,7 @@ const Admin = () => {
               onManagerChange={handleManagerChange}
               onDeleteTicket={handleDeleteTicket}
               onOpenChat={handleOpenChat}
+              onBlockUser={handleBlockUser}
             />
           </CardContent>
         </Card>

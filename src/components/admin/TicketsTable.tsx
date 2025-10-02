@@ -17,6 +17,7 @@ interface TicketsTableProps {
   onManagerChange: (ticketId: number, newManager: Ticket['manager']) => void;
   onDeleteTicket: (ticketId: number) => void;
   onOpenChat: (sessionId: string) => void;
+  onBlockUser: (sessionId: string) => void;
 }
 
 export default function TicketsTable({
@@ -25,7 +26,8 @@ export default function TicketsTable({
   onStatusChange,
   onManagerChange,
   onDeleteTicket,
-  onOpenChat
+  onOpenChat,
+  onBlockUser
 }: TicketsTableProps) {
   const getStatusBadge = (status: Ticket['status']) => {
     const statusConfig = {
@@ -215,6 +217,14 @@ export default function TicketsTable({
                   >
                     <Icon name="MessageCircle" size={16} className="mr-1" />
                     Чат
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => onBlockUser(ticket.session_id)}
+                    className="hover:bg-orange-50"
+                  >
+                    <Icon name="Ban" size={16} className="text-orange-500" />
                   </Button>
                   <Button 
                     size="sm" 

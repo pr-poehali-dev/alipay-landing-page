@@ -29,8 +29,47 @@ export interface Message {
   read_by_admin?: boolean;
 }
 
+export const BlockService = {
+  async isBlocked(sessionId: string): Promise<boolean> {
+    const { data } = await supabase
+      .from('blocked_users')
+      .select('id')
+      .eq('session_id', sessionId)
+      .maybeSingle();
+    
+    return !!data;
+  },
+
+  async block(sessionId: string, reason: string = 'Нарушение правил') {
+    const { data, error } = await supabase
+      .from('blocked_users')
+      .insert([{ session_id: sessionId, reason }])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async unblock(sessionId: string) {
+    const { error } = await supabase
+      .from('blocked_users')
+      .delete()
+      .eq('session_id', sessionId);
+
+    if (error) throw error;
+  }
+};
+
 export const MessageService = {
   async sendMessage(sessionId: string, message: string, isAdmin: boolean = false, userName: string | null = null, imageUrl: string | null = null, managerName: string | null = null) {
+    if (!isAdmin) {
+      const isBlocked = await BlockService.isBlocked(sessionId);
+      if (isBlocked) {
+        throw new Error('Вы заблокированы администратором');
+      }
+    }
+
     const { data, error } = await supabase
       .from('messages')
       .insert([
@@ -128,6 +167,11 @@ export const MessageService = {
 
 export const TicketService = {
   async create(sessionId: string, amount: string, userName: string) {
+    const isBlocked = await BlockService.isBlocked(sessionId);
+    if (isBlocked) {
+      throw new Error('Вы заблокированы администратором');
+    }
+
     const { data, error } = await supabase
       .from('tickets')
       .insert([
