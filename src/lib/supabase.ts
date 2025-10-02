@@ -10,9 +10,10 @@ export interface Ticket {
   session_id: string;
   amount: string;
   user_name: string;
-  status: 'новая' | 'обработан' | 'скам' | 'успешный платеж';
+  status: 'новая' | 'обработан' | 'скам' | 'успешный платеж' | 'в работе спикер' | 'в работе кристи' | 'в работе тичер' | 'в работе жека' | 'закрыт';
   manager: 'Кристина' | 'Евгений' | 'Георгий' | 'Василий' | null;
   created_at: string;
+  unread_messages?: number;
 }
 
 export interface Message {
@@ -24,6 +25,8 @@ export interface Message {
   image_url: string | null;
   manager_name: string | null;
   created_at: string;
+  read_by_user?: boolean;
+  read_by_admin?: boolean;
 }
 
 export const MessageService = {
@@ -31,13 +34,36 @@ export const MessageService = {
     const { data, error } = await supabase
       .from('messages')
       .insert([
-        { session_id: sessionId, message, is_admin: isAdmin, user_name: userName, image_url: imageUrl, manager_name: managerName }
+        { session_id: sessionId, message, is_admin: isAdmin, user_name: userName, image_url: imageUrl, manager_name: managerName, read_by_user: isAdmin ? false : true, read_by_admin: isAdmin ? true : false }
       ])
       .select()
       .single();
 
     if (error) throw error;
     return data as Message;
+  },
+
+  async markAsRead(sessionId: string, isAdmin: boolean) {
+    const field = isAdmin ? 'read_by_admin' : 'read_by_user';
+    const { error } = await supabase
+      .from('messages')
+      .update({ [field]: true })
+      .eq('session_id', sessionId)
+      .eq(field, false);
+
+    if (error) throw error;
+  },
+
+  async getUnreadCount(sessionId: string, isAdmin: boolean) {
+    const field = isAdmin ? 'read_by_admin' : 'read_by_user';
+    const { data, error } = await supabase
+      .from('messages')
+      .select('id', { count: 'exact' })
+      .eq('session_id', sessionId)
+      .eq(field, false);
+
+    if (error) throw error;
+    return data?.length || 0;
   },
 
   async getMessages(sessionId: string) {

@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase, Ticket, TicketService } from "@/lib/supabase";
+import { supabase, Ticket, TicketService, MessageService } from "@/lib/supabase";
 import {
   Select,
   SelectContent,
@@ -48,8 +48,16 @@ const Admin = () => {
       if (error) throw error;
       
       const newData = data || [];
-      setTickets(newData);
-      setPrevTicketCount(newData.length);
+      
+      const ticketsWithUnread = await Promise.all(
+        newData.map(async (ticket) => {
+          const unreadCount = await MessageService.getUnreadCount(ticket.session_id, true);
+          return { ...ticket, unread_messages: unreadCount };
+        })
+      );
+      
+      setTickets(ticketsWithUnread);
+      setPrevTicketCount(ticketsWithUnread.length);
     } catch (error) {
       console.error('Ошибка загрузки заявок:', error);
     } finally {
@@ -136,6 +144,11 @@ const Admin = () => {
       'обработан': { color: 'bg-purple-100 text-purple-800', label: 'Обработан' },
       'скам': { color: 'bg-red-100 text-red-800', label: 'Скам' },
       'успешный платеж': { color: 'bg-green-100 text-green-800', label: 'Успешный платеж' },
+      'в работе спикер': { color: 'bg-emerald-100 text-emerald-800', label: 'В работе Спикер' },
+      'в работе кристи': { color: 'bg-teal-100 text-teal-800', label: 'В работе Кристи' },
+      'в работе тичер': { color: 'bg-cyan-100 text-cyan-800', label: 'В работе Тичер' },
+      'в работе жека': { color: 'bg-lime-100 text-lime-800', label: 'В работе Жека' },
+      'закрыт': { color: 'bg-green-100 text-green-800', label: 'Закрыт' },
     };
     const config = statusConfig[status] || statusConfig['новая'];
     return (
@@ -324,9 +337,14 @@ const Admin = () => {
                           <Badge variant="secondary">#{ticket.id}</Badge>
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <Icon name="User" size={16} className="mr-2 text-gray-400" />
+                          <div className="flex items-center gap-2">
+                            <Icon name="User" size={16} className="text-gray-400" />
                             <span className="font-medium">{ticket.user_name}</span>
+                            {ticket.unread_messages && ticket.unread_messages > 0 && (
+                              <Badge variant="destructive" className="h-5 min-w-5 px-1.5 text-xs">
+                                {ticket.unread_messages}
+                              </Badge>
+                            )}
                           </div>
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap">
@@ -363,6 +381,36 @@ const Admin = () => {
                                 <span className="flex items-center">
                                   <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
                                   Успешный платеж
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="в работе спикер">
+                                <span className="flex items-center">
+                                  <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>
+                                  В работе Спикер
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="в работе кристи">
+                                <span className="flex items-center">
+                                  <span className="w-2 h-2 rounded-full bg-teal-500 mr-2"></span>
+                                  В работе Кристи
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="в работе тичер">
+                                <span className="flex items-center">
+                                  <span className="w-2 h-2 rounded-full bg-cyan-500 mr-2"></span>
+                                  В работе Тичер
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="в работе жека">
+                                <span className="flex items-center">
+                                  <span className="w-2 h-2 rounded-full bg-lime-500 mr-2"></span>
+                                  В работе Жека
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="закрыт">
+                                <span className="flex items-center">
+                                  <span className="w-2 h-2 rounded-full bg-green-600 mr-2"></span>
+                                  Закрыт
                                 </span>
                               </SelectItem>
                             </SelectContent>

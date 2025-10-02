@@ -32,7 +32,11 @@ const AdminChat = () => {
     if (sessionId) {
       loadMessages();
       loadTicketManager();
-      const interval = setInterval(loadMessages, 2000);
+      MessageService.markAsRead(sessionId, true);
+      const interval = setInterval(() => {
+        loadMessages();
+        MessageService.markAsRead(sessionId, true);
+      }, 2000);
       return () => clearInterval(interval);
     }
   }, [sessionId]);
@@ -270,15 +274,22 @@ const AdminChat = () => {
                     {msg.message && (
                       <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
                     )}
-                    <span className="text-xs opacity-70 mt-1 block">
-                      {new Date(msg.created_at).toLocaleString('ru-RU', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </span>
+                    <div className="flex items-center justify-between gap-2 mt-1">
+                      <span className="text-xs opacity-70">
+                        {new Date(msg.created_at).toLocaleString('ru-RU', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </span>
+                      {msg.is_admin && (
+                        <span className="text-xs">
+                          {msg.read_by_user ? '✓✓' : '✓'}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -287,6 +298,16 @@ const AdminChat = () => {
           </CardContent>
 
           <div className="p-4 border-t bg-white">
+            <div className="mb-3 flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setInputMessage('Здравствуйте, сумма в заявке актуальная?')}
+                className="text-xs"
+              >
+                Здравствуйте, сумма в заявке актуальная?
+              </Button>
+            </div>
             {imagePreview && (
               <div className="mb-2 relative inline-block">
                 <img 

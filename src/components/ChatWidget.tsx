@@ -31,6 +31,7 @@ export default function ChatWidget() {
   useEffect(() => {
     if (isOpen && sessionId) {
       loadMessages();
+      MessageService.markAsRead(sessionId, false);
       const interval = setInterval(loadMessages, 3000);
       return () => clearInterval(interval);
     }
@@ -222,12 +223,19 @@ export default function ChatWidget() {
                     {msg.message && (
                       <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
                     )}
-                    <span className="text-xs opacity-70 mt-1 block">
-                      {new Date(msg.created_at).toLocaleTimeString('ru-RU', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </span>
+                    <div className="flex items-center justify-between gap-2 mt-1">
+                      <span className="text-xs opacity-70">
+                        {new Date(msg.created_at).toLocaleTimeString('ru-RU', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </span>
+                      {!msg.is_admin && (
+                        <span className="text-xs">
+                          {msg.read_by_admin ? '✓✓' : '✓'}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

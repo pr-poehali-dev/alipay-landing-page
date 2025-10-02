@@ -12,7 +12,7 @@ const TELEGRAM_BOT_TOKEN = '8415994300:AAFRN1T0Ih8mKTTy9L8FG89utMRKZJ0_7_c';
 const TELEGRAM_CHAT_ID = '-1002938818696';
 
 const Index = () => {
-  const [amount, setAmount] = useState('1000');
+  const [amount, setAmount] = useState('2000');
   const [userName, setUserName] = useState('');
 
   const handlePaymentClick = async () => {
@@ -25,9 +25,9 @@ const Index = () => {
       return;
     }
 
-    const amountValue = parseFloat(amount) || 1000;
-    if (amountValue < 500) {
-      alert('Минимальная сумма пополнения: 500₽');
+    const amountValue = parseFloat(amount) || 2000;
+    if (amountValue < 2000) {
+      alert('Минимальная сумма пополнения: 2000₽');
       return;
     }
 
