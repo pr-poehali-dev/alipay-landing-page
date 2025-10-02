@@ -85,9 +85,18 @@ const Admin = () => {
               const unreadCount = await MessageService.getUnreadCount(newTicket.session_id, true);
               setTickets(prev => [{ ...newTicket, unread_messages: unreadCount }, ...prev]);
               
-              if (soundEnabled && audioRef.current) {
-                audioRef.current.currentTime = 0;
-                audioRef.current.play().catch(e => console.log('Sound blocked:', e));
+              if (soundEnabled && audioRef.current?.audioContext) {
+                const ctx = audioRef.current.audioContext;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = 800;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.5);
               }
             } else if (payload.eventType === 'UPDATE') {
               const updatedTicket = payload.new as Ticket;
@@ -116,9 +125,18 @@ const Admin = () => {
                 return t;
               }).then(promises => Promise.all(promises)));
               
-              if (soundEnabled && audioRef.current) {
-                audioRef.current.currentTime = 0;
-                audioRef.current.play().catch(e => console.log('Sound blocked:', e));
+              if (soundEnabled && audioRef.current?.audioContext) {
+                const ctx = audioRef.current.audioContext;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = 800;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.5);
               }
             }
           }
@@ -157,25 +175,26 @@ const Admin = () => {
   };
 
   const toggleSound = () => {
-    console.log('toggleSound clicked, current state:', soundEnabled);
     if (!soundEnabled) {
-      try {
-        audioRef.current = new Audio('https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3');
-        audioRef.current.volume = 0.5;
-        console.log('Audio created, trying to play...');
-        audioRef.current.play().then(() => {
-          console.log('Audio played successfully');
-          setSoundEnabled(true);
-        }).catch(e => {
-          console.error('Audio play failed:', e);
-          alert('Ошибка воспроизведения звука: ' + e.message);
-        });
-      } catch (error) {
-        console.error('Audio creation failed:', error);
-        alert('Ошибка создания аудио');
-      }
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 800;
+      oscillator.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.5);
+      
+      audioRef.current = { audioContext, oscillator, gainNode } as any;
+      setSoundEnabled(true);
     } else {
-      console.log('Disabling sound');
       setSoundEnabled(false);
       audioRef.current = null;
     }
