@@ -75,6 +75,10 @@ const Admin = () => {
     if (auth === 'true') {
       setIsAuthenticated(true);
       loadTickets();
+
+      const interval = setInterval(() => {
+        loadTickets();
+      }, 5000);
       
       const ticketsChannel = supabase
         .channel('tickets-changes')
@@ -86,18 +90,8 @@ const Admin = () => {
               const unreadCount = await MessageService.getUnreadCount(newTicket.session_id, true);
               setTickets(prev => [{ ...newTicket, unread_messages: unreadCount }, ...prev]);
               
-              if (soundEnabledRef.current && audioRef.current?.audioContext) {
-                const ctx = audioRef.current.audioContext;
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.frequency.value = 800;
-                osc.type = 'sine';
-                gain.gain.setValueAtTime(0.3, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-                osc.start(ctx.currentTime);
-                osc.stop(ctx.currentTime + 0.5);
+              if (soundEnabledRef.current) {
+                playNotificationSound();
               }
             } else if (payload.eventType === 'UPDATE') {
               const updatedTicket = payload.new as Ticket;
@@ -126,18 +120,8 @@ const Admin = () => {
                 return t;
               }).then(promises => Promise.all(promises)));
               
-              if (soundEnabledRef.current && audioRef.current?.audioContext) {
-                const ctx = audioRef.current.audioContext;
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.frequency.value = 800;
-                osc.type = 'sine';
-                gain.gain.setValueAtTime(0.3, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-                osc.start(ctx.currentTime);
-                osc.stop(ctx.currentTime + 0.5);
+              if (soundEnabledRef.current) {
+                playNotificationSound();
               }
             }
           }
@@ -145,6 +129,7 @@ const Admin = () => {
         .subscribe();
       
       return () => {
+        clearInterval(interval);
         supabase.removeChannel(ticketsChannel);
         supabase.removeChannel(messagesChannel);
       };
@@ -175,30 +160,38 @@ const Admin = () => {
     setPassword('');
   };
 
+  const playNotificationSound = () => {
+    if (!audioRef.current?.audioContext) return;
+    try {
+      const ctx = audioRef.current.audioContext;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 800;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.5);
+    } catch (e) {
+      console.error('Sound play error:', e);
+    }
+  };
+
   const toggleSound = () => {
     if (!soundEnabled) {
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.value = 800;
-      oscillator.type = 'sine';
-      
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.5);
-      
-      audioRef.current = { audioContext, oscillator, gainNode } as any;
+      audioRef.current = { audioContext } as any;
+      playNotificationSound();
       setSoundEnabled(true);
       soundEnabledRef.current = true;
     } else {
       setSoundEnabled(false);
       soundEnabledRef.current = false;
+      if (audioRef.current?.audioContext) {
+        audioRef.current.audioContext.close();
+      }
       audioRef.current = null;
     }
   };
