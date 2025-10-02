@@ -20,6 +20,7 @@ const Admin = () => {
   const [onlineCount, setOnlineCount] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const soundEnabledRef = useRef(false);
 
   const ADMIN_PASSWORD = 'admin123';
 
@@ -85,7 +86,7 @@ const Admin = () => {
               const unreadCount = await MessageService.getUnreadCount(newTicket.session_id, true);
               setTickets(prev => [{ ...newTicket, unread_messages: unreadCount }, ...prev]);
               
-              if (soundEnabled && audioRef.current?.audioContext) {
+              if (soundEnabledRef.current && audioRef.current?.audioContext) {
                 const ctx = audioRef.current.audioContext;
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
@@ -125,7 +126,7 @@ const Admin = () => {
                 return t;
               }).then(promises => Promise.all(promises)));
               
-              if (soundEnabled && audioRef.current?.audioContext) {
+              if (soundEnabledRef.current && audioRef.current?.audioContext) {
                 const ctx = audioRef.current.audioContext;
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
@@ -194,8 +195,10 @@ const Admin = () => {
       
       audioRef.current = { audioContext, oscillator, gainNode } as any;
       setSoundEnabled(true);
+      soundEnabledRef.current = true;
     } else {
       setSoundEnabled(false);
+      soundEnabledRef.current = false;
       audioRef.current = null;
     }
   };
