@@ -100,9 +100,10 @@ const Admin = () => {
   };
 
   const filteredTickets = tickets.filter(ticket => {
-    const matchesSearch = ticket.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = (ticket.user_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       ticket.amount.includes(searchTerm) ||
-      ticket.session_id.includes(searchTerm);
+      ticket.session_id.includes(searchTerm) ||
+      ticket.id.toString().includes(searchTerm);
     const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
     return matchesSearch && matchesStatus;
   });

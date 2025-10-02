@@ -94,7 +94,7 @@ export default function TicketsTable({
               <td className="px-4 py-4 whitespace-nowrap">
                 <div className="flex items-center gap-2">
                   <Icon name="User" size={16} className="text-gray-400" />
-                  <span className="font-medium">{ticket.user_name}</span>
+                  <span className="font-medium">{ticket.user_name || 'Без имени'}</span>
                   {ticket.unread_messages && ticket.unread_messages > 0 && (
                     <Badge variant="destructive" className="h-5 min-w-5 px-1.5 text-xs">
                       {ticket.unread_messages}
