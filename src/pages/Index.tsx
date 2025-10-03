@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TicketService, MessageService } from "@/lib/supabase";
+import InlineChat from "@/components/InlineChat";
 import OnlineCounter from "@/components/OnlineCounter";
 
 const TELEGRAM_BOT_TOKEN = '8415994300:AAFRN1T0Ih8mKTTy9L8FG89utMRKZJ0_7_c';
@@ -14,11 +15,21 @@ const TELEGRAM_CHAT_ID = '-1002938818696';
 const Index = () => {
   const [amount, setAmount] = useState('2000');
   const [userName, setUserName] = useState('');
+  const [sessionId, setSessionId] = useState('');
+  const [chatActive, setChatActive] = useState(false);
+  const [isAutoMode, setIsAutoMode] = useState(true);
 
-  const handlePaymentClick = async () => {
-    const sessionId = localStorage.getItem('chat_session_id') || 
-      'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-    localStorage.setItem('chat_session_id', sessionId);
+  useEffect(() => {
+    let sid = localStorage.getItem('chat_session_id');
+    if (!sid) {
+      sid = 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('chat_session_id', sid);
+    }
+    setSessionId(sid);
+  }, []);
+
+  const handlePaymentClick = async (autoMode: boolean) => {
+    setIsAutoMode(autoMode);
 
     if (!userName.trim()) {
       alert('Пожалуйста, введите ваше имя');
@@ -50,16 +61,29 @@ const Index = () => {
         null
       );
 
-      await MessageService.sendMessage(
-        sessionId,
-        '🤖 Автоматическая система пополнения\n\nДля продолжения отправьте QR-код вашего кошелька AliPay.\n\n📸 Нажмите на иконку изображения и загрузите фото QR-кода.',
-        true,
-        null,
-        null,
-        'AliPay Service'
-      );
+      if (autoMode) {
+        await MessageService.sendMessage(
+          sessionId,
+          '🤖 Автоматическая система пополнения\n\nДля продолжения отправьте QR-код вашего кошелька AliPay.\n\n📸 Нажмите на иконку изображения и загрузите фото QR-кода.',
+          true,
+          null,
+          null,
+          'AliPay Service'
+        );
+      } else {
+        await MessageService.sendMessage(
+          sessionId,
+          'Менеджер подключился к чату. Опишите ваш вопрос, и мы поможем с пополнением.',
+          true,
+          null,
+          null,
+          'AliPay Service'
+        );
+      }
 
-      const message = `🔔 *Новая заявка #${ticket.id}*\n\n👤 *Имя:* ${userName}\n💰 *Сумма:* ${amountValue} ₽\n\n⏰ Ожидание QR-кода`;
+      const message = autoMode 
+        ? `🔔 *Новая заявка #${ticket.id}*\n\n👤 *Имя:* ${userName}\n💰 *Сумма:* ${amountValue} ₽\n\n⏰ Ожидание QR-кода (Авто)`
+        : `🔔 *Новая заявка #${ticket.id}*\n\n👤 *Имя:* ${userName}\n💰 *Сумма:* ${amountValue} ₽\n\n👨‍💼 Через менеджера`;
       
       await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
@@ -73,10 +97,7 @@ const Index = () => {
         })
       });
 
-      const chatWidget = document.querySelector('[data-chat-widget]');
-      if (chatWidget) {
-        (chatWidget as HTMLButtonElement).click();
-      }
+      setChatActive(true);
     } catch (error: any) {
       console.error('Ошибка создания заявки:', error);
       if (error.message?.includes('лимит')) {
@@ -185,35 +206,43 @@ const Index = () => {
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <Button 
-                    className="w-full h-12 text-lg" 
-                    size="lg"
-                    onClick={handlePaymentClick}
-                  >
-                    <Icon name="ArrowRight" size={20} className="mr-2" />
-                    Пополнить сейчас
-                  </Button>
-                  
-                  <a href="https://t.me/CrystalPaym" target="_blank" rel="noopener noreferrer" className="block">
-                    <Button variant="outline" className="w-full h-12 text-base bg-blue-500 hover:bg-blue-600 text-white border-blue-500">
-                      <Icon name="MessageCircle" size={18} className="mr-2" />
-                      Менеджер в Telegram 24 часа
-                    </Button>
-                  </a>
-                  
-                  <Link to="/reviews">
-                    <Button variant="outline" className="w-full h-10 text-sm">
-                      <Icon name="Star" size={16} className="mr-2" />
-                      Посмотреть отзывы
-                    </Button>
-                  </Link>
-                </div>
+                {!chatActive ? (
+                  <>
+                    <div className="space-y-3">
+                      <Button 
+                        className="w-full h-12 text-lg" 
+                        size="lg"
+                        onClick={() => handlePaymentClick(true)}
+                      >
+                        <Icon name="Zap" size={20} className="mr-2" />
+                        Пополнить автоматически
+                      </Button>
+                      
+                      <Button 
+                        variant="outline"
+                        className="w-full h-12 text-base"
+                        onClick={() => handlePaymentClick(false)}
+                      >
+                        <Icon name="MessageCircle" size={18} className="mr-2" />
+                        Пополнить через менеджера
+                      </Button>
+                      
+                      <Link to="/reviews">
+                        <Button variant="outline" className="w-full h-10 text-sm">
+                          <Icon name="Star" size={16} className="mr-2" />
+                          Посмотреть отзывы
+                        </Button>
+                      </Link>
+                    </div>
 
-                <div className="flex items-center justify-center gap-4 pt-4 border-t">
-                  <Icon name="Lock" size={16} className="text-gray-400" />
-                  <span className="text-xs text-gray-500">Защищено SSL шифрованием</span>
-                </div>
+                    <div className="flex items-center justify-center gap-4 pt-4 border-t">
+                      <Icon name="Lock" size={16} className="text-gray-400" />
+                      <span className="text-xs text-gray-500">Защищено SSL шифрованием</span>
+                    </div>
+                  </>
+                ) : (
+                  <InlineChat sessionId={sessionId} userName={userName} />
+                )}
               </CardContent>
             </Card>
           </div>
