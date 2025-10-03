@@ -27,9 +27,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     db_url = os.environ.get('DATABASE_URL')
-    conn = psycopg2.connect(db_url)
     
     try:
+        conn = psycopg2.connect(db_url)
         if method == 'POST':
             body_data = json.loads(event.get('body', '{}'))
             session_id = body_data.get('sessionId')
@@ -136,5 +136,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'isBase64Encoded': False
         }
     
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': str(e)}),
+            'isBase64Encoded': False
+        }
+    
     finally:
-        conn.close()
+        if 'conn' in locals():
+            conn.close()
