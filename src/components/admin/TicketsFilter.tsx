@@ -23,10 +23,10 @@ export default function TicketsFilter({
   return (
     <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
       <Select value={statusFilter} onValueChange={setStatusFilter}>
-        <SelectTrigger className="w-full sm:w-48 dark:bg-gray-800 dark:border-gray-700 dark:text-white">
+        <SelectTrigger className="w-full sm:w-48">
           <SelectValue placeholder="Все статусы" />
         </SelectTrigger>
-        <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
+        <SelectContent>
           <SelectItem value="all">Все статусы</SelectItem>
           <SelectItem value="новая">Новая</SelectItem>
           <SelectItem value="обработан">Обработан</SelectItem>
@@ -43,7 +43,7 @@ export default function TicketsFilter({
         placeholder="Поиск по имени, сумме, ID..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="w-full sm:w-80 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-400"
+        className="w-full sm:w-80"
       />
     </div>
   );

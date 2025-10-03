@@ -24,9 +24,6 @@ const AdminChat = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [selectedManager, setSelectedManager] = useState<string>('AliPay Service');
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem('admin_dark_mode') === 'true';
-  });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pdfInputRef = useRef<HTMLInputElement>(null);
@@ -181,9 +178,8 @@ const AdminChat = () => {
   };
 
   return (
-    <div className={darkMode ? 'dark' : ''}>
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50 dark:from-gray-900 dark:to-gray-800">
-      <header className="border-b bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm sticky top-0 z-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50">
+      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="sm" onClick={() => navigate('/admin')}>
@@ -193,8 +189,8 @@ const AdminChat = () => {
               <Icon name="MessageCircle" size={24} className="text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-gray-900 dark:text-white">Чат с клиентом</h1>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Session: {sessionId?.substring(0, 20)}...</p>
+              <h1 className="text-lg font-bold text-gray-900">Чат с клиентом</h1>
+              <p className="text-xs text-gray-500">Session: {sessionId?.substring(0, 20)}...</p>
             </div>
           </div>
           <Select 
@@ -218,10 +214,10 @@ const AdminChat = () => {
               }
             }}
           >
-            <SelectTrigger className="w-48 dark:bg-gray-900 dark:border-gray-700 dark:text-white">
+            <SelectTrigger className="w-48">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="dark:bg-gray-900 dark:border-gray-700">
+            <SelectContent>
               <SelectItem value="AliPay Service">AliPay Service</SelectItem>
               <SelectItem value="Кристина">Кристина</SelectItem>
               <SelectItem value="Евгений">Евгений</SelectItem>
@@ -233,15 +229,15 @@ const AdminChat = () => {
       </header>
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <Card className="h-[calc(100vh-200px)] flex flex-col dark:bg-gray-800 dark:border-gray-700">
-          <CardHeader className="border-b dark:border-gray-700">
-            <CardTitle className="dark:text-white">Переписка</CardTitle>
+        <Card className="h-[calc(100vh-200px)] flex flex-col">
+          <CardHeader className="border-b">
+            <CardTitle>Переписка</CardTitle>
           </CardHeader>
           
-          <CardContent className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 dark:bg-gray-900">
+          <CardContent className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
             {messages.length === 0 && (
-              <div className="text-center text-gray-500 dark:text-gray-400 mt-8">
-                <Icon name="MessageCircle" size={48} className="mx-auto mb-2 text-gray-300 dark:text-gray-600" />
+              <div className="text-center text-gray-500 mt-8">
+                <Icon name="MessageCircle" size={48} className="mx-auto mb-2 text-gray-300" />
                 <p>Сообщений пока нет</p>
               </div>
             )}
@@ -253,15 +249,15 @@ const AdminChat = () => {
               >
                 <div className="flex flex-col gap-1 max-w-[70%]">
                   {!msg.is_admin && msg.user_name && (
-                    <span className="text-xs text-gray-500 dark:text-gray-400 px-2">
+                    <span className="text-xs text-gray-500 px-2">
                       {msg.user_name}
                     </span>
                   )}
                   <div
                     className={`rounded-lg px-4 py-2 ${
                       msg.is_admin
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-white shadow'
+                        ? 'bg-primary text-white'
+                        : 'bg-white text-gray-800 shadow'
                     }`}
                   >
                     {msg.image_url && (
@@ -271,11 +267,7 @@ const AdminChat = () => {
                             href={msg.image_url} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className={`flex items-center gap-2 p-2 rounded transition ${
-                              msg.is_admin 
-                                ? 'bg-primary-foreground/10 hover:bg-primary-foreground/20' 
-                                : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
-                            }`}
+                            className="flex items-center gap-2 p-2 bg-gray-100 rounded hover:bg-gray-200 transition"
                           >
                             <Icon name="FileText" size={20} className="text-red-500" />
                             <span className="text-sm">Открыть PDF</span>
@@ -316,13 +308,13 @@ const AdminChat = () => {
             <div ref={messagesEndRef} />
           </CardContent>
 
-          <div className="p-4 border-t dark:border-gray-700 bg-white dark:bg-gray-800">
+          <div className="p-4 border-t bg-white">
             <div className="mb-3 flex flex-wrap gap-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setInputMessage('Здравствуйте, сумма в заявке актуальная?')}
-                className="text-xs dark:bg-gray-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700"
+                className="text-xs"
               >
                 Здравствуйте, сумма в заявке актуальная?
               </Button>
@@ -332,7 +324,7 @@ const AdminChat = () => {
                 <img 
                   src={imagePreview} 
                   alt="Preview" 
-                  className="max-h-20 rounded border dark:border-gray-700"
+                  className="max-h-20 rounded border"
                 />
                 <Button
                   size="sm"
@@ -345,13 +337,13 @@ const AdminChat = () => {
               </div>
             )}
             {selectedFile && (
-              <div className="mb-2 flex items-center gap-2 bg-gray-100 dark:bg-gray-900 p-2 rounded">
+              <div className="mb-2 flex items-center gap-2 bg-gray-100 p-2 rounded">
                 <Icon name="FileText" size={16} className="text-red-500" />
-                <span className="text-sm flex-1 truncate dark:text-white">{selectedFile.name}</span>
+                <span className="text-sm flex-1 truncate">{selectedFile.name}</span>
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="h-6 w-6 p-0 dark:hover:bg-gray-700"
+                  className="h-6 w-6 p-0"
                   onClick={clearFile}
                 >
                   <Icon name="X" size={14} />
@@ -378,7 +370,6 @@ const AdminChat = () => {
                 size="icon"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading || !!selectedFile}
-                className="dark:bg-gray-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700"
               >
                 <Icon name="Image" size={18} />
               </Button>
@@ -387,7 +378,6 @@ const AdminChat = () => {
                 size="icon"
                 onClick={() => pdfInputRef.current?.click()}
                 disabled={uploading || !!selectedImage}
-                className="dark:bg-gray-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700"
               >
                 <Icon name="FileText" size={18} />
               </Button>
@@ -396,7 +386,7 @@ const AdminChat = () => {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="flex-1 dark:bg-gray-900 dark:border-gray-700 dark:text-white dark:placeholder-gray-400"
+                className="flex-1"
                 disabled={uploading}
               />
               <Button 
@@ -409,7 +399,6 @@ const AdminChat = () => {
           </div>
         </Card>
       </div>
-    </div>
     </div>
   );
 };

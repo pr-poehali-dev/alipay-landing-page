@@ -55,8 +55,8 @@ export default function TicketsTable({
   if (loading) {
     return (
       <div className="text-center py-8">
-        <Icon name="Loader" size={32} className="animate-spin mx-auto text-gray-400 dark:text-gray-500" />
-        <p className="text-gray-500 dark:text-gray-400 mt-2">Загрузка...</p>
+        <Icon name="Loader" size={32} className="animate-spin mx-auto text-gray-400" />
+        <p className="text-gray-500 mt-2">Загрузка...</p>
       </div>
     );
   }
@@ -64,8 +64,8 @@ export default function TicketsTable({
   if (tickets.length === 0) {
     return (
       <div className="text-center py-8">
-        <Icon name="Inbox" size={48} className="mx-auto text-gray-300 dark:text-gray-600 mb-2" />
-        <p className="text-gray-500 dark:text-gray-400">Заявок пока нет</p>
+        <Icon name="Inbox" size={48} className="mx-auto text-gray-300 mb-2" />
+        <p className="text-gray-500">Заявок пока нет</p>
       </div>
     );
   }
@@ -73,28 +73,28 @@ export default function TicketsTable({
   return (
     <div className="overflow-x-auto">
       <table className="w-full">
-        <thead className="bg-gray-50 dark:bg-gray-900/50">
+        <thead className="bg-gray-50">
           <tr>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">ID</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Имя</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Сумма</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Статус</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Менеджер</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Дата</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Session ID</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Действия</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Имя</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Сумма</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Статус</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Менеджер</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Дата</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Session ID</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Действия</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+        <tbody className="divide-y divide-gray-200">
           {tickets.map((ticket) => (
-            <tr key={ticket.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+            <tr key={ticket.id} className="hover:bg-gray-50">
               <td className="px-4 py-4 whitespace-nowrap">
                 <Badge variant="secondary">#{ticket.id}</Badge>
               </td>
               <td className="px-4 py-4 whitespace-nowrap">
                 <div className="flex items-center gap-2">
-                  <Icon name="User" size={16} className="text-gray-400 dark:text-gray-500" />
-                  <span className="font-medium dark:text-white">{ticket.user_name || 'Без имени'}</span>
+                  <Icon name="User" size={16} className="text-gray-400" />
+                  <span className="font-medium">{ticket.user_name || 'Без имени'}</span>
                   {ticket.unread_messages && ticket.unread_messages > 0 && (
                     <Badge variant="destructive" className="h-5 min-w-5 px-1.5 text-xs">
                       {ticket.unread_messages}
@@ -103,17 +103,17 @@ export default function TicketsTable({
                 </div>
               </td>
               <td className="px-4 py-4 whitespace-nowrap">
-                <span className="text-green-600 dark:text-green-400 font-semibold">{ticket.amount} ₽</span>
+                <span className="text-green-600 font-semibold">{ticket.amount} ₽</span>
               </td>
               <td className="px-4 py-4 whitespace-nowrap">
                 <Select 
                   value={ticket.status} 
                   onValueChange={(value) => onStatusChange(ticket.id, value)}
                 >
-                  <SelectTrigger className="w-44 dark:bg-gray-900 dark:border-gray-700 dark:text-white">
+                  <SelectTrigger className="w-44">
                     <SelectValue>{getStatusBadge(ticket.status)}</SelectValue>
                   </SelectTrigger>
-                  <SelectContent className="dark:bg-gray-900 dark:border-gray-700">
+                  <SelectContent>
                     <SelectItem value="новая">
                       <span className="flex items-center">
                         <span className="w-2 h-2 rounded-full bg-gray-500 mr-2"></span>
@@ -176,7 +176,7 @@ export default function TicketsTable({
                   value={ticket.assigned_manager || 'unassigned'} 
                   onValueChange={(value) => onManagerChange(ticket.id, value === 'unassigned' ? null : value)}
                 >
-                  <SelectTrigger className="w-36 dark:bg-gray-900 dark:border-gray-700 dark:text-white">
+                  <SelectTrigger className="w-36">
                     <SelectValue placeholder="Не назначен">
                       {ticket.assigned_manager ? (
                         <span className="flex items-center">
@@ -188,7 +188,7 @@ export default function TicketsTable({
                       )}
                     </SelectValue>
                   </SelectTrigger>
-                  <SelectContent className="dark:bg-gray-900 dark:border-gray-700">
+                  <SelectContent>
                     <SelectItem value="unassigned">
                       <span className="text-gray-400">Не назначен</span>
                     </SelectItem>
@@ -199,7 +199,7 @@ export default function TicketsTable({
                   </SelectContent>
                 </Select>
               </td>
-              <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+              <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                 {new Date(ticket.created_at).toLocaleString('ru-RU', {
                   day: '2-digit',
                   month: '2-digit',
@@ -208,7 +208,7 @@ export default function TicketsTable({
                   minute: '2-digit'
                 })}
               </td>
-              <td className="px-4 py-4 whitespace-nowrap text-xs text-gray-400 dark:text-gray-500 font-mono">
+              <td className="px-4 py-4 whitespace-nowrap text-xs text-gray-400 font-mono">
                 {ticket.session_id.substring(0, 20)}...
               </td>
               <td className="px-4 py-4 whitespace-nowrap">
@@ -217,7 +217,6 @@ export default function TicketsTable({
                     size="sm" 
                     variant="outline"
                     onClick={() => onOpenChat(ticket.session_id)}
-                    className="dark:bg-gray-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700"
                   >
                     <Icon name="MessageCircle" size={16} className="mr-1" />
                     Чат
@@ -226,7 +225,7 @@ export default function TicketsTable({
                     size="sm" 
                     variant="outline"
                     onClick={() => onBlockUser(ticket.session_id)}
-                    className="hover:bg-orange-50 dark:hover:bg-orange-900/30 dark:bg-gray-900 dark:border-gray-700"
+                    className="hover:bg-orange-50"
                   >
                     <Icon name="Ban" size={16} className="text-orange-500" />
                   </Button>
@@ -234,7 +233,7 @@ export default function TicketsTable({
                     size="sm" 
                     variant="outline"
                     onClick={() => onDeleteTicket(ticket.id)}
-                    className="hover:bg-red-50 dark:hover:bg-red-900/30 dark:bg-gray-900 dark:border-gray-700"
+                    className="hover:bg-red-50"
                   >
                     <Icon name="Trash2" size={16} className="text-red-500" />
                   </Button>

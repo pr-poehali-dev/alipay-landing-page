@@ -7,7 +7,6 @@ import AdminHeader from "@/components/admin/AdminHeader";
 import AdminStats from "@/components/admin/AdminStats";
 import TicketsFilter from "@/components/admin/TicketsFilter";
 import TicketsTable from "@/components/admin/TicketsTable";
-import VisitorsPanel from "@/components/admin/VisitorsPanel";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -20,9 +19,6 @@ const Admin = () => {
   const [prevTicketCount, setPrevTicketCount] = useState(0);
   const [onlineCount, setOnlineCount] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(false);
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem('admin_dark_mode') === 'true';
-  });
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const soundEnabledRef = useRef(false);
 
@@ -200,12 +196,6 @@ const Admin = () => {
     }
   };
 
-  const toggleDarkMode = () => {
-    const newMode = !darkMode;
-    setDarkMode(newMode);
-    localStorage.setItem('admin_dark_mode', String(newMode));
-  };
-
   const filteredTickets = tickets.filter(ticket => {
     const matchesSearch = (ticket.user_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       ticket.amount.includes(searchTerm) ||
@@ -273,53 +263,41 @@ const Admin = () => {
   }
 
   return (
-    <div className={darkMode ? 'dark' : ''}>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50 dark:from-gray-900 dark:to-gray-800 transition-colors">
-        <AdminHeader 
-          onRefresh={loadTickets} 
-          onLogout={handleLogout}
-          onToggleSound={toggleSound}
-          soundEnabled={soundEnabled}
-          darkMode={darkMode}
-          onToggleDarkMode={toggleDarkMode}
-        />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50">
+      <AdminHeader 
+        onRefresh={loadTickets} 
+        onLogout={handleLogout}
+        onToggleSound={toggleSound}
+        soundEnabled={soundEnabled}
+      />
 
       <div className="container mx-auto px-4 py-8">
         <AdminStats tickets={tickets} onlineCount={onlineCount} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          <div className="lg:col-span-2">
-            <Card className="dark:bg-gray-800 dark:border-gray-700">
-              <CardHeader>
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                  <CardTitle className="dark:text-white">Заявки на пополнение</CardTitle>
-                  <TicketsFilter
-                    statusFilter={statusFilter}
-                    setStatusFilter={setStatusFilter}
-                    searchTerm={searchTerm}
-                    setSearchTerm={setSearchTerm}
-                  />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <TicketsTable
-                  tickets={filteredTickets}
-                  loading={loading}
-                  onStatusChange={handleStatusChange}
-                  onManagerChange={handleManagerChange}
-                  onDeleteTicket={handleDeleteTicket}
-                  onOpenChat={handleOpenChat}
-                  onBlockUser={handleBlockUser}
-                />
-              </CardContent>
-            </Card>
-          </div>
-          
-          <div className="lg:col-span-1">
-            <VisitorsPanel />
-          </div>
-        </div>
-      </div>
+        <Card>
+          <CardHeader>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <CardTitle>Заявки на пополнение</CardTitle>
+              <TicketsFilter
+                statusFilter={statusFilter}
+                setStatusFilter={setStatusFilter}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+              />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <TicketsTable
+              tickets={filteredTickets}
+              loading={loading}
+              onStatusChange={handleStatusChange}
+              onManagerChange={handleManagerChange}
+              onDeleteTicket={handleDeleteTicket}
+              onOpenChat={handleOpenChat}
+              onBlockUser={handleBlockUser}
+            />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
