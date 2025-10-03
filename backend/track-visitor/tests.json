@@ -1,0 +1,21 @@
+{
+  "tests": [
+    {
+      "name": "Track new visitor",
+      "method": "POST",
+      "body": {
+        "session_id": "test-session-123"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Get visitors list",
+      "method": "GET",
+      "expectedStatus": 200
+    }
+  ]
+}

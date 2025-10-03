@@ -7,6 +7,7 @@ import AdminHeader from "@/components/admin/AdminHeader";
 import AdminStats from "@/components/admin/AdminStats";
 import TicketsFilter from "@/components/admin/TicketsFilter";
 import TicketsTable from "@/components/admin/TicketsTable";
+import VisitorsPanel from "@/components/admin/VisitorsPanel";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -286,30 +287,38 @@ const Admin = () => {
       <div className="container mx-auto px-4 py-8">
         <AdminStats tickets={tickets} onlineCount={onlineCount} />
 
-        <Card className="dark:bg-gray-800 dark:border-gray-700">
-          <CardHeader>
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <CardTitle className="dark:text-white">Заявки на пополнение</CardTitle>
-              <TicketsFilter
-                statusFilter={statusFilter}
-                setStatusFilter={setStatusFilter}
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-              />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <TicketsTable
-              tickets={filteredTickets}
-              loading={loading}
-              onStatusChange={handleStatusChange}
-              onManagerChange={handleManagerChange}
-              onDeleteTicket={handleDeleteTicket}
-              onOpenChat={handleOpenChat}
-              onBlockUser={handleBlockUser}
-            />
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <div className="lg:col-span-2">
+            <Card className="dark:bg-gray-800 dark:border-gray-700">
+              <CardHeader>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <CardTitle className="dark:text-white">Заявки на пополнение</CardTitle>
+                  <TicketsFilter
+                    statusFilter={statusFilter}
+                    setStatusFilter={setStatusFilter}
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                  />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <TicketsTable
+                  tickets={filteredTickets}
+                  loading={loading}
+                  onStatusChange={handleStatusChange}
+                  onManagerChange={handleManagerChange}
+                  onDeleteTicket={handleDeleteTicket}
+                  onOpenChat={handleOpenChat}
+                  onBlockUser={handleBlockUser}
+                />
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="lg:col-span-1">
+            <VisitorsPanel />
+          </div>
+        </div>
       </div>
       </div>
     </div>

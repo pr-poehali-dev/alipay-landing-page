@@ -260,7 +260,7 @@ const AdminChat = () => {
                   <div
                     className={`rounded-lg px-4 py-2 ${
                       msg.is_admin
-                        ? 'bg-primary text-white'
+                        ? 'bg-blue-600 text-white'
                         : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-white shadow'
                     }`}
                   >
