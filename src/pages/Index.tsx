@@ -88,10 +88,10 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50">
+    <div className="min-h-screen bg-white">
       <OnlineCounter />
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-gray-200 bg-white sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
@@ -99,7 +99,7 @@ const Index = () => {
             </div>
             <h1 className="text-lg sm:text-2xl font-bold text-gray-900">AliPay 金服</h1>
           </div>
-          <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs sm:text-sm">
+          <Badge variant="secondary" className="bg-black text-white text-xs sm:text-sm">
             <Icon name="Shield" size={14} className="mr-1" />
             <span className="hidden sm:inline">Безопасно</span>
             <Icon name="Shield" size={14} className="sm:hidden" />
@@ -112,7 +112,7 @@ const Index = () => {
         <div className="container mx-auto max-w-6xl px-4">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div>
-              <Badge className="mb-4 sm:mb-6 bg-blue-100 text-blue-800 text-xs sm:text-sm">
+              <Badge className="mb-4 sm:mb-6 bg-black text-white text-xs sm:text-sm">
                 <Icon name="Zap" size={14} className="mr-1" />
                 Мгновенное пополнение
               </Badge>
@@ -124,22 +124,22 @@ const Index = () => {
               
               <div className="flex flex-wrap gap-4 sm:gap-6 mb-6 sm:mb-8">
                 <div className="flex items-center gap-2">
-                  <Icon name="Clock" size={20} className="text-green-600" />
+                  <Icon name="Clock" size={20} className="text-black" />
                   <span className="text-sm sm:text-base text-gray-700">5 минут</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Icon name="Shield" size={20} className="text-green-600" />
+                  <Icon name="Shield" size={20} className="text-black" />
                   <span className="text-sm sm:text-base text-gray-700">100% гарантия</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Icon name="Headphones" size={20} className="text-green-600" />
+                  <Icon name="Headphones" size={20} className="text-black" />
                   <span className="text-sm sm:text-base text-gray-700">24/7 поддержка</span>
                 </div>
               </div>
             </div>
 
             {/* Payment Form */}
-            <Card className="shadow-xl border-0 bg-white">
+            <Card className="shadow-lg border-2 border-gray-900 bg-white">
               <CardHeader className="pb-4">
                 <CardTitle className="text-2xl text-center">Пополнить кошелёк</CardTitle>
                 <p className="text-gray-600 text-center">Введите данные для пополнения</p>
@@ -170,16 +170,16 @@ const Index = () => {
                   <p className="text-xs text-gray-500 mt-1">Минимум: 2000₽</p>
                 </div>
 
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-gray-100 p-4 rounded-lg border border-gray-300">
                   <div className="flex justify-between items-center mb-2">
                     <span>К пополнению:</span>
                     <span className="font-semibold">{amount || 1000} ₽</span>
                   </div>
                   <div className="flex justify-between items-center mb-2">
                     <span>Комиссия:</span>
-                    <span className="text-green-600">0 ₽</span>
+                    <span className="text-black font-medium">0 ₽</span>
                   </div>
-                  <div className="border-t pt-2 flex justify-between items-center font-bold">
+                  <div className="border-t border-gray-300 pt-2 flex justify-between items-center font-bold">
                     <span>Итого:</span>
                     <span>{amount || 1000} ₽</span>
                   </div>
@@ -196,7 +196,7 @@ const Index = () => {
                   </Button>
                   
                   <a href="https://t.me/CrystalPaym" target="_blank" rel="noopener noreferrer" className="block">
-                    <Button variant="outline" className="w-full h-12 text-base bg-blue-500 hover:bg-blue-600 text-white border-blue-500">
+                    <Button variant="outline" className="w-full h-12 text-base bg-gray-900 hover:bg-gray-800 text-white border-gray-900">
                       <Icon name="MessageCircle" size={18} className="mr-2" />
                       Менеджер в Telegram 24 часа
                     </Button>
@@ -221,28 +221,28 @@ const Index = () => {
       </section>
 
       {/* Trust Indicators */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gray-50 border-y border-gray-200">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                <Icon name="Shield" size={24} className="text-primary sm:w-8 sm:h-8" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-black rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Icon name="Shield" size={24} className="text-white sm:w-8 sm:h-8" />
               </div>
               <h3 className="text-lg sm:text-xl font-semibold mb-2">Безопасность</h3>
               <p className="text-sm sm:text-base text-gray-600">Все транзакции защищены банковским уровнем шифрования</p>
             </div>
             
             <div className="text-center">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                <Icon name="Zap" size={24} className="text-secondary sm:w-8 sm:h-8" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-black rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Icon name="Zap" size={24} className="text-white sm:w-8 sm:h-8" />
               </div>
               <h3 className="text-lg sm:text-xl font-semibold mb-2">Скорость</h3>
               <p className="text-sm sm:text-base text-gray-600">Средства поступают на счёт в течение 5 минут</p>
             </div>
             
             <div className="text-center">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                <Icon name="Headphones" size={24} className="text-purple-600 sm:w-8 sm:h-8" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-black rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Icon name="Headphones" size={24} className="text-white sm:w-8 sm:h-8" />
               </div>
               <h3 className="text-lg sm:text-xl font-semibold mb-2">Поддержка</h3>
               <p className="text-sm sm:text-base text-gray-600">Работаем круглосуточно без выходных и праздников</p>
@@ -252,7 +252,7 @@ const Index = () => {
       </section>
 
       {/* Reviews */}
-      <section className="py-8 sm:py-12 lg:py-16 bg-gray-50">
+      <section className="py-8 sm:py-12 lg:py-16 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12">Отзывы клиентов</h2>
           
@@ -277,11 +277,11 @@ const Index = () => {
                 date: "1 неделя назад"
               }
             ].map((review, i) => (
-              <Card key={i} className="bg-white">
+              <Card key={i} className="bg-white border border-gray-200">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-2 mb-4">
                     {[...Array(review.rating)].map((_, j) => (
-                      <Icon key={j} name="Star" size={16} className="text-yellow-400 fill-current" />
+                      <Icon key={j} name="Star" size={16} className="text-black fill-current" />
                     ))}
                   </div>
                   <p className="text-gray-700 mb-4">"{review.text}"</p>
@@ -297,38 +297,38 @@ const Index = () => {
       </section>
 
       {/* Guarantees */}
-      <section className="py-8 sm:py-12 lg:py-16 bg-white">
+      <section className="py-8 sm:py-12 lg:py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12">Наши гарантии</h2>
           
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <Card className="text-center p-3 sm:p-4 lg:p-6">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-4">
-                <Icon name="RotateCcw" size={20} className="text-green-600" />
+            <Card className="text-center p-3 sm:p-4 lg:p-6 border border-gray-200">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                <Icon name="RotateCcw" size={20} className="text-white" />
               </div>
               <h4 className="text-sm sm:text-base font-semibold mb-1 sm:mb-2">Возврат средств</h4>
               <p className="text-xs sm:text-sm text-gray-600">100% возврат если средства не поступили</p>
             </Card>
             
-            <Card className="text-center p-3 sm:p-4 lg:p-6">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-4">
-                <Icon name="FileText" size={20} className="text-blue-600" />
+            <Card className="text-center p-3 sm:p-4 lg:p-6 border border-gray-200">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                <Icon name="FileText" size={20} className="text-white" />
               </div>
               <h4 className="text-sm sm:text-base font-semibold mb-1 sm:mb-2">Официально</h4>
               <p className="text-xs sm:text-sm text-gray-600">Зарегистрированная компания с лицензией</p>
             </Card>
             
-            <Card className="text-center p-3 sm:p-4 lg:p-6">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-4">
-                <Icon name="Clock" size={20} className="text-purple-600" />
+            <Card className="text-center p-3 sm:p-4 lg:p-6 border border-gray-200">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                <Icon name="Clock" size={20} className="text-white" />
               </div>
               <h4 className="text-sm sm:text-base font-semibold mb-1 sm:mb-2">Быстро</h4>
               <p className="text-xs sm:text-sm text-gray-600">Максимум 10 минут на обработку</p>
             </Card>
             
-            <Card className="text-center p-3 sm:p-4 lg:p-6">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-4">
-                <Icon name="MessageCircle" size={20} className="text-red-600" />
+            <Card className="text-center p-3 sm:p-4 lg:p-6 border border-gray-200">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                <Icon name="MessageCircle" size={20} className="text-white" />
               </div>
               <h4 className="text-sm sm:text-base font-semibold mb-1 sm:mb-2">Поддержка</h4>
               <p className="text-xs sm:text-sm text-gray-600">Оперативная помощь 24/7</p>
@@ -340,7 +340,7 @@ const Index = () => {
 
 
       {/* Footer */}
-      <footer className="bg-gray-900 border-t border-gray-800 py-6 sm:py-8">
+      <footer className="bg-black border-t border-gray-800 py-6 sm:py-8">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div>
