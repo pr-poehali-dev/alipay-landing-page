@@ -24,6 +24,9 @@ const AdminChat = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [selectedManager, setSelectedManager] = useState<string>('AliPay Service');
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('admin_dark_mode') === 'true';
+  });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pdfInputRef = useRef<HTMLInputElement>(null);
@@ -178,8 +181,9 @@ const AdminChat = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50">
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+    <div className={darkMode ? 'dark' : ''}>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50 dark:from-gray-900 dark:to-gray-800">
+      <header className="border-b bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="sm" onClick={() => navigate('/admin')}>
@@ -189,8 +193,8 @@ const AdminChat = () => {
               <Icon name="MessageCircle" size={24} className="text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-gray-900">Чат с клиентом</h1>
-              <p className="text-xs text-gray-500">Session: {sessionId?.substring(0, 20)}...</p>
+              <h1 className="text-lg font-bold text-gray-900 dark:text-white">Чат с клиентом</h1>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Session: {sessionId?.substring(0, 20)}...</p>
             </div>
           </div>
           <Select 
@@ -229,15 +233,15 @@ const AdminChat = () => {
       </header>
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <Card className="h-[calc(100vh-200px)] flex flex-col">
-          <CardHeader className="border-b">
-            <CardTitle>Переписка</CardTitle>
+        <Card className="h-[calc(100vh-200px)] flex flex-col dark:bg-gray-800 dark:border-gray-700">
+          <CardHeader className="border-b dark:border-gray-700">
+            <CardTitle className="dark:text-white">Переписка</CardTitle>
           </CardHeader>
           
-          <CardContent className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
+          <CardContent className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 dark:bg-gray-900">
             {messages.length === 0 && (
-              <div className="text-center text-gray-500 mt-8">
-                <Icon name="MessageCircle" size={48} className="mx-auto mb-2 text-gray-300" />
+              <div className="text-center text-gray-500 dark:text-gray-400 mt-8">
+                <Icon name="MessageCircle" size={48} className="mx-auto mb-2 text-gray-300 dark:text-gray-600" />
                 <p>Сообщений пока нет</p>
               </div>
             )}
@@ -257,7 +261,7 @@ const AdminChat = () => {
                     className={`rounded-lg px-4 py-2 ${
                       msg.is_admin
                         ? 'bg-primary text-white'
-                        : 'bg-white text-gray-800 shadow'
+                        : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-white shadow'
                     }`}
                   >
                     {msg.image_url && (
@@ -399,6 +403,7 @@ const AdminChat = () => {
           </div>
         </Card>
       </div>
+    </div>
     </div>
   );
 };

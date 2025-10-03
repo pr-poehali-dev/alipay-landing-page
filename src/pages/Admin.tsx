@@ -19,6 +19,9 @@ const Admin = () => {
   const [prevTicketCount, setPrevTicketCount] = useState(0);
   const [onlineCount, setOnlineCount] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('admin_dark_mode') === 'true';
+  });
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const soundEnabledRef = useRef(false);
 
@@ -196,6 +199,12 @@ const Admin = () => {
     }
   };
 
+  const toggleDarkMode = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    localStorage.setItem('admin_dark_mode', String(newMode));
+  };
+
   const filteredTickets = tickets.filter(ticket => {
     const matchesSearch = (ticket.user_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       ticket.amount.includes(searchTerm) ||
@@ -263,21 +272,24 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50">
-      <AdminHeader 
-        onRefresh={loadTickets} 
-        onLogout={handleLogout}
-        onToggleSound={toggleSound}
-        soundEnabled={soundEnabled}
-      />
+    <div className={darkMode ? 'dark' : ''}>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50 dark:from-gray-900 dark:to-gray-800 transition-colors">
+        <AdminHeader 
+          onRefresh={loadTickets} 
+          onLogout={handleLogout}
+          onToggleSound={toggleSound}
+          soundEnabled={soundEnabled}
+          darkMode={darkMode}
+          onToggleDarkMode={toggleDarkMode}
+        />
 
       <div className="container mx-auto px-4 py-8">
         <AdminStats tickets={tickets} onlineCount={onlineCount} />
 
-        <Card>
+        <Card className="dark:bg-gray-800 dark:border-gray-700">
           <CardHeader>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <CardTitle>Заявки на пополнение</CardTitle>
+              <CardTitle className="dark:text-white">Заявки на пополнение</CardTitle>
               <TicketsFilter
                 statusFilter={statusFilter}
                 setStatusFilter={setStatusFilter}
@@ -298,6 +310,7 @@ const Admin = () => {
             />
           </CardContent>
         </Card>
+      </div>
       </div>
     </div>
   );

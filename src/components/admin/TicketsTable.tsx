@@ -55,8 +55,8 @@ export default function TicketsTable({
   if (loading) {
     return (
       <div className="text-center py-8">
-        <Icon name="Loader" size={32} className="animate-spin mx-auto text-gray-400" />
-        <p className="text-gray-500 mt-2">Загрузка...</p>
+        <Icon name="Loader" size={32} className="animate-spin mx-auto text-gray-400 dark:text-gray-500" />
+        <p className="text-gray-500 dark:text-gray-400 mt-2">Загрузка...</p>
       </div>
     );
   }
@@ -64,8 +64,8 @@ export default function TicketsTable({
   if (tickets.length === 0) {
     return (
       <div className="text-center py-8">
-        <Icon name="Inbox" size={48} className="mx-auto text-gray-300 mb-2" />
-        <p className="text-gray-500">Заявок пока нет</p>
+        <Icon name="Inbox" size={48} className="mx-auto text-gray-300 dark:text-gray-600 mb-2" />
+        <p className="text-gray-500 dark:text-gray-400">Заявок пока нет</p>
       </div>
     );
   }
@@ -73,28 +73,28 @@ export default function TicketsTable({
   return (
     <div className="overflow-x-auto">
       <table className="w-full">
-        <thead className="bg-gray-50">
+        <thead className="bg-gray-50 dark:bg-gray-900/50">
           <tr>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Имя</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Сумма</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Статус</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Менеджер</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Дата</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Session ID</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Действия</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">ID</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Имя</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Сумма</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Статус</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Менеджер</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Дата</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Session ID</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Действия</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200">
+        <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
           {tickets.map((ticket) => (
-            <tr key={ticket.id} className="hover:bg-gray-50">
+            <tr key={ticket.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
               <td className="px-4 py-4 whitespace-nowrap">
                 <Badge variant="secondary">#{ticket.id}</Badge>
               </td>
               <td className="px-4 py-4 whitespace-nowrap">
                 <div className="flex items-center gap-2">
-                  <Icon name="User" size={16} className="text-gray-400" />
-                  <span className="font-medium">{ticket.user_name || 'Без имени'}</span>
+                  <Icon name="User" size={16} className="text-gray-400 dark:text-gray-500" />
+                  <span className="font-medium dark:text-white">{ticket.user_name || 'Без имени'}</span>
                   {ticket.unread_messages && ticket.unread_messages > 0 && (
                     <Badge variant="destructive" className="h-5 min-w-5 px-1.5 text-xs">
                       {ticket.unread_messages}
@@ -103,17 +103,17 @@ export default function TicketsTable({
                 </div>
               </td>
               <td className="px-4 py-4 whitespace-nowrap">
-                <span className="text-green-600 font-semibold">{ticket.amount} ₽</span>
+                <span className="text-green-600 dark:text-green-400 font-semibold">{ticket.amount} ₽</span>
               </td>
               <td className="px-4 py-4 whitespace-nowrap">
                 <Select 
                   value={ticket.status} 
                   onValueChange={(value) => onStatusChange(ticket.id, value)}
                 >
-                  <SelectTrigger className="w-44">
+                  <SelectTrigger className="w-44 dark:bg-gray-900 dark:border-gray-700 dark:text-white">
                     <SelectValue>{getStatusBadge(ticket.status)}</SelectValue>
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="dark:bg-gray-900 dark:border-gray-700">
                     <SelectItem value="новая">
                       <span className="flex items-center">
                         <span className="w-2 h-2 rounded-full bg-gray-500 mr-2"></span>
