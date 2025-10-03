@@ -218,10 +218,10 @@ const AdminChat = () => {
               }
             }}
           >
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-48 dark:bg-gray-900 dark:border-gray-700 dark:text-white">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="dark:bg-gray-900 dark:border-gray-700">
               <SelectItem value="AliPay Service">AliPay Service</SelectItem>
               <SelectItem value="Кристина">Кристина</SelectItem>
               <SelectItem value="Евгений">Евгений</SelectItem>
@@ -253,7 +253,7 @@ const AdminChat = () => {
               >
                 <div className="flex flex-col gap-1 max-w-[70%]">
                   {!msg.is_admin && msg.user_name && (
-                    <span className="text-xs text-gray-500 px-2">
+                    <span className="text-xs text-gray-500 dark:text-gray-400 px-2">
                       {msg.user_name}
                     </span>
                   )}
@@ -271,7 +271,11 @@ const AdminChat = () => {
                             href={msg.image_url} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 p-2 bg-gray-100 rounded hover:bg-gray-200 transition"
+                            className={`flex items-center gap-2 p-2 rounded transition ${
+                              msg.is_admin 
+                                ? 'bg-primary-foreground/10 hover:bg-primary-foreground/20' 
+                                : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
+                            }`}
                           >
                             <Icon name="FileText" size={20} className="text-red-500" />
                             <span className="text-sm">Открыть PDF</span>
@@ -312,13 +316,13 @@ const AdminChat = () => {
             <div ref={messagesEndRef} />
           </CardContent>
 
-          <div className="p-4 border-t bg-white">
+          <div className="p-4 border-t dark:border-gray-700 bg-white dark:bg-gray-800">
             <div className="mb-3 flex flex-wrap gap-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setInputMessage('Здравствуйте, сумма в заявке актуальная?')}
-                className="text-xs"
+                className="text-xs dark:bg-gray-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700"
               >
                 Здравствуйте, сумма в заявке актуальная?
               </Button>
@@ -328,7 +332,7 @@ const AdminChat = () => {
                 <img 
                   src={imagePreview} 
                   alt="Preview" 
-                  className="max-h-20 rounded border"
+                  className="max-h-20 rounded border dark:border-gray-700"
                 />
                 <Button
                   size="sm"
@@ -341,13 +345,13 @@ const AdminChat = () => {
               </div>
             )}
             {selectedFile && (
-              <div className="mb-2 flex items-center gap-2 bg-gray-100 p-2 rounded">
+              <div className="mb-2 flex items-center gap-2 bg-gray-100 dark:bg-gray-900 p-2 rounded">
                 <Icon name="FileText" size={16} className="text-red-500" />
-                <span className="text-sm flex-1 truncate">{selectedFile.name}</span>
+                <span className="text-sm flex-1 truncate dark:text-white">{selectedFile.name}</span>
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="h-6 w-6 p-0"
+                  className="h-6 w-6 p-0 dark:hover:bg-gray-700"
                   onClick={clearFile}
                 >
                   <Icon name="X" size={14} />
@@ -374,6 +378,7 @@ const AdminChat = () => {
                 size="icon"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading || !!selectedFile}
+                className="dark:bg-gray-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700"
               >
                 <Icon name="Image" size={18} />
               </Button>
@@ -382,6 +387,7 @@ const AdminChat = () => {
                 size="icon"
                 onClick={() => pdfInputRef.current?.click()}
                 disabled={uploading || !!selectedImage}
+                className="dark:bg-gray-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700"
               >
                 <Icon name="FileText" size={18} />
               </Button>
@@ -390,7 +396,7 @@ const AdminChat = () => {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="flex-1"
+                className="flex-1 dark:bg-gray-900 dark:border-gray-700 dark:text-white dark:placeholder-gray-400"
                 disabled={uploading}
               />
               <Button 

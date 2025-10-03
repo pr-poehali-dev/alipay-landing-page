@@ -176,7 +176,7 @@ export default function TicketsTable({
                   value={ticket.assigned_manager || 'unassigned'} 
                   onValueChange={(value) => onManagerChange(ticket.id, value === 'unassigned' ? null : value)}
                 >
-                  <SelectTrigger className="w-36">
+                  <SelectTrigger className="w-36 dark:bg-gray-900 dark:border-gray-700 dark:text-white">
                     <SelectValue placeholder="Не назначен">
                       {ticket.assigned_manager ? (
                         <span className="flex items-center">
@@ -188,7 +188,7 @@ export default function TicketsTable({
                       )}
                     </SelectValue>
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="dark:bg-gray-900 dark:border-gray-700">
                     <SelectItem value="unassigned">
                       <span className="text-gray-400">Не назначен</span>
                     </SelectItem>
@@ -199,7 +199,7 @@ export default function TicketsTable({
                   </SelectContent>
                 </Select>
               </td>
-              <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                 {new Date(ticket.created_at).toLocaleString('ru-RU', {
                   day: '2-digit',
                   month: '2-digit',
@@ -208,7 +208,7 @@ export default function TicketsTable({
                   minute: '2-digit'
                 })}
               </td>
-              <td className="px-4 py-4 whitespace-nowrap text-xs text-gray-400 font-mono">
+              <td className="px-4 py-4 whitespace-nowrap text-xs text-gray-400 dark:text-gray-500 font-mono">
                 {ticket.session_id.substring(0, 20)}...
               </td>
               <td className="px-4 py-4 whitespace-nowrap">
@@ -217,6 +217,7 @@ export default function TicketsTable({
                     size="sm" 
                     variant="outline"
                     onClick={() => onOpenChat(ticket.session_id)}
+                    className="dark:bg-gray-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700"
                   >
                     <Icon name="MessageCircle" size={16} className="mr-1" />
                     Чат
@@ -225,7 +226,7 @@ export default function TicketsTable({
                     size="sm" 
                     variant="outline"
                     onClick={() => onBlockUser(ticket.session_id)}
-                    className="hover:bg-orange-50"
+                    className="hover:bg-orange-50 dark:hover:bg-orange-900/30 dark:bg-gray-900 dark:border-gray-700"
                   >
                     <Icon name="Ban" size={16} className="text-orange-500" />
                   </Button>
@@ -233,7 +234,7 @@ export default function TicketsTable({
                     size="sm" 
                     variant="outline"
                     onClick={() => onDeleteTicket(ticket.id)}
-                    className="hover:bg-red-50"
+                    className="hover:bg-red-50 dark:hover:bg-red-900/30 dark:bg-gray-900 dark:border-gray-700"
                   >
                     <Icon name="Trash2" size={16} className="text-red-500" />
                   </Button>
