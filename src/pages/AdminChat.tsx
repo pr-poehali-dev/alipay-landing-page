@@ -49,8 +49,6 @@ const AdminChat = () => {
   }, [sessionId]);
 
   useEffect(() => {
-    scrollToBottom();
-    
     const userMessages = messages.filter(m => !m.is_admin);
     if (lastMessageCountRef.current > 0 && userMessages.length > lastMessageCountRef.current) {
       audioRef.current?.play().catch(e => console.log('Audio play failed:', e));
