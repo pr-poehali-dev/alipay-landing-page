@@ -342,18 +342,38 @@ const Index = () => {
       {/* Footer */}
       <footer className="bg-gray-900 border-t border-gray-800 py-6 sm:py-8">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center gap-3 mb-4 md:mb-0">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary rounded-lg flex items-center justify-center">
-                <Icon name="CreditCard" size={14} className="text-white sm:w-4 sm:h-4" />
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <Icon name="CreditCard" size={16} className="text-white" />
+                </div>
+                <span className="text-white font-semibold">AliPay Service</span>
               </div>
-              <span className="text-white font-semibold text-sm sm:text-base">AliPay Service</span>
+              <p className="text-gray-400 text-sm mb-4">Надёжный сервис пополнения китайских кошельков с гарантией возврата средств</p>
             </div>
             
-            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 text-xs sm:text-sm text-gray-400 text-center">
-              <span>© 2024 AliPay Service</span>
-              <span className="hidden sm:inline">Политика конфиденциальности</span>
-              <span className="hidden sm:inline">Условия использования</span>
+            <div>
+              <h4 className="text-white font-semibold mb-3">Контактная информация</h4>
+              <div className="space-y-2 text-sm text-gray-400">
+                <p>ИП Евдокимов Павел Валерьевич</p>
+                <p>ИНН: 691501893819</p>
+                <p>ОГРН: 320695200024865</p>
+                <div className="flex items-center gap-2 mt-3">
+                  <Icon name="Phone" size={16} className="text-primary" />
+                  <a href="tel:+79295005553" className="hover:text-white transition-colors">+7 (929) 500-55-53</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 pt-6">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-gray-400">
+              <span>© 2024 AliPay Service. Все права защищены</span>
+              <div className="flex gap-4">
+                <span className="hover:text-white cursor-pointer transition-colors">Политика конфиденциальности</span>
+                <span className="hover:text-white cursor-pointer transition-colors">Условия использования</span>
+              </div>
             </div>
           </div>
         </div>
