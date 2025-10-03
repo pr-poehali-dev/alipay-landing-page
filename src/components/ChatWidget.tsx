@@ -108,9 +108,11 @@ export default function ChatWidget() {
     setUploading(true);
     try {
       let fileUrl: string | null = null;
+      let isQRCode = false;
       
       if (selectedImage) {
         fileUrl = await MessageService.uploadImage(selectedImage);
+        isQRCode = true;
       } else if (selectedFile) {
         fileUrl = await MessageService.uploadFile(selectedFile);
       }
@@ -122,6 +124,20 @@ export default function ChatWidget() {
         userName || null,
         fileUrl
       );
+
+      if (isQRCode && fileUrl) {
+        setTimeout(async () => {
+          await MessageService.sendMessage(
+            sessionId,
+            '✅ QR-код получен!\n\n⏳ Ожидайте, данные для оплаты появятся в чате в течение 2х минут.\n\nНаш менеджер обработает ваш запрос.',
+            true,
+            null,
+            null,
+            'AliPay Service'
+          );
+          loadMessages();
+        }, 1000);
+      }
 
       setInputMessage('');
       clearImage();
