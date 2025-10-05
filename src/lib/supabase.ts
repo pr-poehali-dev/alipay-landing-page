@@ -78,7 +78,7 @@ export const TelegramService = {
       `💬 Сообщение:\n${messageText}`;
 
     try {
-      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -87,6 +87,13 @@ export const TelegramService = {
           parse_mode: 'HTML'
         })
       });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Telegram API error:', response.status, errorText);
+      } else {
+        console.log('Уведомление отправлено в Telegram');
+      }
     } catch (error) {
       console.error('Telegram notification error:', error);
     }
