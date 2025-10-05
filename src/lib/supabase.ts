@@ -66,6 +66,33 @@ export const BlockService = {
   }
 };
 
+export const TelegramService = {
+  async sendNotification(ticketId: number | string, userName: string, messageText: string) {
+    const BOT_TOKEN = '8180849078:AAFEyOjNjFkl_JM4sUB0eGfaGGUEwlJ9TIE';
+    const CHAT_ID = '-1002437535631';
+
+    const telegramMessage = 
+      `📩 <b>Новое сообщение</b>\n\n` +
+      `🎫 Заявка: <code>#${ticketId}</code>\n` +
+      `👤 От: <b>${userName || 'Аноним'}</b>\n` +
+      `💬 Сообщение:\n${messageText}`;
+
+    try {
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text: telegramMessage,
+          parse_mode: 'HTML'
+        })
+      });
+    } catch (error) {
+      console.error('Telegram notification error:', error);
+    }
+  }
+};
+
 export const MessageService = {
   async sendMessage(sessionId: string, message: string, isAdmin: boolean = false, userName: string | null = null, imageUrl: string | null = null, managerName: string | null = null) {
     if (!isAdmin) {
@@ -84,6 +111,14 @@ export const MessageService = {
       .single();
 
     if (error) throw error;
+
+    if (!isAdmin && message.trim()) {
+      const tickets = await TicketService.getRecentBySession(sessionId, 1440);
+      const ticketId = tickets.length > 0 ? tickets[0].id : 'N/A';
+      
+      TelegramService.sendNotification(ticketId, userName || 'Аноним', message);
+    }
+
     return data as Message;
   },
 
