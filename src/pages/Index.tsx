@@ -210,9 +210,39 @@ const Index = () => {
                   </Link>
                 </div>
 
-                <div className="flex items-center justify-center gap-4 pt-4 border-t">
-                  <Icon name="Lock" size={16} className="text-gray-400" />
-                  <span className="text-xs text-gray-500">Защищено SSL шифрованием</span>
+                <div className="pt-4 border-t space-y-3">
+                  <div className="flex items-center justify-center gap-4">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-green-50 rounded-full">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-xs font-medium text-green-700">Поддержка онлайн</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-center gap-2 flex-wrap">
+                    <div className="flex items-center gap-1 px-2 py-1 bg-blue-50 rounded">
+                      <Icon name="Shield" size={14} className="text-blue-600" />
+                      <span className="text-xs text-blue-700">SSL</span>
+                    </div>
+                    <div className="flex items-center gap-1 px-2 py-1 bg-green-50 rounded">
+                      <Icon name="Lock" size={14} className="text-green-600" />
+                      <span className="text-xs text-green-700">Безопасная оплата</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-center gap-3 pt-2">
+                    <div className="w-10 h-6 bg-gradient-to-r from-blue-600 to-blue-800 rounded flex items-center justify-center">
+                      <span className="text-white text-[8px] font-bold">VISA</span>
+                    </div>
+                    <div className="w-10 h-6 bg-gradient-to-r from-red-600 to-orange-600 rounded flex items-center justify-center">
+                      <span className="text-white text-[8px] font-bold">MC</span>
+                    </div>
+                    <div className="w-10 h-6 bg-gradient-to-r from-blue-500 to-cyan-500 rounded flex items-center justify-center">
+                      <span className="text-white text-[8px] font-bold">МИР</span>
+                    </div>
+                    <div className="w-10 h-6 bg-gray-800 rounded flex items-center justify-center">
+                      <Icon name="CreditCard" size={12} className="text-white" />
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
