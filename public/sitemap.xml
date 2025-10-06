@@ -18,13 +18,5 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-  
-  <!-- Админ-панель (исключена из индексации) -->
-  <url>
-    <loc>https://chinaservice24.shop/admin</loc>
-    <lastmod>2025-10-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
 
 </urlset>
