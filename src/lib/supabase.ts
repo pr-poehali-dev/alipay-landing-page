@@ -69,7 +69,7 @@ export const BlockService = {
 export const TelegramService = {
   async sendNotification(ticketId: number | string, userName: string, messageText: string) {
     const BOT_TOKEN = '8415994300:AAFRN1T0Ih8mKTTy9L8FG89utMRKZJ0_7_c';
-    const CHAT_ID_MESSAGES = '-3177855922';
+    const CHAT_ID_MESSAGES = '-1003177855922';
     const CHAT_ID_NOTIFICATIONS = '-1002938818696';
 
     const telegramMessage = 
