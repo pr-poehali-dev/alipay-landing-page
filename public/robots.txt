@@ -1,8 +1,12 @@
 User-agent: Googlebot
 Allow: /
+Allow: /reviews
+Disallow: /admin
 
 User-agent: Bingbot
 Allow: /
+Allow: /reviews
+Disallow: /admin
 
 User-agent: Twitterbot
 Allow: /
@@ -10,5 +14,16 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+User-agent: Yandex
+Allow: /
+Allow: /reviews
+Disallow: /admin
+Crawl-delay: 1
+
 User-agent: *
 Allow: /
+Allow: /reviews
+Disallow: /admin
+
+# Карта сайта
+Sitemap: https://alipay-landing-page.poehali.app/sitemap.xml
