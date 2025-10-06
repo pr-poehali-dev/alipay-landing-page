@@ -69,7 +69,8 @@ export const BlockService = {
 export const TelegramService = {
   async sendNotification(ticketId: number | string, userName: string, messageText: string) {
     const BOT_TOKEN = '8415994300:AAFRN1T0Ih8mKTTy9L8FG89utMRKZJ0_7_c';
-    const CHAT_ID = '-1002938818696';
+    const CHAT_ID_MESSAGES = '-3177855922';
+    const CHAT_ID_NOTIFICATIONS = '-1002938818696';
 
     const telegramMessage = 
       `📩 <b>Новое сообщение</b>\n\n` +
@@ -82,7 +83,7 @@ export const TelegramService = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          chat_id: CHAT_ID,
+          chat_id: CHAT_ID_MESSAGES,
           text: telegramMessage,
           parse_mode: 'HTML'
         })
