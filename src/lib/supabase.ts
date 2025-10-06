@@ -284,5 +284,21 @@ export const TicketService = {
       .eq('id', id);
 
     if (error) throw error;
+  },
+
+  async deleteChat(sessionId: string) {
+    const { error: messagesError } = await supabase
+      .from('messages')
+      .delete()
+      .eq('session_id', sessionId);
+
+    if (messagesError) throw messagesError;
+
+    const { error: ticketsError } = await supabase
+      .from('tickets')
+      .delete()
+      .eq('session_id', sessionId);
+
+    if (ticketsError) throw ticketsError;
   }
 };

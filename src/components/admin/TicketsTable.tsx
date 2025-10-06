@@ -18,6 +18,7 @@ interface TicketsTableProps {
   onDeleteTicket: (ticketId: number) => void;
   onOpenChat: (sessionId: string) => void;
   onBlockUser: (sessionId: string) => void;
+  onDeleteChat: (sessionId: string) => void;
 }
 
 export default function TicketsTable({
@@ -27,7 +28,8 @@ export default function TicketsTable({
   onManagerChange,
   onDeleteTicket,
   onOpenChat,
-  onBlockUser
+  onBlockUser,
+  onDeleteChat
 }: TicketsTableProps) {
   const getStatusBadge = (status: string) => {
     const statusConfig: Record<string, { color: string; label: string }> = {
@@ -226,14 +228,25 @@ export default function TicketsTable({
                     variant="outline"
                     onClick={() => onBlockUser(ticket.session_id)}
                     className="hover:bg-orange-50"
+                    title="Заблокировать пользователя"
                   >
                     <Icon name="Ban" size={16} className="text-orange-500" />
                   </Button>
                   <Button 
                     size="sm" 
                     variant="outline"
+                    onClick={() => onDeleteChat(ticket.session_id)}
+                    className="hover:bg-purple-50"
+                    title="Удалить весь диалог"
+                  >
+                    <Icon name="MessagesSquare" size={16} className="text-purple-500" />
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
                     onClick={() => onDeleteTicket(ticket.id)}
                     className="hover:bg-red-50"
+                    title="Удалить заявку"
                   >
                     <Icon name="Trash2" size={16} className="text-red-500" />
                   </Button>

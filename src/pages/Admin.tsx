@@ -252,6 +252,19 @@ const Admin = () => {
     }
   };
 
+  const handleDeleteChat = async (sessionId: string) => {
+    if (!confirm('Удалить весь диалог? Это удалит все сообщения и заявки пользователя. Действие нельзя отменить.')) return;
+    
+    try {
+      await TicketService.deleteChat(sessionId);
+      setTickets(tickets.filter(t => t.session_id !== sessionId));
+      alert('Диалог удалён');
+    } catch (error) {
+      console.error('Ошибка удаления диалога:', error);
+      alert('Ошибка удаления диалога');
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <AdminLogin
@@ -295,6 +308,7 @@ const Admin = () => {
               onDeleteTicket={handleDeleteTicket}
               onOpenChat={handleOpenChat}
               onBlockUser={handleBlockUser}
+              onDeleteChat={handleDeleteChat}
             />
           </CardContent>
         </Card>
