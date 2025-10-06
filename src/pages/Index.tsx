@@ -56,7 +56,7 @@ const Index = () => {
         true,
         null,
         null,
-        'AliPay Service'
+        'ChinaService'
       );
 
       const message = `🔔 *Новая заявка #${ticket.id}*\n\n👤 *Имя:* ${userName}\n💰 *Сумма:* ${amountValue} ₽\n\n⏰ Требует внимания!`;
@@ -97,7 +97,7 @@ const Index = () => {
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
               <Icon name="CreditCard" size={24} className="text-white" />
             </div>
-            <h1 className="text-lg sm:text-2xl font-bold text-gray-900">AliPay 金服</h1>
+            <h1 className="text-lg sm:text-2xl font-bold text-gray-900">ChinaService</h1>
           </div>
           <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs sm:text-sm">
             <Icon name="Shield" size={14} className="mr-1" />
@@ -117,10 +117,9 @@ const Index = () => {
                 Мгновенное пополнение
               </Badge>
               <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
-                Пополните <span className="text-primary">AliPay</span> быстро и безопасно
+                Пополнить <span className="text-primary">Алипей</span> (AliPay) быстро и безопасно
               </h1>
-              <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed">Надёжный сервис пополнения китайских кошельков с гарантией возврата средств и круглосуточной поддержкой.
-Окажем помощь в пополнении.</p>
+              <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed">ChinaService — надёжный сервис пополнения Алипэй из России. Пополнить Alipay кошелёк с гарантией возврата средств и круглосуточной поддержкой. Помогаем с пополнением китайских платёжных систем уже более 5 лет.</p>
               
               <div className="flex flex-wrap gap-4 sm:gap-6 mb-6 sm:mb-8">
                 <div className="flex items-center gap-2">
@@ -141,8 +140,8 @@ const Index = () => {
             {/* Payment Form */}
             <Card className="shadow-xl border-0 bg-white">
               <CardHeader className="pb-4">
-                <CardTitle className="text-2xl text-center">Пополнить кошелёк</CardTitle>
-                <p className="text-gray-600 text-center">Введите данные для пополнения</p>
+                <CardTitle className="text-2xl text-center">Пополнить Алипей</CardTitle>
+                <p className="text-gray-600 text-center">Пополнение Alipay за 5 минут</p>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
@@ -346,6 +345,54 @@ const Index = () => {
         </div>
       </section>
 
+      {/* SEO Content Section */}
+      <section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-blue-50 to-white">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 lg:p-10">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-900">
+              Как пополнить Алипей (AliPay) из России через ChinaService
+            </h2>
+            
+            <div className="space-y-4 text-gray-700 leading-relaxed">
+              <p className="text-base sm:text-lg">
+                <strong>Пополнение Алипэй</strong> из России стало проще с ChinaService. Мы предлагаем быстрый и надёжный способ 
+                <strong> пополнить Alipay</strong> кошелёк всего за несколько минут. Наш сервис работает круглосуточно и гарантирует 
+                безопасность всех транзакций.
+              </p>
+              
+              <h3 className="text-xl sm:text-2xl font-semibold mt-6 mb-3 text-gray-900">
+                Почему выбирают ChinaService для пополнения Алипей?
+              </h3>
+              
+              <ul className="list-disc list-inside space-y-2 pl-4">
+                <li><strong>Быстрое пополнение Алипэй</strong> — деньги поступают на кошелёк за 5-10 минут</li>
+                <li><strong>Пополнить Alipay</strong> можно картами российских банков: МИР, Visa, Mastercard</li>
+                <li>Минимальная комиссия при пополнении Алипей кошелька</li>
+                <li>Поддержка 24/7 поможет пополнить Алипэй в любое время</li>
+                <li>100% гарантия возврата средств, если пополнение не прошло</li>
+              </ul>
+              
+              <h3 className="text-xl sm:text-2xl font-semibold mt-6 mb-3 text-gray-900">
+                Как пополнить Алипей через ChinaService?
+              </h3>
+              
+              <ol className="list-decimal list-inside space-y-2 pl-4">
+                <li>Укажите сумму для пополнения Alipay (минимум 2000₽)</li>
+                <li>Введите ваше имя для связи</li>
+                <li>Нажмите кнопку "Пополнить сейчас"</li>
+                <li>Следуйте инструкциям менеджера в чате</li>
+                <li>Получите пополнение Алипэй на ваш кошелёк за 5 минут</li>
+              </ol>
+              
+              <p className="text-base sm:text-lg mt-4 bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                💡 <strong>Совет:</strong> Чтобы быстро пополнить Алипей, держите под рукой данные вашего AliPay кошелька. 
+                Наши менеджеры помогут с любыми вопросами по пополнению Алипэй из России.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Guarantees */}
       <section className="py-8 sm:py-12 lg:py-16 bg-white">
         <div className="container mx-auto px-4">
@@ -398,9 +445,9 @@ const Index = () => {
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                   <Icon name="CreditCard" size={16} className="text-white" />
                 </div>
-                <span className="text-white font-semibold">AliPay Service</span>
+                <span className="text-white font-semibold">ChinaService</span>
               </div>
-              <p className="text-gray-400 text-sm mb-4">Надёжный сервис пополнения китайских кошельков с гарантией возврата средств</p>
+              <p className="text-gray-400 text-sm mb-4">Пополнить Алипей (пополнение Алипэй / Alipay) из России. Надёжный сервис с гарантией возврата средств</p>
             </div>
             
             <div>
@@ -419,7 +466,7 @@ const Index = () => {
           
           <div className="border-t border-gray-800 pt-6">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-gray-400">
-              <span>© 2024 AliPay Service. Все права защищены</span>
+              <span>© 2024 ChinaService. Все права защищены</span>
               <div className="flex gap-4">
                 <span className="hover:text-white cursor-pointer transition-colors">Политика конфиденциальности</span>
                 <span className="hover:text-white cursor-pointer transition-colors">Условия использования</span>
