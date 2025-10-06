@@ -258,6 +258,9 @@ const Index = () => {
                       <div className="px-2 py-1 bg-purple-600 rounded text-[8px] font-bold text-white">
                         Я.Банк
                       </div>
+                      <div className="px-2 py-1 bg-blue-700 rounded text-[8px] font-bold text-white">
+                        ВТБ
+                      </div>
                     </div>
                   </div>
                 </div>
