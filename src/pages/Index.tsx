@@ -229,18 +229,35 @@ const Index = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-center gap-3 pt-2">
-                    <div className="w-10 h-6 bg-gradient-to-r from-blue-600 to-blue-800 rounded flex items-center justify-center">
-                      <span className="text-white text-[8px] font-bold">VISA</span>
+                  <div className="space-y-2 pt-2">
+                    <div className="flex items-center justify-center gap-2 flex-wrap">
+                      <div className="w-10 h-6 bg-gradient-to-r from-blue-600 to-blue-800 rounded flex items-center justify-center">
+                        <span className="text-white text-[8px] font-bold">VISA</span>
+                      </div>
+                      <div className="w-10 h-6 bg-gradient-to-r from-red-600 to-orange-600 rounded flex items-center justify-center">
+                        <span className="text-white text-[8px] font-bold">MC</span>
+                      </div>
+                      <div className="w-10 h-6 bg-gradient-to-r from-blue-500 to-cyan-500 rounded flex items-center justify-center">
+                        <span className="text-white text-[8px] font-bold">МИР</span>
+                      </div>
+                      <div className="w-10 h-6 bg-gray-800 rounded flex items-center justify-center">
+                        <Icon name="CreditCard" size={12} className="text-white" />
+                      </div>
                     </div>
-                    <div className="w-10 h-6 bg-gradient-to-r from-red-600 to-orange-600 rounded flex items-center justify-center">
-                      <span className="text-white text-[8px] font-bold">MC</span>
-                    </div>
-                    <div className="w-10 h-6 bg-gradient-to-r from-blue-500 to-cyan-500 rounded flex items-center justify-center">
-                      <span className="text-white text-[8px] font-bold">МИР</span>
-                    </div>
-                    <div className="w-10 h-6 bg-gray-800 rounded flex items-center justify-center">
-                      <Icon name="CreditCard" size={12} className="text-white" />
+                    
+                    <div className="flex items-center justify-center gap-2 flex-wrap">
+                      <div className="px-2 py-1 bg-black rounded text-[8px] font-bold text-yellow-400">
+                        Т-Банк
+                      </div>
+                      <div className="px-2 py-1 bg-green-600 rounded text-[8px] font-bold text-white">
+                        Сбербанк
+                      </div>
+                      <div className="px-2 py-1 bg-red-600 rounded text-[8px] font-bold text-white">
+                        Альфа
+                      </div>
+                      <div className="px-2 py-1 bg-purple-600 rounded text-[8px] font-bold text-white">
+                        Я.Банк
+                      </div>
                     </div>
                   </div>
                 </div>
