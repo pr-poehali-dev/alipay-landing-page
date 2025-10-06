@@ -26,4 +26,4 @@ Allow: /reviews
 Disallow: /admin
 
 # Карта сайта
-Sitemap: https://alipay-landing-page.poehali.app/sitemap.xml
+Sitemap: https://chinaservice24.shop/sitemap.xml

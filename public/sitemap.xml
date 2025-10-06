@@ -5,7 +5,7 @@
   
   <!-- Главная страница -->
   <url>
-    <loc>https://alipay-landing-page.poehali.app/</loc>
+    <loc>https://chinaservice24.shop/</loc>
     <lastmod>2025-10-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -13,15 +13,15 @@
   
   <!-- Страница отзывов -->
   <url>
-    <loc>https://alipay-landing-page.poehali.app/reviews</loc>
+    <loc>https://chinaservice24.shop/reviews</loc>
     <lastmod>2025-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
-  <!-- Админ-панель (можно исключить из индексации) -->
+  <!-- Админ-панель (исключена из индексации) -->
   <url>
-    <loc>https://alipay-landing-page.poehali.app/admin</loc>
+    <loc>https://chinaservice24.shop/admin</loc>
     <lastmod>2025-10-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
